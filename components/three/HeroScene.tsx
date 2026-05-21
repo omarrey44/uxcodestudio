@@ -60,9 +60,27 @@ function HeadGroup() {
   const skullGeo = useMemo(() => new THREE.IcosahedronGeometry(1.1, 2), []);
   useEffect(() => () => { skullGeo.dispose(); }, [skullGeo]);
 
+  useFrame(({ mouse, clock }) => {
+    if (!groupRef.current) return;
+    const t = clock.getElapsedTime();
+    // Breathing: gentle y-float + subtle Z-axis sway
+    groupRef.current.position.y = 0.3 + Math.sin(t * 0.8) * 0.04;
+    groupRef.current.rotation.z = Math.sin(t * 0.4) * 0.012;
+    // Mouse tilt: ±12° yaw, ±8° pitch
+    groupRef.current.rotation.y = THREE.MathUtils.lerp(
+      groupRef.current.rotation.y,
+      mouse.x * 0.21,
+      0.06
+    );
+    groupRef.current.rotation.x = THREE.MathUtils.lerp(
+      groupRef.current.rotation.x,
+      -mouse.y * 0.14,
+      0.06
+    );
+  });
+
   return (
     <group ref={groupRef} position={[0, 0.3, 0]}>
-      {/* Skull geometry — scaled to head proportions */}
       <group scale={[0.92, 1.35, 0.88]}>
         <SkullWireframe geo={skullGeo} />
         <SkullFill geo={skullGeo} />
