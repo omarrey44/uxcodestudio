@@ -21,7 +21,7 @@ export default function WhyChooseUs() {
       <div className="container-x">
         <SectionHeader
           eyebrow="Why us"
-          title="Numbers that make"
+          title={<>Numbers <em className="display-em">that</em> make</>}
           accent="founders relax."
           description="We obsess over craft because craft compounds — into trust, retention, and revenue."
         />

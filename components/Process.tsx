@@ -76,7 +76,7 @@ export default function Process() {
       <div className="container-x">
         <SectionHeader
           eyebrow="Process"
-          title="A workflow tuned for"
+          title={<>A workflow <em className="display-em">tuned</em> for</>}
           accent="cinematic outcomes."
           description="Five tight phases — no fluff, no surprises. You always know what's next and what success looks like."
         />

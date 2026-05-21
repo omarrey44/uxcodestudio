@@ -60,7 +60,7 @@ export default function Services() {
       <div className="container-x">
         <SectionHeader
           eyebrow="Services"
-          title="Engineered for momentum,"
+          title={<>Engineered <em className="display-em">for</em> momentum,</>}
           accent="designed for awe."
           description="One studio. Six disciplines. A workflow optimized to ship measurable wins fast — without sacrificing craft."
         />
@@ -164,7 +164,7 @@ export function SectionHeader({
   description,
 }: {
   eyebrow: string;
-  title: string;
+  title: React.ReactNode;
   accent?: string;
   description?: string;
 }) {
@@ -176,11 +176,11 @@ export function SectionHeader({
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
       className="mx-auto max-w-3xl text-center"
     >
-      <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] uppercase tracking-[0.3em] text-white/60">
+      <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-white/50">
         <span className="h-1 w-1 rounded-full bg-accent-cyan" />
         {eyebrow}
       </div>
-      <h2 className="font-display text-4xl font-bold leading-[1.05] text-white text-balance md:text-6xl">
+      <h2 className="font-display text-h2 font-bold text-white text-balance">
         {title}{" "}
         {accent && <span className="text-gradient-accent">{accent}</span>}
       </h2>

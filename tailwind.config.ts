@@ -59,6 +59,11 @@ const config: Config = {
         "aurora":
           "conic-gradient(from 180deg at 50% 50%, #4f6ef7 0deg, #00d4ff 120deg, #8b5cf6 240deg, #4f6ef7 360deg)",
       },
+      fontSize: {
+        display: ["clamp(3rem, 6vw, 5.5rem)", { lineHeight: "0.95", letterSpacing: "-0.02em", fontWeight: "800" }],
+        h2: ["clamp(2rem, 4vw, 3.5rem)", { lineHeight: "1.05", letterSpacing: "-0.015em" }],
+        h3: ["clamp(1.25rem, 2vw, 1.75rem)", { lineHeight: "1.1" }],
+      },
     },
   },
   plugins: [],

@@ -104,7 +104,7 @@ export default function Hero() {
 
           <h1
             ref={headlineRef}
-            className="font-display text-[44px] font-bold leading-[1.02] tracking-tight text-balance md:text-[72px] lg:text-[88px]"
+            className="font-display text-display font-bold text-balance"
           >
             <span className="block overflow-hidden">
               <span className="word inline-block">We&nbsp;</span>
