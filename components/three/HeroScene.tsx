@@ -8,7 +8,7 @@ function HexPrismBody() {
   const prismGeo = useMemo(() => new THREE.CylinderGeometry(0.75, 0.68, 1.5, 6), []);
   const prismEdgesGeo = useMemo(() => new THREE.EdgesGeometry(prismGeo), [prismGeo]);
   const crownGeo = useMemo(() => new THREE.SphereGeometry(0.72, 6, 4), []);
-  const prismMat = useMemo(
+  const bodyMat = useMemo(
     () => new THREE.MeshStandardMaterial({ color: "#080b10", metalness: 0.92, roughness: 0.18 }),
     []
   );
@@ -16,26 +16,22 @@ function HexPrismBody() {
     () => new THREE.LineBasicMaterial({ color: "#00d4ff", transparent: true, opacity: 0.30 }),
     []
   );
-  const crownMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: "#080b10", metalness: 0.92, roughness: 0.18 }),
-    []
-  );
 
   useEffect(() => () => {
     prismGeo.dispose(); prismEdgesGeo.dispose(); crownGeo.dispose();
-    prismMat.dispose(); prismEdgesMat.dispose(); crownMat.dispose();
+    bodyMat.dispose(); prismEdgesMat.dispose();
   }, []);
 
   return (
     <>
       <mesh geometry={prismGeo}>
-        <primitive object={prismMat} attach="material" />
+        <primitive object={bodyMat} attach="material" />
       </mesh>
       <lineSegments geometry={prismEdgesGeo}>
         <primitive object={prismEdgesMat} attach="material" />
       </lineSegments>
       <mesh geometry={crownGeo} position={[0, 0.75, 0]} scale={[1, 0.4, 1]}>
-        <primitive object={crownMat} attach="material" />
+        <primitive object={bodyMat} attach="material" />
       </mesh>
     </>
   );
