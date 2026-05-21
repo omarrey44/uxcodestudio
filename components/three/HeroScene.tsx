@@ -176,6 +176,51 @@ function EyeSlit({ position }: { position: [number, number, number] }) {
   );
 }
 
+function ScanLine() {
+  const ref = useRef<THREE.Mesh>(null);
+  const scanMat = useMemo(
+    () =>
+      new THREE.MeshBasicMaterial({
+        color: "#00d4ff",
+        transparent: true,
+        opacity: 0.10,
+        depthWrite: false,
+      }),
+    []
+  );
+  useEffect(() => () => { scanMat.dispose(); }, []);
+
+  useFrame((state: { clock: THREE.Clock }) => {
+    if (ref.current) {
+      // Sweeps visor height (-0.38 to +0.38), period ~6s
+      ref.current.position.y = Math.sin(state.clock.getElapsedTime() * 1.047) * 0.38;
+    }
+  });
+
+  return (
+    <mesh ref={ref} position={[0, 0, 0.53]}>
+      <planeGeometry args={[1.0, 0.03]} />
+      <primitive object={scanMat} attach="material" />
+    </mesh>
+  );
+}
+
+function NeckStub() {
+  const neckGeo = useMemo(() => new THREE.CylinderGeometry(0.22, 0.30, 0.5, 6), []);
+  const neckEdgesGeo = useMemo(() => new THREE.EdgesGeometry(neckGeo), [neckGeo]);
+  const neckEdgesMat = useMemo(
+    () => new THREE.LineBasicMaterial({ color: "#00d4ff", transparent: true, opacity: 0.20 }),
+    []
+  );
+  useEffect(() => () => { neckGeo.dispose(); neckEdgesGeo.dispose(); neckEdgesMat.dispose(); }, []);
+
+  return (
+    <lineSegments geometry={neckEdgesGeo} position={[0, -1.0, 0]}>
+      <primitive object={neckEdgesMat} attach="material" />
+    </lineSegments>
+  );
+}
+
 function HeadGroup() {
   const groupRef = useRef<THREE.Group>(null);
 
@@ -185,6 +230,8 @@ function HeadGroup() {
         <HexPrismBody />
         <VisorPanel />
         <BrowAccents />
+        <ScanLine />
+        <NeckStub />
       </group>
       {/* Eyes outside scale group — preserves exact box proportions */}
       <EyeSlit position={[-0.26, 0.20, 0.52]} />
