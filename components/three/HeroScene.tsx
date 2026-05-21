@@ -113,6 +113,103 @@ function EyeAssembly({ position }: { position: [number, number, number] }) {
   );
 }
 
+function ScanLine() {
+  const ref = useRef<THREE.Mesh>(null);
+  const mat = useMemo(
+    () =>
+      new THREE.MeshBasicMaterial({
+        color: "#00d4ff",
+        transparent: true,
+        opacity: 0.12,
+        depthWrite: false,
+      }),
+    []
+  );
+  useEffect(() => () => { mat.dispose(); }, [mat]);
+
+  useFrame(({ clock }) => {
+    if (ref.current) {
+      // Full sine period ~8s; one top→bottom pass ≈ 4s
+      ref.current.position.y = Math.sin(clock.getElapsedTime() * 0.785) * 1.1;
+    }
+  });
+
+  return (
+    <mesh ref={ref} position={[0, 0, 0.98]}>
+      <planeGeometry args={[2.2, 0.04]} />
+      <primitive object={mat} attach="material" />
+    </mesh>
+  );
+}
+
+const PATCH_POSITIONS: [number, number, number][] = [
+  [0.7, 0.8, 0.4],   [-0.6, 0.9, 0.5],  [0.9, -0.2, 0.3],
+  [-0.8, -0.4, 0.4], [0.3, 1.0, 0.2],   [-0.2, -0.9, 0.4],
+  [0.8, 0.5, -0.3],  [-0.7, 0.3, -0.4],
+];
+
+// Pre-calculate positions and quaternions once (outside component, stable)
+const PATCH_TRANSFORMS = PATCH_POSITIONS.map((pos) => {
+  const v = new THREE.Vector3(...pos).normalize().multiplyScalar(1.12);
+  const quat = new THREE.Quaternion().setFromUnitVectors(
+    new THREE.Vector3(0, 0, 1),
+    v.clone().normalize()
+  );
+  return { position: [v.x, v.y, v.z] as [number, number, number], quaternion: quat };
+});
+
+function GlitchPatches() {
+  const meshRefs = useRef<(THREE.Mesh | null)[]>(Array(8).fill(null));
+  const patchTimers = useRef<number[]>(PATCH_POSITIONS.map(() => 1.5 + Math.random() * 2.5));
+  const patchVisible = useRef<boolean[]>(Array(8).fill(false));
+
+  useFrame((_, delta) => {
+    for (let i = 0; i < 8; i++) {
+      patchTimers.current[i] -= delta;
+      if (patchTimers.current[i] <= 0) {
+        patchVisible.current[i] = !patchVisible.current[i];
+        patchTimers.current[i] = 1.5 + Math.random() * 2.5;
+        const mesh = meshRefs.current[i];
+        if (mesh) {
+          (mesh.material as THREE.MeshBasicMaterial).opacity = patchVisible.current[i] ? 0.45 : 0;
+        }
+      }
+    }
+  });
+
+  return (
+    <>
+      {PATCH_TRANSFORMS.map(({ position, quaternion }, i) => (
+        <mesh
+          key={i}
+          ref={(el) => { meshRefs.current[i] = el; }}
+          position={position}
+          quaternion={quaternion}
+        >
+          <planeGeometry args={[0.18, 0.12]} />
+          <meshBasicMaterial color="#00d4ff" transparent opacity={0} depthWrite={false} />
+        </mesh>
+      ))}
+    </>
+  );
+}
+
+function NeckStub() {
+  const geo = useMemo(() => new THREE.CylinderGeometry(0.18, 0.28, 0.6, 6), []);
+  const edges = useMemo(() => new THREE.EdgesGeometry(geo), [geo]);
+  const mat = useMemo(
+    () => new THREE.LineBasicMaterial({ color: "#00d4ff", transparent: true, opacity: 0.25 }),
+    []
+  );
+  useEffect(() => () => { geo.dispose(); edges.dispose(); mat.dispose(); }, [geo, edges, mat]);
+
+  return (
+    <lineSegments geometry={edges} position={[0, -1.4, 0]}>
+      <primitive object={mat} attach="material" />
+    </lineSegments>
+  );
+}
+
 function HeadGroup() {
   const groupRef = useRef<THREE.Group>(null);
   const skullGeo = useMemo(() => new THREE.IcosahedronGeometry(1.1, 2), []);
@@ -142,6 +239,9 @@ function HeadGroup() {
       <group scale={[0.92, 1.35, 0.88]}>
         <SkullWireframe geo={skullGeo} />
         <SkullFill geo={skullGeo} />
+        <ScanLine />
+        <GlitchPatches />
+        <NeckStub />
       </group>
       {/* Eyes outside scale group — preserves circular shape */}
       <EyeAssembly position={[-0.30, 0.16, 0.81]} />
