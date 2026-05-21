@@ -7,6 +7,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import MagneticButton from "./MagneticButton";
 import { useTextScramble } from "@/lib/hooks/useTextScramble";
+import { useMouseParallax } from "@/lib/hooks/useMouseParallax";
 
 const HeroScene = dynamic(() => import("./three/HeroScene"), { ssr: false });
 
@@ -234,51 +235,93 @@ function RotatingItem({
 }
 
 function FloatingDashboard() {
+  const parallax = useMouseParallax();
+  const card1Ref = useRef<HTMLDivElement>(null);
+  const card2Ref = useRef<HTMLDivElement>(null);
+  const card3Ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let rafId: number;
+    const tick = () => {
+      const px = parallax.current.x;
+      const py = parallax.current.y;
+      if (card1Ref.current)
+        card1Ref.current.style.transform = `translate(${px * 1.2 * 18}px, ${py * 1.2 * 12}px)`;
+      if (card2Ref.current)
+        card2Ref.current.style.transform = `translate(${px * 0.6 * 18}px, ${py * 0.6 * 12}px)`;
+      if (card3Ref.current)
+        card3Ref.current.style.transform = `translate(${px * 0.9 * 18}px, ${py * 0.9 * 12}px)`;
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
+  }, [parallax]);
+
   return (
     <>
-      {/* Top stats card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.1, duration: 0.8 }}
-        className="absolute -left-6 top-10 w-[220px] rounded-2xl glass-strong p-4 neon-border glow-blue"
+      {/* Card 1: Conversion chart — depth 1.2× (closest) */}
+      <div
+        ref={card1Ref}
+        className="absolute"
+        style={{ top: "2.5rem", left: "-1.5rem", willChange: "transform" }}
       >
-        <div className="flex items-center justify-between text-[10px] text-white/50">
-          <span>Conversion</span>
-          <span className="text-accent-cyan">+318%</span>
-        </div>
-        <div className="mt-2 flex items-end gap-1">
-          {[40, 55, 38, 70, 50, 82, 65, 92].map((h, i) => (
-            <motion.span
-              key={i}
-              initial={{ height: 0 }}
-              animate={{ height: h }}
-              transition={{ delay: 1.3 + i * 0.06, duration: 0.6 }}
-              className="w-2.5 rounded-sm bg-gradient-to-t from-accent-blue to-accent-cyan"
-              style={{ height: h }}
-            />
-          ))}
-        </div>
-        <div className="mt-3 font-display text-2xl font-bold text-white">
-          12,847
-        </div>
-        <div className="text-[10px] text-white/40">unique sessions / 24h</div>
-      </motion.div>
+        <motion.div
+          animate={{ y: [0, -7, 0] }}
+          transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.1, duration: 0.8 }}
+            className="w-[220px] rounded-2xl glass-strong p-4 neon-border glow-blue"
+          >
+            <div className="flex items-center justify-between text-[10px] text-white/50">
+              <span>Conversion</span>
+              <span className="text-accent-cyan">+318%</span>
+            </div>
+            <div className="mt-2 flex items-end gap-1">
+              {[40, 55, 38, 70, 50, 82, 65, 92].map((h, i) => (
+                <motion.span
+                  key={i}
+                  initial={{ height: 0 }}
+                  animate={{ height: h }}
+                  transition={{ delay: 1.3 + i * 0.06, duration: 0.6 }}
+                  className="w-2.5 rounded-sm bg-gradient-to-t from-accent-blue to-accent-cyan"
+                  style={{ height: h }}
+                />
+              ))}
+            </div>
+            <div className="mt-3 font-display text-2xl font-bold text-white">
+              12,847
+            </div>
+            <div className="text-[10px] text-white/40">unique sessions / 24h</div>
+          </motion.div>
+        </motion.div>
+      </div>
 
-      {/* Code editor */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.3, duration: 0.8 }}
-        className="absolute -right-4 bottom-24 w-[260px] rounded-2xl glass-strong p-3 neon-border"
+      {/* Card 2: Code editor — depth 0.6× (furthest) */}
+      <div
+        ref={card2Ref}
+        className="absolute"
+        style={{ bottom: "6rem", right: "-1rem", willChange: "transform" }}
       >
-        <div className="flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
-          <span className="ml-auto text-[10px] text-white/40">App.tsx</span>
-        </div>
-        <pre className="mt-3 overflow-hidden text-[10.5px] leading-relaxed text-white/70">
+        <motion.div
+          animate={{ y: [0, -7, 0] }}
+          transition={{ duration: 4.1, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.3, duration: 0.8 }}
+            className="w-[260px] rounded-2xl glass-strong p-3 neon-border"
+          >
+            <div className="flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
+              <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
+              <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
+              <span className="ml-auto text-[10px] text-white/40">App.tsx</span>
+            </div>
+            <pre className="mt-3 overflow-hidden text-[10.5px] leading-relaxed text-white/70">
 {`export default function Ship() {
   const ui = useDesign({
     polish: 100,
@@ -286,24 +329,37 @@ function FloatingDashboard() {
   });
   return <Beautiful {...ui} />;
 }`}
-        </pre>
-      </motion.div>
+            </pre>
+          </motion.div>
+        </motion.div>
+      </div>
 
-      {/* Bottom holo chip */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.5, duration: 0.8 }}
-        className="absolute bottom-2 left-4 flex items-center gap-3 rounded-full glass-strong px-4 py-2.5 glow-violet"
+      {/* Card 3: Lighthouse badge — depth 0.9× (medium) */}
+      <div
+        ref={card3Ref}
+        className="absolute"
+        style={{ bottom: "0.5rem", left: "1rem", willChange: "transform" }}
       >
-        <span className="grid h-7 w-7 place-items-center rounded-full bg-gradient-to-br from-accent-violet to-accent-blue text-xs">
-          ✦
-        </span>
-        <div className="leading-tight">
-          <div className="text-[11px] font-medium text-white">Lighthouse 100</div>
-          <div className="text-[9px] text-white/40">Perf · A11y · SEO</div>
-        </div>
-      </motion.div>
+        <motion.div
+          animate={{ y: [0, -7, 0] }}
+          transition={{ duration: 4.7, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.5, duration: 0.8 }}
+            className="flex items-center gap-3 rounded-full glass-strong px-4 py-2.5 glow-violet"
+          >
+            <span className="grid h-7 w-7 place-items-center rounded-full bg-gradient-to-br from-accent-violet to-accent-blue text-xs">
+              ✦
+            </span>
+            <div className="leading-tight">
+              <div className="text-[11px] font-medium text-white">Lighthouse 100</div>
+              <div className="text-[9px] text-white/40">Perf · A11y · SEO</div>
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
     </>
   );
 }
