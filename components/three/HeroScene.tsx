@@ -37,6 +37,54 @@ function HexPrismBody() {
   );
 }
 
+function VisorPanel() {
+  const visorGeo = useMemo(() => new THREE.BoxGeometry(1.05, 0.85, 0.04), []);
+  const visorMat = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: "#020508",
+        metalness: 0.0,
+        roughness: 0.0,
+        transparent: true,
+        opacity: 0.88,
+      }),
+    []
+  );
+  useEffect(() => () => { visorGeo.dispose(); visorMat.dispose(); }, []);
+
+  return (
+    <mesh geometry={visorGeo} position={[0, 0.05, 0.50]}>
+      <primitive object={visorMat} attach="material" />
+    </mesh>
+  );
+}
+
+const BROW_STRIPS: { position: [number, number, number]; rotZ: number }[] = [
+  { position: [-0.18, 0.38, 0.525], rotZ:  0.28 },
+  { position: [-0.34, 0.35, 0.525], rotZ:  0.22 },
+  { position: [ 0.18, 0.38, 0.525], rotZ: -0.28 },
+  { position: [ 0.34, 0.35, 0.525], rotZ: -0.22 },
+];
+
+function BrowAccents() {
+  const browMat = useMemo(
+    () => new THREE.MeshBasicMaterial({ color: "#00d4ff", transparent: true, opacity: 0.45 }),
+    []
+  );
+  useEffect(() => () => { browMat.dispose(); }, []);
+
+  return (
+    <>
+      {BROW_STRIPS.map(({ position, rotZ }, i) => (
+        <mesh key={i} position={position} rotation={[0, 0, rotZ]}>
+          <boxGeometry args={[0.28, 0.016, 0.005]} />
+          <primitive object={browMat} attach="material" />
+        </mesh>
+      ))}
+    </>
+  );
+}
+
 function HeadGroup() {
   const groupRef = useRef<THREE.Group>(null);
 
@@ -44,6 +92,8 @@ function HeadGroup() {
     <group ref={groupRef} position={[0, 0.3, 0]}>
       <group scale={[0.92, 1.35, 0.88]}>
         <HexPrismBody />
+        <VisorPanel />
+        <BrowAccents />
       </group>
     </group>
   );
