@@ -21,62 +21,80 @@ export default function Hero() {
   const scrambledHero = useTextScramble(heroText, 1600);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    gsap.registerPlugin(ScrollTrigger);
+    // SSR-safe — runs only on client
+    const alreadyShown = (() => {
+      try { return sessionStorage.getItem("loader-shown") === "1"; }
+      catch { return false; }
+    })();
 
-    const ctx = gsap.context(() => {
-      const split = (headlineRef.current?.querySelectorAll(".word") ??
-        []) as NodeListOf<HTMLElement>;
-      gsap.from(split, {
-        yPercent: 110,
-        opacity: 0,
-        rotate: 3,
-        duration: 1.1,
-        ease: "expo.out",
-        stagger: 0.08,
-        delay: 0.2,
-      });
+    function initGsap() {
+      gsap.registerPlugin(ScrollTrigger);
+      const ctx = gsap.context(() => {
+        const split = (headlineRef.current?.querySelectorAll(".word") ??
+          []) as NodeListOf<HTMLElement>;
+        gsap.from(split, {
+          yPercent: 110,
+          opacity: 0,
+          rotate: 3,
+          duration: 1.1,
+          ease: "expo.out",
+          stagger: 0.08,
+          delay: 0.2,
+        });
 
-      gsap.from(".hero-sub", {
-        y: 24,
-        opacity: 0,
-        duration: 1,
-        delay: 0.7,
-        ease: "power3.out",
-      });
+        gsap.from(".hero-sub", {
+          y: 24,
+          opacity: 0,
+          duration: 1,
+          delay: 0.7,
+          ease: "power3.out",
+        });
 
-      gsap.from(".hero-cta", {
-        y: 18,
-        opacity: 0,
-        duration: 0.9,
-        delay: 0.9,
-        ease: "power3.out",
-        stagger: 0.1,
-      });
+        gsap.from(".hero-cta", {
+          y: 18,
+          opacity: 0,
+          duration: 0.9,
+          delay: 0.9,
+          ease: "power3.out",
+          stagger: 0.1,
+        });
 
-      gsap.from(".hero-scene", {
-        opacity: 0,
-        scale: 0.92,
-        duration: 1.4,
-        delay: 0.4,
-        ease: "expo.out",
-      });
+        gsap.from(".hero-scene", {
+          opacity: 0,
+          scale: 0.92,
+          duration: 1.4,
+          delay: 0.4,
+          ease: "expo.out",
+        });
 
-      gsap.to(rootRef.current, {
-        scrollTrigger: {
-          trigger: rootRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
-        opacity: 0.4,
-        scale: 0.96,
-        ease: "none",
-      });
-    }, rootRef);
+        gsap.to(rootRef.current, {
+          scrollTrigger: {
+            trigger: rootRef.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+          opacity: 0.4,
+          scale: 0.96,
+          ease: "none",
+        });
+      }, rootRef);
+      return () => ctx.revert();
+    }
 
-    return () => ctx.revert();
-  }, []);
+    if (alreadyShown) {
+      return initGsap();
+    }
+
+    let cleanup: (() => void) | undefined;
+    const handler = () => { cleanup = initGsap(); };
+    window.addEventListener("loader:done", handler, { once: true });
+
+    return () => {
+      window.removeEventListener("loader:done", handler);
+      cleanup?.();
+    };
+  }, []); // empty deps — initGsap is declared inside and must NOT be added to deps
 
   return (
     <section
