@@ -159,12 +159,13 @@ const PATCH_TRANSFORMS = PATCH_POSITIONS.map((pos) => {
 });
 
 function GlitchPatches() {
-  const meshRefs = useRef<(THREE.Mesh | null)[]>(Array(8).fill(null));
+  const n = PATCH_POSITIONS.length;
+  const meshRefs = useRef<(THREE.Mesh | null)[]>(Array(n).fill(null));
   const patchTimers = useRef<number[]>(PATCH_POSITIONS.map(() => 1.5 + Math.random() * 2.5));
-  const patchVisible = useRef<boolean[]>(Array(8).fill(false));
+  const patchVisible = useRef<boolean[]>(Array(n).fill(false));
 
   useFrame((_, delta) => {
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < n; i++) {
       patchTimers.current[i] -= delta;
       if (patchTimers.current[i] <= 0) {
         patchVisible.current[i] = !patchVisible.current[i];
