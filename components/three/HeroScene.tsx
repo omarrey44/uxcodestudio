@@ -5,6 +5,10 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Environment, MeshDistortMaterial, Text, Points, PointMaterial } from "@react-three/drei";
 import * as THREE from "three";
 
+const MAX_NODES = 80;
+const MAX_LINES = 200;
+const CONNECTION_DIST = 2.8;
+
 // Whole-scene parallax group (mouse tilt)
 function SceneGroup({ children }: { children: React.ReactNode }) {
   const ref = useRef<THREE.Group>(null);
@@ -152,6 +156,75 @@ function ParticleField() {
   );
 }
 
+function NetworkMesh() {
+  const pointsRef = useRef<THREE.Points>(null);
+  const linesRef = useRef<THREE.LineSegments>(null);
+
+  const { nodes, pointsGeo, linesGeo } = useMemo(() => {
+    const nodes: Array<{ pos: [number, number, number]; vel: [number, number, number] }> = [];
+    for (let i = 0; i < MAX_NODES; i++) {
+      const r = 5 + Math.random() * 3;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      nodes.push({
+        pos: [r * Math.sin(phi) * Math.cos(theta), r * Math.sin(phi) * Math.sin(theta), r * Math.cos(phi)],
+        vel: [(Math.random() - 0.5) * 0.004, (Math.random() - 0.5) * 0.004, (Math.random() - 0.5) * 0.004],
+      });
+    }
+    const pointsPositions = new Float32Array(MAX_NODES * 3);
+    const linesPositions = new Float32Array(MAX_LINES * 2 * 3);
+    const pointsGeo = new THREE.BufferGeometry();
+    pointsGeo.setAttribute("position", new THREE.BufferAttribute(pointsPositions, 3));
+    const linesGeo = new THREE.BufferGeometry();
+    linesGeo.setAttribute("position", new THREE.BufferAttribute(linesPositions, 3));
+    linesGeo.setDrawRange(0, 0);
+    return { nodes, pointsGeo, linesGeo };
+  }, []);
+
+  useFrame(() => {
+    const pAttr = pointsGeo.attributes.position as THREE.BufferAttribute;
+    const lAttr = linesGeo.attributes.position as THREE.BufferAttribute;
+    const lArr = lAttr.array as Float32Array;
+    for (let i = 0; i < MAX_NODES; i++) {
+      const n = nodes[i];
+      for (let axis = 0; axis < 3; axis++) {
+        n.pos[axis] += n.vel[axis];
+        if (Math.abs(n.pos[axis]) > 8) n.vel[axis] *= -1;
+        (pAttr.array as Float32Array)[i * 3 + axis] = n.pos[axis];
+      }
+    }
+    let lineCount = 0;
+    outer: for (let i = 0; i < MAX_NODES; i++) {
+      for (let j = i + 1; j < MAX_NODES; j++) {
+        if (lineCount >= MAX_LINES) break outer;
+        const dx = nodes[i].pos[0] - nodes[j].pos[0];
+        const dy = nodes[i].pos[1] - nodes[j].pos[1];
+        const dz = nodes[i].pos[2] - nodes[j].pos[2];
+        if (dx * dx + dy * dy + dz * dz < CONNECTION_DIST * CONNECTION_DIST) {
+          const b = lineCount * 6;
+          lArr[b] = nodes[i].pos[0]; lArr[b + 1] = nodes[i].pos[1]; lArr[b + 2] = nodes[i].pos[2];
+          lArr[b + 3] = nodes[j].pos[0]; lArr[b + 4] = nodes[j].pos[1]; lArr[b + 5] = nodes[j].pos[2];
+          lineCount++;
+        }
+      }
+    }
+    linesGeo.setDrawRange(0, lineCount * 2);
+    pAttr.needsUpdate = true;
+    lAttr.needsUpdate = true;
+  });
+
+  return (
+    <>
+      <points ref={pointsRef} geometry={pointsGeo}>
+        <pointsMaterial size={0.04} color="#4f6ef7" transparent opacity={0.6} sizeAttenuation />
+      </points>
+      <lineSegments ref={linesRef} geometry={linesGeo}>
+        <lineBasicMaterial color="#4f6ef7" transparent opacity={0.2} />
+      </lineSegments>
+    </>
+  );
+}
+
 export default function HeroScene() {
   return (
     <Canvas
@@ -167,6 +240,7 @@ export default function HeroScene() {
           <CoreOrb />
           <OrbitalSystem />
           <ParticleField />
+          <NetworkMesh />
         </SceneGroup>
         <Environment preset="city" />
       </Suspense>
