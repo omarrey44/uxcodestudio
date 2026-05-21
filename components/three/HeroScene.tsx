@@ -1,99 +1,154 @@
 "use client";
 
+import React, { useRef, useMemo, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, Environment, MeshDistortMaterial } from "@react-three/drei";
-import { useRef, useMemo, Suspense } from "react";
+import { Float, Environment, MeshDistortMaterial, Text, Points, PointMaterial } from "@react-three/drei";
 import * as THREE from "three";
 
-function FloatingOrb() {
-  const ref = useRef<THREE.Mesh>(null);
-  useFrame(({ clock, mouse }) => {
+// Whole-scene parallax group (mouse tilt)
+function SceneGroup({ children }: { children: React.ReactNode }) {
+  const ref = useRef<THREE.Group>(null);
+  useFrame(({ mouse }) => {
     if (!ref.current) return;
-    const t = clock.getElapsedTime();
-    ref.current.rotation.y = t * 0.25;
-    ref.current.rotation.x = Math.sin(t * 0.4) * 0.15;
-    ref.current.position.x = THREE.MathUtils.lerp(
-      ref.current.position.x,
-      mouse.x * 0.4,
-      0.05
-    );
-    ref.current.position.y = THREE.MathUtils.lerp(
-      ref.current.position.y,
-      mouse.y * 0.3,
-      0.05
-    );
+    ref.current.rotation.y = THREE.MathUtils.lerp(ref.current.rotation.y, mouse.x * 0.15, 0.04);
+    ref.current.rotation.x = THREE.MathUtils.lerp(ref.current.rotation.x, -mouse.y * 0.1, 0.04);
   });
+  return <group ref={ref}>{children}</group>;
+}
 
+// Central distorted sphere
+const CoreOrb = React.memo(function CoreOrb() {
   return (
-    <Float speed={1.2} rotationIntensity={0.6} floatIntensity={1.2}>
-      <mesh ref={ref}>
-        <icosahedronGeometry args={[1.55, 6]} />
+    <Float speed={1.0} rotationIntensity={0.4} floatIntensity={0.8}>
+      <mesh>
+        <sphereGeometry args={[0.7, 64, 64]} />
         <MeshDistortMaterial
           color="#4f6ef7"
-          emissive="#00d4ff"
-          emissiveIntensity={0.6}
-          roughness={0.15}
-          metalness={0.85}
-          distort={0.45}
-          speed={1.6}
+          emissive="#2a45d4"
+          emissiveIntensity={0.5}
+          roughness={0.1}
+          metalness={0.9}
+          distort={0.3}
+          speed={1.5}
         />
       </mesh>
     </Float>
   );
-}
+});
 
-function GlowRing({ radius = 2.4, color = "#8b5cf6", speed = 0.4, tilt = 0.6 }) {
-  const ref = useRef<THREE.Mesh>(null);
+// Single code token orbiting on a ring
+const OrbitToken = React.memo(function OrbitToken({
+  token,
+  radius,
+  angle,
+  color,
+  ringSpeed,
+  tiltX,
+}: {
+  token: string;
+  radius: number;
+  angle: number;
+  color: string;
+  ringSpeed: number;
+  tiltX: number;
+}) {
+  const groupRef = useRef<THREE.Group>(null);
+  const startAngle = useRef(angle);
+
   useFrame(({ clock }) => {
-    if (!ref.current) return;
-    ref.current.rotation.z = clock.getElapsedTime() * speed;
-    ref.current.rotation.x = tilt;
+    if (!groupRef.current) return;
+    const t = clock.getElapsedTime();
+    const currentAngle = startAngle.current + t * ringSpeed;
+    groupRef.current.position.x = Math.cos(currentAngle) * radius;
+    groupRef.current.position.z = Math.sin(currentAngle) * radius * Math.cos(tiltX);
+    groupRef.current.position.y = Math.sin(currentAngle) * radius * Math.sin(tiltX);
   });
+
   return (
-    <mesh ref={ref}>
-      <torusGeometry args={[radius, 0.012, 16, 200]} />
-      <meshBasicMaterial color={color} transparent opacity={0.6} />
-    </mesh>
+    <group ref={groupRef}>
+      <Text
+        fontSize={0.22}
+        color={color}
+        anchorX="center"
+        anchorY="middle"
+      >
+        {token}
+      </Text>
+      <pointLight color={color} intensity={0.4} distance={1.2} />
+    </group>
+  );
+});
+
+// Three orbital rings with code tokens
+const RINGS = [
+  {
+    radius: 1.6,
+    speed: 0.7,
+    tiltX: 0.26,
+    color: "#4f6ef7",
+    tokens: ["{ }", "( )", "[ ]"],
+  },
+  {
+    radius: 2.3,
+    speed: 0.45,
+    tiltX: 0.87,
+    color: "#00d4ff",
+    tokens: ["</>", "=>", "&&"],
+  },
+  {
+    radius: 3.0,
+    speed: 0.28,
+    tiltX: -0.52,
+    color: "#8b5cf6",
+    tokens: ["const", "async", "type"],
+  },
+];
+
+function OrbitalSystem() {
+  return (
+    <>
+      {RINGS.map((ring) =>
+        ring.tokens.map((token, i) => (
+          <OrbitToken
+            key={`${ring.color}-${token}`}
+            token={token}
+            radius={ring.radius}
+            angle={(i / ring.tokens.length) * Math.PI * 2}
+            color={ring.color}
+            ringSpeed={ring.speed}
+            tiltX={ring.tiltX}
+          />
+        ))
+      )}
+    </>
   );
 }
 
+// Sparse particle field
 function ParticleField() {
   const ref = useRef<THREE.Points>(null);
-  const { positions, count } = useMemo(() => {
-    const c = 600;
-    const arr = new Float32Array(c * 3);
-    for (let i = 0; i < c; i++) {
-      const r = 3 + Math.random() * 3;
+  const positions = useMemo(() => {
+    const count = 60;
+    const arr = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      const r = 3.5 + Math.random() * 2;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
       arr[i * 3] = r * Math.sin(phi) * Math.cos(theta);
       arr[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
       arr[i * 3 + 2] = r * Math.cos(phi);
     }
-    return { positions: arr, count: c };
+    return arr;
   }, []);
 
   useFrame(({ clock }) => {
-    if (ref.current) ref.current.rotation.y = clock.getElapsedTime() * 0.04;
+    if (ref.current) ref.current.rotation.y = clock.getElapsedTime() * 0.03;
   });
 
   return (
-    <points ref={ref}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[positions, 3]}
-          count={count}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.018}
-        color="#00d4ff"
-        transparent
-        opacity={0.8}
-        sizeAttenuation
-      />
-    </points>
+    <Points ref={ref} positions={positions} stride={3}>
+      <PointMaterial size={0.022} color="#00d4ff" transparent opacity={0.6} sizeAttenuation />
+    </Points>
   );
 }
 
@@ -101,18 +156,18 @@ export default function HeroScene() {
   return (
     <Canvas
       dpr={[1, 2]}
-      camera={{ position: [0, 0, 5], fov: 45 }}
+      camera={{ position: [0, 0, 6], fov: 45 }}
       gl={{ antialias: true, alpha: true }}
     >
       <Suspense fallback={null}>
-        <ambientLight intensity={0.4} />
-        <pointLight position={[5, 5, 5]} intensity={1.2} color="#4f6ef7" />
-        <pointLight position={[-5, -3, -5]} intensity={1} color="#8b5cf6" />
-        <FloatingOrb />
-        <GlowRing radius={2.2} color="#00d4ff" speed={0.3} tilt={0.4} />
-        <GlowRing radius={2.7} color="#8b5cf6" speed={-0.25} tilt={1.1} />
-        <GlowRing radius={3.1} color="#4f6ef7" speed={0.18} tilt={-0.4} />
-        <ParticleField />
+        <ambientLight intensity={0.3} />
+        <pointLight position={[4, 4, 4]} intensity={1.0} color="#4f6ef7" />
+        <pointLight position={[-4, -2, -4]} intensity={0.8} color="#8b5cf6" />
+        <SceneGroup>
+          <CoreOrb />
+          <OrbitalSystem />
+          <ParticleField />
+        </SceneGroup>
         <Environment preset="city" />
       </Suspense>
     </Canvas>
