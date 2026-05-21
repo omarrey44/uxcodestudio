@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import { SectionHeader } from "./Services";
+import AnimatedCounter from "./AnimatedCounter";
 
 const STATS = [
   { value: 187, suffix: "%", label: "Avg. conversion lift", sub: "across 24 launches" },
@@ -92,28 +92,8 @@ function StatCard({
   sub: string;
   index: number;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-  const [n, setN] = useState(0);
-
-  useEffect(() => {
-    if (!inView) return;
-    const duration = 1800;
-    const start = performance.now();
-    let raf = 0;
-    const tick = (t: number) => {
-      const p = Math.min(1, (t - start) / duration);
-      const eased = 1 - Math.pow(1 - p, 3);
-      setN(Math.round(value * eased));
-      if (p < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [inView, value]);
-
   return (
     <motion.div
-      ref={ref}
       initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "-60px" }}
@@ -126,9 +106,12 @@ function StatCard({
     >
       <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-accent-blue/10 via-transparent to-accent-violet/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
       <div className="relative">
-        <div className="font-display text-4xl font-bold leading-none text-gradient md:text-5xl">
-          {n}
-          <span className="text-accent-cyan">{suffix}</span>
+        <div className="font-display text-4xl font-bold leading-none md:text-5xl">
+          <AnimatedCounter
+            value={value}
+            suffix={suffix}
+            className="text-gradient"
+          />
         </div>
         <div className="mt-3 text-sm font-medium text-white">{label}</div>
         <div className="text-xs text-white/40">{sub}</div>
