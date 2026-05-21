@@ -127,7 +127,7 @@ function EyeSlit({ position }: { position: [number, number, number] }) {
     if (blinkClosing.current) {
       blinkScale.current = THREE.MathUtils.lerp(blinkScale.current, 0.05, 0.20);
       if (blinkScale.current < 0.08) blinkClosing.current = false;
-    } else {
+    } else if (!squintActive.current) {
       blinkScale.current = THREE.MathUtils.lerp(blinkScale.current, 1.0, 0.14);
     }
     if (outerRef.current) outerRef.current.scale.y = blinkScale.current;
@@ -150,10 +150,7 @@ function EyeSlit({ position }: { position: [number, number, number] }) {
     }
 
     // --- LED pulse ---
-    if (innerRef.current) {
-      (innerRef.current.material as THREE.MeshBasicMaterial).opacity =
-        0.85 + Math.sin(clock.getElapsedTime() * 3.14) * 0.15;
-    }
+    innerCoreMat.opacity = 0.85 + Math.sin(clock.getElapsedTime() * Math.PI) * 0.15;
   });
 
   return (
