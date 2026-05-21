@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import MagneticButton from "./MagneticButton";
+import { useTextScramble } from "@/lib/hooks/useTextScramble";
 
 const HeroScene = dynamic(() => import("./three/HeroScene"), { ssr: false });
 
@@ -14,6 +15,9 @@ const ROTATING = ["Websites", "Landing Pages", "Web Apps", "SaaS Platforms"];
 export default function Hero() {
   const rootRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
+
+  const heroText = "UXCODESTUDIO is a digital product studio crafting cinematic interfaces and high-performing systems for ambitious teams that refuse to ship anything average.";
+  const scrambledHero = useTextScramble(heroText, 1600);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -121,9 +125,7 @@ export default function Hero() {
           </h1>
 
           <p className="hero-sub mt-8 max-w-xl text-balance text-base text-white/60 md:text-lg">
-            UXCODESTUDIO is a digital product studio crafting cinematic
-            interfaces and high-performing systems for ambitious teams that
-            refuse to ship anything average.
+            {scrambledHero}
           </p>
 
           <div className="hero-cta mt-10 flex flex-wrap items-center gap-4">
