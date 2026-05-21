@@ -55,6 +55,64 @@ function SkullFill({ geo }: { geo: THREE.IcosahedronGeometry }) {
   );
 }
 
+function EyeAssembly({ position }: { position: [number, number, number] }) {
+  const pivotRef = useRef<THREE.Group>(null);
+  const irisRef = useRef<THREE.Mesh>(null);
+  const outerRef = useRef<THREE.Mesh>(null);
+
+  // Blink state
+  const blinkTimer = useRef(3 + Math.random() * 5);
+  const blinkScale = useRef(1.0);
+  const blinkClosing = useRef(false);
+
+  useFrame(({ mouse }, delta) => {
+    if (!pivotRef.current) return;
+
+    // Cursor tracking: map mouse NDC (-1..1) to eye rotation (±0.35 rad = ±20°)
+    const targetRotX = Math.max(-0.35, Math.min(0.35, -mouse.y * 0.5));
+    const targetRotY = Math.max(-0.35, Math.min(0.35,  mouse.x * 0.5));
+    pivotRef.current.rotation.x = THREE.MathUtils.lerp(pivotRef.current.rotation.x, targetRotX, 0.08);
+    pivotRef.current.rotation.y = THREE.MathUtils.lerp(pivotRef.current.rotation.y, targetRotY, 0.08);
+
+    // Blinking
+    blinkTimer.current -= delta;
+    if (blinkTimer.current <= 0) {
+      blinkTimer.current = 3 + Math.random() * 5;
+      blinkClosing.current = true;
+    }
+    if (blinkClosing.current) {
+      blinkScale.current = THREE.MathUtils.lerp(blinkScale.current, 0.08, 0.18);
+      if (blinkScale.current < 0.1) blinkClosing.current = false;
+    } else {
+      blinkScale.current = THREE.MathUtils.lerp(blinkScale.current, 1.0, 0.12);
+    }
+    if (irisRef.current)  irisRef.current.scale.y  = blinkScale.current;
+    if (outerRef.current) outerRef.current.scale.y = blinkScale.current;
+  });
+
+  return (
+    <group ref={pivotRef} position={position}>
+      {/* Outer glow ring */}
+      <mesh ref={outerRef}>
+        <circleGeometry args={[0.13, 32]} />
+        <meshBasicMaterial color="#00d4ff" transparent opacity={0.25} />
+      </mesh>
+      {/* Iris */}
+      <mesh ref={irisRef} position={[0, 0, 0.001]}>
+        <circleGeometry args={[0.095, 32]} />
+        <meshBasicMaterial color="#4f6ef7" transparent opacity={0.9} />
+      </mesh>
+      {/* Pupil */}
+      <mesh position={[0, 0, 0.002]}>
+        <circleGeometry args={[0.04, 32]} />
+        <meshBasicMaterial color="#010a20" />
+      </mesh>
+      {/* Glow point light */}
+      <pointLight color="#00d4ff" intensity={1.5} distance={1.5} position={[0, 0, 0.05]} />
+    </group>
+  );
+}
+
 function HeadGroup() {
   const groupRef = useRef<THREE.Group>(null);
   const skullGeo = useMemo(() => new THREE.IcosahedronGeometry(1.1, 2), []);
@@ -85,6 +143,9 @@ function HeadGroup() {
         <SkullWireframe geo={skullGeo} />
         <SkullFill geo={skullGeo} />
       </group>
+      {/* Eyes outside scale group — preserves circular shape */}
+      <EyeAssembly position={[-0.30, 0.16, 0.81]} />
+      <EyeAssembly position={[ 0.30, 0.16, 0.81]} />
     </group>
   );
 }
