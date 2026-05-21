@@ -4,6 +4,7 @@ import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import Navbar from "@/components/Navbar";
 import CustomCursor from "@/components/CustomCursor";
+import PageLoader from "@/components/PageLoader";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -39,6 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${syne.variable}`}>
       <body className="bg-background text-white antialiased noise">
+        <PageLoader />
         <CustomCursor />
         <SmoothScroll>
           <Navbar />
