@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useMemo, Suspense } from "react";
+import React, { useRef, useMemo, useEffect, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Environment, MeshDistortMaterial, Text, Points, PointMaterial } from "@react-three/drei";
 import * as THREE from "three";
@@ -157,9 +157,6 @@ function ParticleField() {
 }
 
 function NetworkMesh() {
-  const pointsRef = useRef<THREE.Points>(null);
-  const linesRef = useRef<THREE.LineSegments>(null);
-
   const { nodes, pointsGeo, linesGeo } = useMemo(() => {
     const nodes: Array<{ pos: [number, number, number]; vel: [number, number, number] }> = [];
     for (let i = 0; i < MAX_NODES; i++) {
@@ -181,16 +178,24 @@ function NetworkMesh() {
     return { nodes, pointsGeo, linesGeo };
   }, []);
 
+  useEffect(() => {
+    return () => {
+      pointsGeo.dispose();
+      linesGeo.dispose();
+    };
+  }, [pointsGeo, linesGeo]);
+
   useFrame(() => {
     const pAttr = pointsGeo.attributes.position as THREE.BufferAttribute;
     const lAttr = linesGeo.attributes.position as THREE.BufferAttribute;
+    const pArr = pAttr.array as Float32Array;
     const lArr = lAttr.array as Float32Array;
     for (let i = 0; i < MAX_NODES; i++) {
       const n = nodes[i];
       for (let axis = 0; axis < 3; axis++) {
         n.pos[axis] += n.vel[axis];
         if (Math.abs(n.pos[axis]) > 8) n.vel[axis] *= -1;
-        (pAttr.array as Float32Array)[i * 3 + axis] = n.pos[axis];
+        pArr[i * 3 + axis] = n.pos[axis];
       }
     }
     let lineCount = 0;
@@ -215,10 +220,10 @@ function NetworkMesh() {
 
   return (
     <>
-      <points ref={pointsRef} geometry={pointsGeo}>
+      <points geometry={pointsGeo}>
         <pointsMaterial size={0.04} color="#4f6ef7" transparent opacity={0.6} sizeAttenuation />
       </points>
-      <lineSegments ref={linesRef} geometry={linesGeo}>
+      <lineSegments geometry={linesGeo}>
         <lineBasicMaterial color="#4f6ef7" transparent opacity={0.2} />
       </lineSegments>
     </>
