@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 const links = [
@@ -37,16 +38,8 @@ export default function Navbar() {
             : "border border-white/5 bg-white/[0.02]"
         )}
       >
-        <a href="#top" className="group flex items-center gap-2">
-          <span className="relative grid h-8 w-8 place-items-center overflow-hidden rounded-lg bg-gradient-to-br from-accent-blue via-accent-cyan to-accent-violet">
-            <span className="absolute inset-[1px] rounded-[7px] bg-background" />
-            <span className="relative font-display text-sm font-bold text-white">
-              ux
-            </span>
-          </span>
-          <span className="font-display text-sm font-semibold tracking-wider text-white">
-            UXCODE<span className="text-accent-cyan">STUDIO</span>
-          </span>
+        <a href="#top" className="flex items-center">
+          <Image src="/logo.png" width={120} height={36} alt="UXCODESTUDIO" priority />
         </a>
 
         <nav className="hidden items-center gap-1 md:flex">
