@@ -104,6 +104,7 @@ function TiltCard({
   return (
     <motion.div
       ref={ref}
+      data-cursor-hover
       onMouseMove={onMove}
       onMouseLeave={() => {
         x.set(0.5);

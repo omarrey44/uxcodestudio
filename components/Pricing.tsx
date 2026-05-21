@@ -73,6 +73,7 @@ export default function Pricing() {
           {PLANS.map((p, i) => (
             <motion.div
               key={p.name}
+              data-cursor-hover
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}

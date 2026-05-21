@@ -37,6 +37,7 @@ export default function MagneticButton({
   const inner = (
     <motion.div
       ref={ref}
+      data-cursor-hover
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
