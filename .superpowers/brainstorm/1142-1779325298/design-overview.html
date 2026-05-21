@@ -1,0 +1,100 @@
+<h2>Diseño Visual — UXCodeStudio Refresh</h2>
+<p class="subtitle">Previsualización del sistema de fondos, tipografía, animaciones y escena 3D</p>
+
+<div class="section">
+  <span class="label">Sistema de Fondos — Ritmo entre secciones</span>
+  <div style="display:flex;flex-direction:column;gap:0;border-radius:12px;overflow:hidden;margin-top:1rem;border:1px solid rgba(255,255,255,0.1)">
+    <div style="background:#050508;padding:1.5rem 2rem;border-bottom:1px solid rgba(79,110,247,0.15)">
+      <div style="font-size:10px;letter-spacing:0.2em;color:#4f6ef7;text-transform:uppercase;margin-bottom:0.5rem">--bg-base · #050508</div>
+      <div style="font-size:1.1rem;font-weight:700;color:#f5f7ff">Hero / FeaturedWork / FAQ</div>
+    </div>
+    <div style="background:linear-gradient(180deg,rgba(79,110,247,0.08) 0,transparent 4px),#080810;padding:1.5rem 2rem;border-bottom:1px solid rgba(79,110,247,0.12)">
+      <div style="font-size:10px;letter-spacing:0.2em;color:#00d4ff;text-transform:uppercase;margin-bottom:0.5rem">--bg-section · #080810 + separador</div>
+      <div style="font-size:1.1rem;font-weight:700;color:#f5f7ff">Services / WhyChooseUs / Pricing</div>
+    </div>
+    <div style="background:radial-gradient(ellipse at 50% -20%,rgba(139,92,246,0.08),transparent 60%),linear-gradient(180deg,rgba(0,212,255,0.07) 0,transparent 4px),#0c0c18;padding:1.5rem 2rem">
+      <div style="font-size:10px;letter-spacing:0.2em;color:#8b5cf6;text-transform:uppercase;margin-bottom:0.5rem">--bg-section-deep · #0c0c18 + glow violeta</div>
+      <div style="font-size:1.1rem;font-weight:700;color:#f5f7ff">Process / Testimonials / FinalCTA</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <span class="label">Sistema Tipográfico — Antes vs Después</span>
+  <div class="split" style="margin-top:1rem">
+    <div class="mockup">
+      <div class="mockup-header">Antes</div>
+      <div class="mockup-body" style="background:#050508;padding:2rem">
+        <div style="font-size:10px;letter-spacing:0.05em;color:#4f6ef7;text-transform:uppercase;margin-bottom:0.75rem">SERVICES</div>
+        <div style="font-size:2rem;font-weight:800;color:#f5f7ff;line-height:1.25">What We Build For You</div>
+        <div style="font-size:0.9rem;color:rgba(245,247,255,0.5);margin-top:0.75rem;line-height:1.6">Premium digital products for ambitious brands that demand excellence.</div>
+      </div>
+    </div>
+    <div class="mockup">
+      <div class="mockup-header">Después</div>
+      <div class="mockup-body" style="background:#050508;padding:2rem">
+        <div style="font-size:10px;letter-spacing:0.22em;color:#4f6ef7;text-transform:uppercase;margin-bottom:1rem;font-weight:500">SERVICES</div>
+        <div style="font-size:clamp(2rem,5vw,3rem);font-weight:800;color:#f5f7ff;line-height:0.95;letter-spacing:-0.02em">What We <em style="font-style:italic;font-weight:500;color:#c7d2fe">Build</em><br>For You</div>
+        <div style="font-size:0.9rem;color:rgba(245,247,255,0.5);margin-top:1.25rem;line-height:1.7;max-width:36ch">Premium digital products for ambitious brands that demand excellence.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <span class="label">Escena 3D — Código en Órbita (Three.js / R3F)</span>
+  <div class="mockup" style="margin-top:1rem">
+    <div class="mockup-header">HeroScene.tsx — Nueva escena</div>
+    <div class="mockup-body" style="background:#050508;min-height:280px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
+      <!-- Glow central -->
+      <div style="position:absolute;width:200px;height:200px;background:radial-gradient(circle,rgba(79,110,247,0.2),transparent 70%);border-radius:50%"></div>
+      <!-- Orbit rings (representación CSS) -->
+      <div style="position:absolute;width:220px;height:80px;border:1px solid rgba(79,110,247,0.2);border-radius:50%;transform:rotateX(70deg)"></div>
+      <div style="position:absolute;width:300px;height:110px;border:1px solid rgba(0,212,255,0.15);border-radius:50%;transform:rotateX(70deg) rotateZ(45deg)"></div>
+      <div style="position:absolute;width:380px;height:140px;border:1px solid rgba(139,92,246,0.12);border-radius:50%;transform:rotateX(70deg) rotateZ(-30deg)"></div>
+      <!-- Code tokens flotando -->
+      <div style="position:absolute;top:30px;left:50px;font-family:monospace;font-size:14px;color:rgba(79,110,247,0.9);font-weight:700">{ }</div>
+      <div style="position:absolute;top:60px;right:60px;font-family:monospace;font-size:12px;color:rgba(0,212,255,0.8);font-weight:700">&lt;/&gt;</div>
+      <div style="position:absolute;bottom:50px;left:80px;font-family:monospace;font-size:13px;color:rgba(139,92,246,0.85);font-weight:700">=&gt;</div>
+      <div style="position:absolute;top:100px;left:30px;font-family:monospace;font-size:11px;color:rgba(0,212,255,0.6)">const</div>
+      <div style="position:absolute;bottom:70px;right:50px;font-family:monospace;font-size:11px;color:rgba(79,110,247,0.7)">( )</div>
+      <div style="position:absolute;top:40px;right:130px;font-family:monospace;font-size:10px;color:rgba(139,92,246,0.6)">async</div>
+      <div style="position:absolute;bottom:30px;left:160px;font-family:monospace;font-size:11px;color:rgba(245,247,255,0.4)">type</div>
+      <div style="position:absolute;top:130px;right:30px;font-family:monospace;font-size:10px;color:rgba(79,110,247,0.5)">[ ]</div>
+      <!-- Partículas pequeñas -->
+      <div style="position:absolute;width:3px;height:3px;background:#4f6ef7;border-radius:50%;top:80px;left:120px;box-shadow:0 0 6px #4f6ef7"></div>
+      <div style="position:absolute;width:2px;height:2px;background:#00d4ff;border-radius:50%;bottom:90px;right:120px;box-shadow:0 0 4px #00d4ff"></div>
+      <div style="position:absolute;width:2px;height:2px;background:#8b5cf6;border-radius:50%;top:50px;right:90px;box-shadow:0 0 4px #8b5cf6"></div>
+      <!-- Núcleo central -->
+      <div style="position:relative;z-index:2;width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#6b84fa,#4f6ef7);box-shadow:0 0 30px rgba(79,110,247,0.5),0 0 60px rgba(79,110,247,0.2)"></div>
+    </div>
+  </div>
+  <p style="color:rgba(245,247,255,0.45);font-size:0.8rem;margin-top:0.75rem">Los tokens de código (`&#123;&#125;`, `&lt;/&gt;`, `=&gt;`, `const`) orbitan en 3 anillos inclinados con velocidades distintas. El núcleo central es un sphere shader con distorsión. Los caracteres brillan y pulsan con glow de color según su anillo.</p>
+</div>
+
+<div class="section">
+  <span class="label">Efectos de Animación</span>
+  <div class="options" style="margin-top:1rem">
+    <div class="option" style="cursor:default">
+      <div class="letter">1</div>
+      <div class="content">
+        <h3>Text Scramble — Hook useTextScramble</h3>
+        <p>El headline del Hero arranca como <code style="font-family:monospace;color:#00d4ff">#@&amp;%!mium Dig#tal Pr@ducts</code> y se "descifra" en 1.2s al cargar. Solo el headline principal.</p>
+      </div>
+    </div>
+    <div class="option" style="cursor:default">
+      <div class="letter">2</div>
+      <div class="content">
+        <h3>Counter Animado — &lt;AnimatedCounter /&gt;</h3>
+        <p>Números en WhyChooseUs suben de 0 al valor real cuando entran al viewport. Easing <code style="font-family:monospace;color:#4f6ef7">expo.out</code> de GSAP, activado por IntersectionObserver.</p>
+      </div>
+    </div>
+    <div class="option" style="cursor:default">
+      <div class="letter">3</div>
+      <div class="content">
+        <h3>Custom Cursor — &lt;CustomCursor /&gt;</h3>
+        <p>Círculo 12px con borde accent-blue, lag lerp 0.12. En hover de cards/botones: escala a 40px + <code style="font-family:monospace;color:#8b5cf6">mix-blend-mode: difference</code>. Trail de 4 puntos. Solo desktop.</p>
+      </div>
+    </div>
+  </div>
+</div>
