@@ -53,7 +53,7 @@ export default function Testimonials() {
   const row = [...QUOTES, ...QUOTES];
 
   return (
-    <section className="relative overflow-hidden py-32 md:py-40">
+    <section className="section-deep section-separator relative overflow-hidden py-32 md:py-40">
       <div className="container-x">
         <SectionHeader
           eyebrow="Loved by founders"

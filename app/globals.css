@@ -5,6 +5,9 @@
 :root {
   --background: #050508;
   --foreground: #f5f7ff;
+  --bg-base: #050508;
+  --bg-section: #080810;
+  --bg-section-deep: #0c0c18;
 }
 
 * {
@@ -127,6 +130,43 @@ html.lenis body {
     background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
     background-size: 56px 56px;
+  }
+
+  .section-alt {
+    background-color: var(--bg-section);
+  }
+
+  .section-deep {
+    background-color: var(--bg-section-deep);
+    position: relative;
+  }
+  .section-deep::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% -20%, rgba(139, 92, 246, 0.06), transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .section-separator {
+    position: relative;
+  }
+  .section-separator::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(79, 110, 247, 0.2) 30%,
+      rgba(0, 212, 255, 0.15) 50%,
+      rgba(79, 110, 247, 0.2) 70%,
+      transparent
+    );
   }
 }
 

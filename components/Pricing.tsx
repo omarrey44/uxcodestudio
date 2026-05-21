@@ -56,7 +56,7 @@ const PLANS = [
 
 export default function Pricing() {
   return (
-    <section id="pricing" className="relative py-32 md:py-40">
+    <section id="pricing" className="section-alt section-separator relative py-32 md:py-40">
       <div className="absolute inset-0 -z-10">
         <div className="absolute left-1/2 top-1/2 h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-violet/10 blur-3xl" />
       </div>

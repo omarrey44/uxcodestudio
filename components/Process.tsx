@@ -72,7 +72,7 @@ export default function Process() {
   }, []);
 
   return (
-    <section id="process" ref={sectionRef} className="relative py-32 md:py-40">
+    <section id="process" ref={sectionRef} className="section-deep section-separator relative py-32 md:py-40">
       <div className="container-x">
         <SectionHeader
           eyebrow="Process"

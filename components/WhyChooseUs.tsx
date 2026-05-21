@@ -13,7 +13,7 @@ const STATS = [
 
 export default function WhyChooseUs() {
   return (
-    <section className="relative overflow-hidden py-32 md:py-40">
+    <section className="section-alt section-separator relative overflow-hidden py-32 md:py-40">
       <div className="absolute inset-0 -z-10">
         <div className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-blue/10 blur-3xl" />
       </div>

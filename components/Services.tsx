@@ -56,7 +56,7 @@ const SERVICES = [
 
 export default function Services() {
   return (
-    <section id="services" className="relative py-32 md:py-40">
+    <section id="services" className="section-alt section-separator relative py-32 md:py-40">
       <div className="container-x">
         <SectionHeader
           eyebrow="Services"
