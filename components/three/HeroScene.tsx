@@ -224,6 +224,25 @@ function NeckStub() {
 function HeadGroup() {
   const groupRef = useRef<THREE.Group>(null);
 
+  useFrame(({ mouse, clock }: { mouse: THREE.Vector2; clock: THREE.Clock }) => {
+    if (!groupRef.current) return;
+    const t = clock.getElapsedTime();
+    // Breathing idle
+    groupRef.current.position.y = 0.3 + Math.sin(t * 0.806) * 0.04;
+    groupRef.current.rotation.z = Math.sin(t * 0.4) * 0.010;
+    // Mouse head tilt — position.y and rotation.x/y operate on different properties, no conflict
+    groupRef.current.rotation.y = THREE.MathUtils.lerp(
+      groupRef.current.rotation.y,
+      mouse.x * 0.18,
+      0.06
+    );
+    groupRef.current.rotation.x = THREE.MathUtils.lerp(
+      groupRef.current.rotation.x,
+      -mouse.y * 0.12,
+      0.06
+    );
+  });
+
   return (
     <group ref={groupRef} position={[0, 0.3, 0]}>
       <group scale={[0.92, 1.35, 0.88]}>
