@@ -118,7 +118,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.8 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-white/70 backdrop-blur"
+            className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-muted backdrop-blur"
           >
             <span className="relative flex h-2 w-2">
               <span className="absolute inset-0 animate-ping rounded-full bg-accent-cyan opacity-75" />
@@ -145,7 +145,7 @@ export default function Hero() {
             </span>
           </h1>
 
-          <p className="hero-sub mt-8 max-w-xl text-balance text-base text-white/60 md:text-lg">
+          <p className="hero-sub mt-8 max-w-xl text-balance text-base text-muted-soft md:text-lg">
             {scrambledHero}
           </p>
 
@@ -174,7 +174,7 @@ export default function Hero() {
               <div className="font-display text-lg text-white">
                 40+ products shipped
               </div>
-              <div className="text-xs text-white/50">
+              <div className="text-xs text-muted-soft">
                 Rated 4.9/5 by founders &amp; design leads
               </div>
             </div>
@@ -199,7 +199,7 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.4 }}
-        className="absolute inset-x-0 bottom-8 mx-auto flex w-fit flex-col items-center gap-2 text-[10px] uppercase tracking-[0.4em] text-white/40"
+        className="absolute inset-x-0 bottom-8 mx-auto flex w-fit flex-col items-center gap-2 text-[10px] uppercase tracking-[0.4em] text-muted-dim"
       >
         <span>Scroll</span>
         <span className="relative h-10 w-px overflow-hidden bg-white/10">
@@ -295,7 +295,7 @@ function FloatingDashboard() {
             transition={{ delay: 1.1, duration: 0.8 }}
             className="w-[220px] rounded-2xl glass-strong p-4 neon-border glow-blue"
           >
-            <div className="flex items-center justify-between text-[10px] text-white/50">
+            <div className="flex items-center justify-between text-[10px] text-muted-soft">
               <span>Conversion</span>
               <span className="text-accent-cyan">+318%</span>
             </div>
@@ -314,7 +314,7 @@ function FloatingDashboard() {
             <div className="mt-3 font-display text-2xl font-bold text-white">
               12,847
             </div>
-            <div className="text-[10px] text-white/40">unique sessions / 24h</div>
+            <div className="text-[10px] text-muted-dim">unique sessions / 24h</div>
           </motion.div>
         </motion.div>
       </div>
@@ -339,9 +339,9 @@ function FloatingDashboard() {
               <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
               <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
               <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
-              <span className="ml-auto text-[10px] text-white/40">App.tsx</span>
+              <span className="ml-auto text-[10px] text-muted-dim">App.tsx</span>
             </div>
-            <pre className="mt-3 overflow-hidden text-[10.5px] leading-relaxed text-white/70">
+            <pre className="mt-3 overflow-hidden text-[10.5px] leading-relaxed text-muted">
 {`export default function Ship() {
   const ui = useDesign({
     polish: 100,
@@ -375,7 +375,7 @@ function FloatingDashboard() {
             </span>
             <div className="leading-tight">
               <div className="text-[11px] font-medium text-white">Lighthouse 100</div>
-              <div className="text-[9px] text-white/40">Perf · A11y · SEO</div>
+              <div className="text-[9px] text-muted-dim">Perf · A11y · SEO</div>
             </div>
           </motion.div>
         </motion.div>

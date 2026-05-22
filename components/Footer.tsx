@@ -30,7 +30,7 @@ export default function Footer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1 }}
-          className="select-none pb-12 text-center font-display text-[18vw] font-bold leading-none tracking-tighter text-white/[0.04] md:text-[140px]"
+          className="select-none pb-12 text-center font-display text-[18vw] font-bold leading-none tracking-tighter text-muted-dim md:text-[140px]"
         >
           UXCODESTUDIO
         </motion.div>
@@ -48,7 +48,7 @@ export default function Footer() {
                 UXCODE<span className="text-accent-cyan">STUDIO</span>
               </span>
             </div>
-            <p className="mt-4 max-w-xs text-sm text-white/55">
+            <p className="mt-4 max-w-xs text-sm text-muted-soft">
               A premium digital product studio crafting cinematic interfaces for
               ambitious teams worldwide.
             </p>
@@ -57,7 +57,7 @@ export default function Footer() {
                 <a
                   key={s}
                   href="#"
-                  className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.03] text-xs uppercase text-white/60 transition-all hover:border-accent-cyan/50 hover:text-accent-cyan"
+                  className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.03] text-xs uppercase text-muted-soft transition-all hover:border-accent-cyan/50 hover:text-accent-cyan"
                 >
                   {s}
                 </a>
@@ -67,7 +67,7 @@ export default function Footer() {
 
           {COLUMNS.map((c) => (
             <div key={c.title}>
-              <div className="mb-4 text-[11px] uppercase tracking-[0.3em] text-white/40">
+              <div className="mb-4 text-[11px] uppercase tracking-[0.3em] text-muted-dim">
                 {c.title}
               </div>
               <ul className="space-y-2.5 text-sm">
@@ -75,7 +75,7 @@ export default function Footer() {
                   <li key={l}>
                     <a
                       href="#"
-                      className="text-white/70 transition-colors hover:text-white"
+                      className="text-muted transition-colors hover:text-white"
                     >
                       {l}
                     </a>
@@ -86,7 +86,7 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 text-xs text-white/40 md:flex-row">
+        <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 text-xs text-muted-dim md:flex-row">
           <div>© {new Date().getFullYear()} UXCODESTUDIO. All rights reserved.</div>
           <div className="flex items-center gap-6">
             <a href="#" className="hover:text-white">

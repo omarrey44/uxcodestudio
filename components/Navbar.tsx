@@ -49,7 +49,7 @@ export default function Navbar() {
             <a
               key={l.href}
               href={l.href}
-              className="group relative rounded-lg px-3 py-2 text-sm text-white/70 transition-colors hover:text-white"
+              className="group relative rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:text-white"
             >
               <span className="relative z-10">{l.label}</span>
               <span className="absolute inset-0 -z-0 rounded-lg bg-white/0 transition-colors group-hover:bg-white/5" />

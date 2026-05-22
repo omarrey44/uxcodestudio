@@ -11,6 +11,11 @@ const config: Config = {
       colors: {
         background: "#050508",
         ink: "#0a0a12",
+        muted: {
+          DEFAULT: "#FFFFFF",
+          soft: "#FFFFFF",
+          dim: "#FFFFFF",
+        },
         accent: {
           blue: "#4f6ef7",
           cyan: "#00d4ff",

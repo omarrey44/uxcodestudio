@@ -71,7 +71,7 @@ export default function FAQ() {
                     className={`grid h-8 w-8 shrink-0 place-items-center rounded-full border border-white/10 text-sm transition-all duration-500 ${
                       isOpen
                         ? "rotate-45 bg-gradient-to-br from-accent-blue to-accent-cyan text-black"
-                        : "text-white/70"
+                        : "text-muted"
                     }`}
                   >
                     +
@@ -87,7 +87,7 @@ export default function FAQ() {
                       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                       className="overflow-hidden"
                     >
-                      <div className="px-6 pb-6 text-sm leading-relaxed text-white/65">
+                      <div className="px-6 pb-6 text-sm leading-relaxed text-muted">
                         {f.a}
                       </div>
                     </motion.div>

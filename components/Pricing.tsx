@@ -108,13 +108,13 @@ export default function Pricing() {
                   <span className="font-display text-5xl font-bold text-white">
                     {p.price}
                   </span>
-                  <span className="text-sm text-white/50">{p.cadence}</span>
+                  <span className="text-sm text-muted-soft">{p.cadence}</span>
                 </div>
-                <p className="mt-4 text-sm text-white/60">{p.description}</p>
+                <p className="mt-4 text-sm text-muted-soft">{p.description}</p>
 
                 <ul className="mt-7 space-y-3 text-sm">
                   {p.features.map((f) => (
-                    <li key={f} className="flex items-start gap-3 text-white/75">
+                    <li key={f} className="flex items-start gap-3 text-muted">
                       <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-gradient-to-br from-accent-blue to-accent-cyan text-[10px] text-black">
                         ✓
                       </span>

@@ -23,7 +23,7 @@ export default function FinalCTA() {
           <div className="absolute -inset-px rounded-[36px] bg-gradient-to-br from-accent-blue via-accent-cyan to-accent-violet [mask:linear-gradient(#000_0_0)_content-box,linear-gradient(#000_0_0)] [mask-composite:exclude] p-px opacity-60" />
 
           <div className="relative">
-            <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] uppercase tracking-[0.3em] text-white/70">
+            <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] uppercase tracking-[0.3em] text-muted">
               <span className="h-1 w-1 rounded-full bg-accent-cyan" /> Let's build
             </div>
 
@@ -33,7 +33,7 @@ export default function FinalCTA() {
               <span className="text-gradient-accent">people screenshot?</span>
             </h2>
 
-            <p className="mx-auto mt-6 max-w-xl text-balance text-white/65 md:text-lg">
+            <p className="mx-auto mt-6 max-w-xl text-balance text-muted md:text-lg">
               Book a 30-minute call. Walk out with a clear scope, a fixed quote
               and an honest opinion on whether we're the right fit.
             </p>
@@ -47,7 +47,7 @@ export default function FinalCTA() {
               </MagneticButton>
             </div>
 
-            <div className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs text-white/40">
+            <div className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs text-muted-dim">
               <span>✦ Fixed quote in 24h</span>
               <span>✦ NDA on request</span>
               <span>✦ Remote-first · Worldwide</span>

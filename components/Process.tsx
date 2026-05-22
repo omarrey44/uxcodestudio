@@ -107,7 +107,7 @@ export default function Process() {
                 </span>
 
                 <div className="md:text-right">
-                  <div className="font-display text-5xl font-bold text-white/10 md:text-7xl">
+                  <div className="font-display text-5xl font-bold text-muted-dim md:text-7xl">
                     {s.n}
                   </div>
                 </div>
@@ -115,7 +115,7 @@ export default function Process() {
                   <h3 className="font-display text-2xl font-semibold text-white">
                     {s.title}
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-white/60">
+                  <p className="mt-2 text-sm leading-relaxed text-muted-soft">
                     {s.body}
                   </p>
                 </div>

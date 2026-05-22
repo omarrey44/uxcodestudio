@@ -68,7 +68,7 @@ export default function FeaturedWork() {
 
               <div className="relative mt-6 flex items-end justify-between">
                 <div>
-                  <div className="text-[11px] uppercase tracking-[0.3em] text-white/40">
+                  <div className="text-[11px] uppercase tracking-[0.3em] text-muted-dim">
                     {w.tag}
                   </div>
                   <div className="mt-2 font-display text-2xl font-semibold text-white">
@@ -167,7 +167,7 @@ function HelioMock() {
       </div>
       <div className="absolute bottom-6 left-6 right-6 rounded-xl bg-white/[0.05] p-3 backdrop-blur">
         <div className="flex items-center justify-between">
-          <div className="text-[10px] uppercase tracking-widest text-white/50">
+          <div className="text-[10px] uppercase tracking-widest text-muted-soft">
             Balance
           </div>
           <div className="text-[10px] text-emerald-300">+ 12.4%</div>
@@ -201,7 +201,7 @@ function OrbitMock() {
         ))}
       </div>
       <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between rounded-xl bg-white/[0.04] p-3 backdrop-blur">
-        <div className="text-[10px] uppercase tracking-widest text-white/50">
+        <div className="text-[10px] uppercase tracking-widest text-muted-soft">
           orbit.ai
         </div>
         <div className="font-display text-sm text-white">v3.2 · live</div>
@@ -226,7 +226,7 @@ function LumenMock() {
               <div
                 key={s}
                 className={`flex items-center gap-2 rounded px-2 py-1.5 text-[10px] ${
-                  i === 0 ? "bg-accent-blue/30 text-white" : "text-white/50"
+                  i === 0 ? "bg-accent-blue/30 text-white" : "text-muted-soft"
                 }`}
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-current" /> {s}

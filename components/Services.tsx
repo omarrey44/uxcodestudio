@@ -134,20 +134,20 @@ function TiltCard({
         <h3 className="font-display text-2xl font-semibold text-white">
           {title}
         </h3>
-        <p className="mt-3 text-sm leading-relaxed text-white/60">
+        <p className="mt-3 text-sm leading-relaxed text-muted-soft">
           {description}
         </p>
         <div className="mt-6 flex flex-wrap gap-2">
           {tags.map((t) => (
             <span
               key={t}
-              className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] text-white/60"
+              className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] text-muted-soft"
             >
               {t}
             </span>
           ))}
         </div>
-        <div className="mt-7 flex items-center gap-2 text-xs text-white/40 transition-colors group-hover:text-accent-cyan">
+        <div className="mt-7 flex items-center gap-2 text-xs text-muted-dim transition-colors group-hover:text-accent-cyan">
           <span>Learn more</span>
           <span aria-hidden className="transition-transform group-hover:translate-x-1">
             →
@@ -177,7 +177,7 @@ export function SectionHeader({
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
       className="mx-auto max-w-3xl text-center"
     >
-      <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-white/50">
+      <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-muted-soft">
         <span className="h-1 w-1 rounded-full bg-accent-cyan" />
         {eyebrow}
       </div>
@@ -186,7 +186,7 @@ export function SectionHeader({
         {accent && <span className="text-gradient-accent">{accent}</span>}
       </h2>
       {description && (
-        <p className="mx-auto mt-6 max-w-2xl text-balance text-white/60 md:text-lg">
+        <p className="mx-auto mt-6 max-w-2xl text-balance text-muted-soft md:text-lg">
           {description}
         </p>
       )}

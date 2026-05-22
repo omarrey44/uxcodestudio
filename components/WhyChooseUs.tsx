@@ -47,14 +47,14 @@ export default function WhyChooseUs() {
               <div className="font-display text-3xl font-semibold leading-tight text-white md:text-4xl">
                 Senior team. <span className="text-gradient-accent">Zero handoffs.</span> Real partners.
               </div>
-              <p className="mt-4 text-white/60">
+              <p className="mt-4 text-muted-soft">
                 You work directly with the designers and engineers shipping the
                 pixels — no account managers, no juniors silently learning on
                 your project.
               </p>
             </div>
 
-            <ul className="grid grid-cols-1 gap-3 text-sm text-white/70">
+            <ul className="grid grid-cols-1 gap-3 text-sm text-muted">
               {[
                 "Embedded Slack channel from day 1",
                 "Weekly demo + Loom updates",
@@ -114,7 +114,7 @@ function StatCard({
           />
         </div>
         <div className="mt-3 text-sm font-medium text-white">{label}</div>
-        <div className="text-xs text-white/40">{sub}</div>
+        <div className="text-xs text-muted-dim">{sub}</div>
       </div>
     </motion.div>
   );

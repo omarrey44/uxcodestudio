@@ -102,7 +102,7 @@ function Card({
       <div className="pointer-events-none absolute -inset-px rounded-2xl bg-gradient-to-br from-accent-blue/20 via-transparent to-accent-violet/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
       <div className="relative">
         <div className="text-3xl text-accent-cyan">“</div>
-        <blockquote className="mt-2 text-[15px] leading-relaxed text-white/80">
+        <blockquote className="mt-2 text-[15px] leading-relaxed text-muted">
           {quote}
         </blockquote>
       </div>
@@ -114,7 +114,7 @@ function Card({
         </span>
         <div className="leading-tight">
           <div className="text-sm font-medium text-white">{name}</div>
-          <div className="text-xs text-white/50">{role}</div>
+          <div className="text-xs text-muted-soft">{role}</div>
         </div>
       </figcaption>
     </motion.figure>
