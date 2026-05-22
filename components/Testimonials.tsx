@@ -1,126 +1,253 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { SectionHeader } from "./Services";
+import { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/lib/i18n";
+import { ReviewStars } from "@/components/ui/animated-cards-stack";
 
-const QUOTES = [
+const TESTIMONIALS = [
   {
+    id: "t1",
     name: "Sofía R.",
-    role: "CEO, Nebula",
-    quote:
-      "The handoff between design and engineering was invisible. We launched 3 weeks early and conversion doubled in the first month.",
-    avatar: "from-accent-blue to-accent-cyan",
+    role: "CEO · Nebula",
+    rating: 5,
+    quote: "The handoff between design and engineering was invisible. We launched 3 weeks early and conversion doubled.",
+    gradient: "from-accent-blue to-accent-cyan",
   },
   {
+    id: "t2",
     name: "Marcus L.",
-    role: "Co-founder, Helio",
-    quote:
-      "These are the people other agencies copy. The motion alone closed our Series A pitch.",
-    avatar: "from-accent-violet to-accent-blue",
+    role: "Co-founder · Helio",
+    rating: 5,
+    quote: "These are the people other agencies copy. The motion alone closed our Series A pitch.",
+    gradient: "from-accent-violet to-accent-blue",
   },
   {
+    id: "t3",
     name: "Priya K.",
-    role: "Head of Product, Orbit AI",
-    quote:
-      "We needed an interface that feels like the future. UXCODESTUDIO delivered something investors literally applauded.",
-    avatar: "from-accent-cyan to-accent-violet",
+    role: "Head of Product · Orbit AI",
+    rating: 5,
+    quote: "We needed an interface that feels like the future. Investors literally applauded the demo.",
+    gradient: "from-accent-cyan to-accent-violet",
   },
   {
+    id: "t4",
     name: "Daniel P.",
-    role: "CTO, Lumen",
-    quote:
-      "Senior. Opinionated. Fast. They became part of our team within a week and never slowed down.",
-    avatar: "from-accent-blue to-accent-violet",
+    role: "CTO · Lumen",
+    rating: 5,
+    quote: "Senior. Opinionated. Fast. They became part of our team in a week and never slowed down.",
+    gradient: "from-accent-blue to-accent-violet",
+  },
+];
+
+const STACK = [
+  { x: 0,  y: 0,   rotate: 0,  scale: 1,    zIndex: 40, opacity: 1    },
+  { x: 14, y: -14, rotate: 4,  scale: 0.94, zIndex: 30, opacity: 0.65 },
+  { x: 26, y: -26, rotate: 7,  scale: 0.88, zIndex: 20, opacity: 0.4  },
+  { x: 36, y: -36, rotate: 10, scale: 0.82, zIndex: 10, opacity: 0.18 },
+];
+
+const LOGOS = [
+  {
+    name: "Linear",
+    icon: (
+      <svg viewBox="0 0 100 100" fill="currentColor">
+        <path d="M1.22 61.75 38.25 98.78a50 50 0 0 0 23.27-12.88L14.1 38.48A50.06 50.06 0 0 0 1.22 61.75ZM6.08 38.41 61.59 93.92A50 50 0 0 0 93.92 61.6L38.41 6.08A50 50 0 0 0 6.08 38.41ZM44.24 1.65 98.35 55.76a50.07 50.07 0 0 0 1.4-12.17C99.75 19.78 80.22.25 56.41.25A50.07 50.07 0 0 0 44.24 1.65ZM.25 43.59c0 4.19.54 8.25 1.56 12.11L44.3 13.16A49.75 49.75 0 0 0 .25 43.59Z" />
+      </svg>
+    ),
   },
   {
-    name: "Elena V.",
-    role: "Marketing Lead, Flux",
-    quote:
-      "Every micro-interaction has intent. Our bounce rate dropped 41% the day we shipped.",
-    avatar: "from-accent-cyan to-accent-blue",
+    name: "Vercel",
+    icon: (
+      <svg viewBox="0 0 116 100" fill="currentColor">
+        <path d="M57.5 0L115 100H0L57.5 0Z" />
+      </svg>
+    ),
   },
   {
-    name: "Tomás A.",
-    role: "Founder, Northwind",
-    quote:
-      "We've worked with three top-10 agencies. This is the only team we kept on retainer.",
-    avatar: "from-accent-violet to-accent-cyan",
+    name: "Raycast",
+    icon: (
+      <svg viewBox="0 0 512 512" fill="currentColor">
+        <path d="M0 320.141v44l105.032 105.032h44L0 320.141ZM0 234.961l277.039 277.039h44.18L0 190.601v44.36ZM21.659 512l277.22-277.22V191.6L0 469.18 21.659 512ZM277.039 0H234.5L0 234.5v42.539L277.039 0ZM320 21.48 42.96 298.52h43.18L320 64.659V21.48ZM320.141 0l-44 44h148.489v148.489l44-44V0H320.141ZM512 191.84l-44 44v148.489H319.511l-44 44H512V191.84Z" />
+      </svg>
+    ),
+  },
+  {
+    name: "resend",
+    icon: (
+      <svg viewBox="0 0 40 40" fill="currentColor">
+        <path d="M5 5h13.5C24.3 5 29 9.7 29 15.5c0 4.5-2.8 8.4-6.9 10L30 35H21l-7.5-9H12v9H5V5Zm7 6v9h6.5a4.5 4.5 0 0 0 0-9H12Z" />
+      </svg>
+    ),
   },
 ];
 
 export default function Testimonials() {
   const { t } = useLanguage();
-  const row = [...QUOTES, ...QUOTES];
+  const [order, setOrder] = useState([0, 1, 2, 3]);
+  const [busy, setBusy] = useState(false);
+
+  const shuffle = useCallback(() => {
+    if (busy) return;
+    setBusy(true);
+    setTimeout(() => {
+      setOrder((prev) => { const [f, ...rest] = prev; return [...rest, f]; });
+      setBusy(false);
+    }, 320);
+  }, [busy]);
+
+  useEffect(() => {
+    const id = setInterval(shuffle, 4500);
+    return () => clearInterval(id);
+  }, [shuffle]);
+
+  const active = TESTIMONIALS[order[0]];
 
   return (
-    <section className="section-alt section-separator relative overflow-hidden py-20 md:py-28">
+    <section className="section-alt section-separator relative overflow-hidden py-24 md:py-32">
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute -top-16 left-1/4 h-[500px] w-[700px] rounded-full bg-accent-violet/[0.1] blur-[120px]" />
-        <div className="absolute -bottom-16 right-1/4 h-[450px] w-[600px] rounded-full bg-accent-blue/[0.09] blur-[100px]" />
-      </div>
-      <div className="container-x">
-        <SectionHeader
-          eyebrow={t.testimonials.eyebrow}
-          title={t.testimonials.titlePart1}
-          accent={t.testimonials.accent}
-        />
+        <div className="absolute -top-16 left-1/4 h-[500px] w-[700px] rounded-full bg-accent-violet/[0.08] blur-[120px]" />
+        <div className="absolute -bottom-16 right-1/4 h-[450px] w-[600px] rounded-full bg-accent-blue/[0.07] blur-[100px]" />
       </div>
 
-      <div className="mt-20 space-y-6 mask-fade-x">
-        <div className="flex animate-marquee gap-6 will-change-transform">
-          {row.map((q, i) => (
-            <Card key={`a-${i}`} {...q} />
-          ))}
+      <div className="container-x">
+        <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2 lg:gap-12">
+
+          {/* ── Left: eyebrow + title + quote ── */}
+          <div>
+            {/* Eyebrow */}
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] uppercase tracking-[0.3em] text-muted-soft">
+              <span className="h-1 w-1 rounded-full bg-accent-cyan" />
+              {t.testimonials.eyebrow}
+            </div>
+
+            {/* Title */}
+            <h2 className="font-display text-4xl font-bold leading-tight tracking-tight text-white md:text-5xl">
+              {t.testimonials.titlePart1}{" "}
+              <span className="text-gradient-accent">{t.testimonials.accent}</span>
+            </h2>
+            {/* Animated quote */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={order[0]}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+                className="mt-10"
+              >
+                <div className="mb-4 text-4xl leading-none text-accent-cyan">"</div>
+                <blockquote className="text-lg font-light leading-relaxed text-white/85 md:text-xl">
+                  {active.quote}
+                </blockquote>
+                <div className="mt-7 flex items-center gap-3">
+                  <span
+                    className={`grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br ${active.gradient} font-bold text-white`}
+                  >
+                    {active.name.charAt(0)}
+                  </span>
+                  <div className="leading-tight">
+                    <div className="font-medium text-white">{active.name}</div>
+                    <div className="text-sm text-muted-soft">{active.role}</div>
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Dots */}
+            <div className="mt-8 flex gap-2">
+              {TESTIMONIALS.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    if (busy) return;
+                    const idx = order.indexOf(i);
+                    if (idx === 0) return;
+                    setOrder((prev) => {
+                      const next = [...prev];
+                      next.splice(idx, 1);
+                      next.unshift(i);
+                      return next;
+                    });
+                  }}
+                  className={`h-1.5 rounded-full transition-all duration-500 ${
+                    order[0] === i ? "w-8 bg-accent-cyan" : "w-1.5 bg-white/20 hover:bg-white/40"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* ── Right: stacked cards ── */}
+          <div className="flex justify-center lg:justify-end">
+            <div
+              className="relative h-[420px] w-[340px] cursor-pointer select-none"
+              onClick={shuffle}
+            >
+              {order.map((dataIdx, stackPos) => {
+                const s = STACK[stackPos] ?? STACK[STACK.length - 1];
+                const item = TESTIMONIALS[dataIdx];
+                return (
+                  <motion.div
+                    key={dataIdx}
+                    animate={{
+                      x: s.x,
+                      y: s.y,
+                      rotate: s.rotate,
+                      scale: s.scale,
+                      opacity: s.opacity,
+                      zIndex: s.zIndex,
+                    }}
+                    transition={{ type: "spring", stiffness: 280, damping: 26 }}
+                    className="absolute inset-0 flex flex-col items-center justify-center gap-6 rounded-2xl border border-white/10 bg-white/[0.04] p-7 backdrop-blur-md"
+                    style={{ transformOrigin: "bottom left" }}
+                  >
+                    {stackPos === 0 && (
+                      <>
+                        <div className="flex flex-col items-center gap-4 text-center">
+                          <ReviewStars rating={item.rating} className="text-accent-cyan" />
+                          <blockquote className="text-[15px] leading-relaxed text-white/80">
+                            "{item.quote}"
+                          </blockquote>
+                        </div>
+                        <div className="flex w-full items-center gap-3 border-t border-white/[0.08] pt-4">
+                          <span
+                            className={`grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br ${item.gradient} text-sm font-bold text-white`}
+                          >
+                            {item.name.charAt(0)}
+                          </span>
+                          <div className="leading-tight text-left">
+                            <div className="text-sm font-medium text-white">{item.name}</div>
+                            <div className="text-xs text-muted-soft">{item.role}</div>
+                          </div>
+                          <span className="ml-auto text-[10px] uppercase tracking-widest text-muted-dim">
+                            tap ↻
+                          </span>
+                        </div>
+                      </>
+                    )}
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
         </div>
-        <div
-          className="flex animate-marquee gap-6 will-change-transform"
-          style={{ animationDirection: "reverse", animationDuration: "55s" }}
-        >
-          {row.map((q, i) => (
-            <Card key={`b-${i}`} {...q} />
-          ))}
+
+        {/* ── Logo strip ── */}
+        <div className="mt-20 border-t border-white/5 pt-10">
+          <div className="flex flex-wrap items-center justify-center gap-10 md:gap-16">
+            {LOGOS.map(({ name, icon }) => (
+              <div
+                key={name}
+                className="flex items-center gap-3 text-white/35 transition-colors duration-300 hover:text-white/60"
+              >
+                <span className="h-6 w-6 shrink-0">{icon}</span>
+                <span className="text-lg font-semibold tracking-tight">{name}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
-  );
-}
-
-function Card({
-  name,
-  role,
-  quote,
-  avatar,
-}: {
-  name: string;
-  role: string;
-  quote: string;
-  avatar: string;
-}) {
-  return (
-    <motion.figure
-      whileHover={{ y: -6, scale: 1.01 }}
-      transition={{ type: "spring", stiffness: 200, damping: 20 }}
-      className="group relative flex w-[360px] shrink-0 flex-col justify-between rounded-2xl glass p-7 md:w-[420px]"
-    >
-      <div className="pointer-events-none absolute -inset-px rounded-2xl bg-gradient-to-br from-accent-blue/20 via-transparent to-accent-violet/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-      <div className="relative">
-        <div className="text-3xl text-accent-cyan">“</div>
-        <blockquote className="mt-2 text-[15px] leading-relaxed text-muted">
-          {quote}
-        </blockquote>
-      </div>
-      <figcaption className="relative mt-6 flex items-center gap-3">
-        <span
-          className={`grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br ${avatar} font-display text-sm text-white`}
-        >
-          {name.charAt(0)}
-        </span>
-        <div className="leading-tight">
-          <div className="text-sm font-medium text-white">{name}</div>
-          <div className="text-xs text-muted-soft">{role}</div>
-        </div>
-      </figcaption>
-    </motion.figure>
   );
 }

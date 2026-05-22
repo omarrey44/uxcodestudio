@@ -58,6 +58,15 @@ function RobotHead(props: RobotHeadProps) {
       const mesh = o as THREE.Mesh;
       mesh.castShadow = true;
       mesh.receiveShadow = true;
+
+      // Visor: replace with unlit flat material — MeshBasicMaterial has zero reflections
+      const meshName = o.name.toLowerCase();
+      const matName = (Array.isArray(mesh.material) ? mesh.material[0] : mesh.material)?.name ?? "";
+      if (meshName.includes("visor") || matName.toLowerCase().includes("visor")) {
+        mesh.material = new THREE.MeshBasicMaterial({ color: new THREE.Color(0x0a0a0e) });
+        return;
+      }
+
       const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
       materials.forEach((mat) => {
         const m = mat as THREE.MeshStandardMaterial & {
@@ -68,15 +77,7 @@ function RobotHead(props: RobotHeadProps) {
         if (!m?.isMeshStandardMaterial) return;
         const name = (m.name ?? "").toLowerCase();
 
-        // Visor: flat matte black — zero reflections, no mirror effect
-        if (name.includes("visor")) {
-          m.transmission = 0;
-          m.metalness = 0.0;
-          m.roughness = 0.92;
-          m.envMapIntensity = 0.0;
-          m.clearcoat = 0.0;
-          m.clearcoatRoughness = 0.0;
-        } else if (name.includes("brushedmetal")) {
+        if (name.includes("brushedmetal")) {
           // Dark satin titanium — controlled reflections, not chrome
           m.envMapIntensity = 0.45;
           m.roughness = Math.max(m.roughness ?? 0.4, 0.42);
@@ -96,6 +97,16 @@ function RobotHead(props: RobotHeadProps) {
         } else {
           if (m.envMapIntensity == null) m.envMapIntensity = 0.5;
         }
+
+        // Catch-all: any remaining high-gloss non-eye material → force matte
+        if (!name.includes("eye") && (m.roughness ?? 1) < 0.25) {
+          m.roughness = 0.88;
+          m.metalness = 0.0;
+          m.envMapIntensity = 0.0;
+          (m as THREE.MeshStandardMaterial & { clearcoat?: number; transmission?: number }).clearcoat = 0;
+          (m as THREE.MeshStandardMaterial & { transmission?: number }).transmission = 0;
+        }
+
         m.needsUpdate = true;
       });
     });

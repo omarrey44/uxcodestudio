@@ -168,7 +168,7 @@ const en: Translations = {
       { value: 187, suffix: "%",    label: "Avg. conversion lift", sub: "across 24 launches" },
       { value: 42,  suffix: "",     label: "Industry awards",      sub: "Awwwards · CSSDA · FWA" },
       { value: 98,  suffix: "/100", label: "Lighthouse score",     sub: "median across shipped sites" },
-      { value: 14,  suffix: " days",label: "Average to launch",    sub: "for landing pages" },
+      { value: 5,   suffix: " days",label: "Average to launch",    sub: "for landing pages" },
     ],
     teamHeadline:       "Senior team.",
     teamHeadlineAccent: "Zero handoffs.",
@@ -188,8 +188,8 @@ const en: Translations = {
   },
   testimonials: {
     eyebrow:    "Loved by founders",
-    titlePart1: "Trusted by teams who",
-    accent:     "don't settle.",
+    titlePart1: "Trusted worldwide by teams focused on performance,",
+    accent:     "quality, and growth.",
   },
   pricing: {
     eyebrow:     "Pricing",
@@ -344,8 +344,8 @@ const es: Translations = {
   },
   testimonials: {
     eyebrow:    "Amados por founders",
-    titlePart1: "De confianza para equipos que",
-    accent:     "no se conforman.",
+    titlePart1: "Confianza mundial para equipos enfocados en rendimiento,",
+    accent:     "calidad y crecimiento.",
   },
   pricing: {
     eyebrow:     "Precios",
