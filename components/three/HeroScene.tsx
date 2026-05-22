@@ -205,7 +205,7 @@ export default function HeroScene() {
         </Suspense>
 
 
-        <EffectComposer disableNormalPass>
+        <EffectComposer enableNormalPass={false}>
           <Bloom
             intensity={0.9}
             luminanceThreshold={0.85}
