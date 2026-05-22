@@ -20,6 +20,7 @@ const config: Config = {
       fontFamily: {
         display: ["var(--font-syne)", "sans-serif"],
         sans: ["var(--font-inter)", "sans-serif"],
+        hero: ["var(--font-barlow)", "sans-serif"],
       },
       animation: {
         "gradient-x": "gradient-x 8s ease infinite",

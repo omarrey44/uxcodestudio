@@ -1,0 +1,121 @@
+<h2>Floating Cards — Comportamiento</h2>
+<p class="subtitle">Las 3 cards ya existen. ¿Cómo deben moverse después de hacer su entrada?</p>
+
+<style>
+@keyframes float-a { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes float-b { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-6px) rotate(0.5deg)} }
+.float-a { animation: float-a 3.5s ease-in-out infinite; }
+.float-b { animation: float-b 3s ease-in-out infinite; }
+.float-b2 { animation: float-b 4s ease-in-out infinite 0.8s; }
+.float-b3 { animation: float-b 3.2s ease-in-out infinite 1.4s; }
+.glass-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 12px 14px;
+  color: white;
+  font-size: 11px;
+}
+.bar { width: 10px; border-radius: 3px; background: linear-gradient(to top, #4f6ef7, #00d4ff); display:inline-block; }
+</style>
+
+<div class="cards" style="margin-top:1.5rem">
+
+  <!-- Option A: Static after entrance -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#070710;min-height:220px;position:relative;overflow:hidden;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:16px">
+      <div class="glass-card" style="width:130px">
+        <div style="display:flex;justify-content:space-between;color:rgba(255,255,255,0.5);margin-bottom:8px"><span>Conversion</span><span style="color:#00d4ff">+318%</span></div>
+        <div style="display:flex;align-items:flex-end;gap:3px;height:40px">
+          <span class="bar" style="height:40%"></span>
+          <span class="bar" style="height:55%"></span>
+          <span class="bar" style="height:38%"></span>
+          <span class="bar" style="height:70%"></span>
+          <span class="bar" style="height:50%"></span>
+          <span class="bar" style="height:82%"></span>
+          <span class="bar" style="height:65%"></span>
+          <span class="bar" style="height:92%"></span>
+        </div>
+        <div style="font-size:18px;font-weight:700;margin-top:6px">12,847</div>
+        <div style="color:rgba(255,255,255,0.4);font-size:9px">unique sessions / 24h</div>
+      </div>
+      <div class="glass-card" style="width:100px;font-family:monospace;font-size:9px;line-height:1.6;color:rgba(255,255,255,0.6)">
+        <div style="display:flex;gap:4px;margin-bottom:6px"><span style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block"></span><span style="width:8px;height:8px;border-radius:50%;background:#eab308;display:inline-block"></span><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span></div>
+        <div style="color:#8b5cf6">export default</div>
+        <div style="color:#4f6ef7">function Ship() {</div>
+        <div style="padding-left:8px;color:rgba(255,255,255,0.4)">return &lt;UI /&gt;</div>
+        <div style="color:#4f6ef7">}</div>
+      </div>
+      <div style="position:absolute;bottom:12px;left:12px;font-size:10px;color:rgba(255,255,255,0.35);letter-spacing:0.1em">A · Estáticas (solo entrada)</div>
+    </div>
+    <div class="card-body">
+      <h3>Solo entrada animada</h3>
+      <p>Las cards aparecen con fade+slide y quedan fijas. Actual comportamiento — limpio, sin distracción.</p>
+    </div>
+  </div>
+
+  <!-- Option B: Continuous subtle float, each card independent -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#070710;min-height:220px;position:relative;overflow:hidden;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:16px">
+      <div class="glass-card float-b" style="width:130px">
+        <div style="display:flex;justify-content:space-between;color:rgba(255,255,255,0.5);margin-bottom:8px"><span>Conversion</span><span style="color:#00d4ff">+318%</span></div>
+        <div style="display:flex;align-items:flex-end;gap:3px;height:40px">
+          <span class="bar" style="height:40%"></span>
+          <span class="bar" style="height:55%"></span>
+          <span class="bar" style="height:38%"></span>
+          <span class="bar" style="height:70%"></span>
+          <span class="bar" style="height:50%"></span>
+          <span class="bar" style="height:82%"></span>
+          <span class="bar" style="height:65%"></span>
+          <span class="bar" style="height:92%"></span>
+        </div>
+        <div style="font-size:18px;font-weight:700;margin-top:6px">12,847</div>
+        <div style="color:rgba(255,255,255,0.4);font-size:9px">unique sessions / 24h</div>
+      </div>
+      <div class="glass-card float-b3" style="width:100px;font-family:monospace;font-size:9px;line-height:1.6;color:rgba(255,255,255,0.6)">
+        <div style="display:flex;gap:4px;margin-bottom:6px"><span style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block"></span><span style="width:8px;height:8px;border-radius:50%;background:#eab308;display:inline-block"></span><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span></div>
+        <div style="color:#8b5cf6">export default</div>
+        <div style="color:#4f6ef7">function Ship() {</div>
+        <div style="padding-left:8px;color:rgba(255,255,255,0.4)">return &lt;UI /&gt;</div>
+        <div style="color:#4f6ef7">}</div>
+      </div>
+      <div style="position:absolute;bottom:12px;left:12px;font-size:10px;color:rgba(255,255,255,0.35);letter-spacing:0.1em">B · Float continuo, desfasado por card</div>
+    </div>
+    <div class="card-body">
+      <h3>Float continuo independiente</h3>
+      <p>Cada card flota con su propio ritmo y delay — el look de la referencia. Framer Motion <code>animate y</code> loop.</p>
+    </div>
+  </div>
+
+  <!-- Option C: Parallax on mouse move -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#070710;min-height:220px;position:relative;overflow:hidden;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:16px">
+      <!-- Same cards, indicator shows mouse parallax -->
+      <div class="glass-card" style="width:130px;transform:translate(-4px,-3px)">
+        <div style="display:flex;justify-content:space-between;color:rgba(255,255,255,0.5);margin-bottom:8px"><span>Conversion</span><span style="color:#00d4ff">+318%</span></div>
+        <div style="display:flex;align-items:flex-end;gap:3px;height:40px">
+          <span class="bar" style="height:40%"></span>
+          <span class="bar" style="height:70%"></span>
+          <span class="bar" style="height:82%"></span>
+          <span class="bar" style="height:92%"></span>
+        </div>
+        <div style="font-size:18px;font-weight:700;margin-top:6px">12,847</div>
+      </div>
+      <div class="glass-card" style="width:100px;font-family:monospace;font-size:9px;line-height:1.6;color:rgba(255,255,255,0.6);transform:translate(4px,5px)">
+        <div style="display:flex;gap:4px;margin-bottom:6px"><span style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block"></span><span style="width:8px;height:8px;border-radius:50%;background:#eab308;display:inline-block"></span><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span></div>
+        <div style="color:#8b5cf6">export default</div>
+        <div style="color:#4f6ef7">function Ship() {</div>
+        <div style="padding-left:8px;color:rgba(255,255,255,0.4)">return &lt;UI /&gt;</div>
+        <div style="color:#4f6ef7">}</div>
+      </div>
+      <div style="position:absolute;top:12px;right:12px;font-size:9px;color:rgba(0,212,255,0.7);letter-spacing:0.05em">← mover mouse →</div>
+      <div style="position:absolute;bottom:12px;left:12px;font-size:10px;color:rgba(255,255,255,0.35);letter-spacing:0.1em">C · Parallax con mouse (cada card a distinta profundidad)</div>
+    </div>
+    <div class="card-body">
+      <h3>Parallax de mouse</h3>
+      <p>Cada card reacciona al movimiento del mouse a distinta velocidad — sensación de profundidad 3D real. Se combina con el custom cursor existente.</p>
+    </div>
+  </div>
+
+</div>

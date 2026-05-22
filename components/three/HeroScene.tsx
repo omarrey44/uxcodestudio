@@ -1,278 +1,174 @@
 "use client";
 
 import { Suspense, useRef, useMemo, useEffect } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import {
+  useGLTF,
+  useAnimations,
+  Environment,
+  ContactShadows,
+  Float,
+  Html,
+} from "@react-three/drei";
+import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 
-function HexPrismBody() {
-  const prismGeo = useMemo(() => new THREE.CylinderGeometry(0.75, 0.68, 1.5, 6), []);
-  const prismEdgesGeo = useMemo(() => new THREE.EdgesGeometry(prismGeo), [prismGeo]);
-  const crownGeo = useMemo(() => new THREE.SphereGeometry(0.72, 6, 4), []);
-  const bodyMat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: "#080b10", metalness: 0.92, roughness: 0.18 }),
-    []
-  );
-  const prismEdgesMat = useMemo(
-    () => new THREE.LineBasicMaterial({ color: "#00d4ff", transparent: true, opacity: 0.30 }),
-    []
-  );
+const MODEL_URL = "/robot.glb";
 
-  useEffect(() => () => {
-    prismGeo.dispose(); prismEdgesGeo.dispose(); crownGeo.dispose();
-    bodyMat.dispose(); prismEdgesMat.dispose();
-  }, []);
-
+function Loader() {
   return (
-    <>
-      <mesh geometry={prismGeo}>
-        <primitive object={bodyMat} attach="material" />
-      </mesh>
-      <lineSegments geometry={prismEdgesGeo}>
-        <primitive object={prismEdgesMat} attach="material" />
-      </lineSegments>
-      <mesh geometry={crownGeo} position={[0, 0.75, 0]} scale={[1, 0.4, 1]}>
-        <primitive object={bodyMat} attach="material" />
-      </mesh>
-    </>
+    <Html center>
+      <div style={{ color: "#7fe9ff", font: "500 14px system-ui", letterSpacing: ".08em" }}>
+        LOADING…
+      </div>
+    </Html>
   );
 }
 
-function VisorPanel() {
-  const visorGeo = useMemo(() => new THREE.BoxGeometry(1.05, 0.85, 0.04), []);
-  const visorMat = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: "#020508",
-        metalness: 0.0,
-        roughness: 0.0,
-        transparent: true,
-        opacity: 0.88,
-      }),
-    []
-  );
-  useEffect(() => () => { visorGeo.dispose(); visorMat.dispose(); }, []);
+type RobotHeadProps = {
+  position?: [number, number, number];
+  scale?: number | [number, number, number];
+};
 
-  return (
-    <mesh geometry={visorGeo} position={[0, 0.05, 0.50]}>
-      <primitive object={visorMat} attach="material" />
-    </mesh>
-  );
-}
+function RobotHead(props: RobotHeadProps) {
+  const group = useRef<THREE.Group>(null);
+  const { scene, animations } = useGLTF(MODEL_URL);
+  const { actions } = useAnimations(animations, group);
+  const { pointer } = useThree();
 
-const BROW_STRIPS: { position: [number, number, number]; rotZ: number }[] = [
-  { position: [-0.18, 0.38, 0.525], rotZ:  0.28 },
-  { position: [-0.34, 0.35, 0.525], rotZ:  0.22 },
-  { position: [ 0.18, 0.38, 0.525], rotZ: -0.28 },
-  { position: [ 0.34, 0.35, 0.525], rotZ: -0.22 },
-];
+  const model = useMemo(() => scene.clone(true), [scene]);
+  const eyeRig = useMemo(() => model.getObjectByName("Eye_Rig") ?? null, [model]);
 
-function BrowAccents() {
-  const browMat = useMemo(
-    () => new THREE.MeshBasicMaterial({ color: "#00d4ff", transparent: true, opacity: 0.45 }),
-    []
-  );
-  useEffect(() => () => { browMat.dispose(); }, []);
+  const baseRot = useRef(new THREE.Euler());
+  useEffect(() => {
+    if (eyeRig) baseRot.current.copy(eyeRig.rotation);
+  }, [eyeRig]);
 
-  return (
-    <>
-      {BROW_STRIPS.map(({ position, rotZ }, i) => (
-        <mesh key={i} position={position} rotation={[0, 0, rotZ]}>
-          <boxGeometry args={[0.28, 0.016, 0.005]} />
-          <primitive object={browMat} attach="material" />
-        </mesh>
-      ))}
-    </>
-  );
-}
+  useEffect(() => {
+    const first = actions && Object.values(actions)[0];
+    if (first) first.reset().setLoop(THREE.LoopRepeat, Infinity).play();
+  }, [actions]);
 
-function EyeSlit({ position }: { position: [number, number, number] }) {
-  const outerRef = useRef<THREE.Mesh>(null);
-  const innerRef = useRef<THREE.Mesh>(null);
-  const pupilRef = useRef<THREE.Mesh>(null);
+  useEffect(() => {
+    model.traverse((o: THREE.Object3D) => {
+      if (!(o as THREE.Mesh).isMesh) return;
+      const mesh = o as THREE.Mesh;
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+      materials.forEach((mat) => {
+        const m = mat as THREE.MeshStandardMaterial;
+        if (!m?.isMeshStandardMaterial) return;
+        const name = m.name?.toLowerCase() ?? "";
+        if (name.includes("eye") || name.includes("led") || name.includes("emit")) {
+          m.emissive = new THREE.Color(0x00d8ff);
+          m.emissiveIntensity = 5.0;
+          m.toneMapped = false;
+        } else {
+          // Force helmet body materials to be readable under light
+          m.roughness = Math.max(m.roughness, 0.35);
+          m.metalness = Math.min(m.metalness, 0.75);
+          m.envMapIntensity = 0.4;
+          m.needsUpdate = true;
+        }
+      });
+    });
+  }, [model]);
 
-  // Imperative material — opacity is mutated in useFrame for LED pulse
-  const innerCoreMat = useMemo(
-    () => new THREE.MeshBasicMaterial({ color: "#00eeff", transparent: true, opacity: 1.0 }),
-    []
-  );
-  useEffect(() => () => { innerCoreMat.dispose(); }, []);
-
-  // Blink state
-  const blinkTimer = useRef(3 + Math.random() * 5);
-  const blinkScale = useRef(1.0);
-  const blinkClosing = useRef(false);
-
-  // Squint state
-  const squintTimer = useRef(12 + Math.random() * 8);
-  const squintActive = useRef(false);
-  const squintHoldTimer = useRef(0);
-
-  useFrame(({ mouse, clock }: { mouse: THREE.Vector2; clock: THREE.Clock }, delta: number) => {
-    // --- Pupil tracking ---
-    if (pupilRef.current) {
-      const targetX = THREE.MathUtils.clamp(mouse.x * 0.12, -0.12, 0.12);
-      pupilRef.current.position.x = THREE.MathUtils.lerp(
-        pupilRef.current.position.x,
-        targetX,
-        0.10
+  useFrame((_: unknown, delta: number) => {
+    if (eyeRig) {
+      eyeRig.rotation.y = THREE.MathUtils.damp(
+        eyeRig.rotation.y,
+        baseRot.current.y + pointer.x * 0.35,
+        6,
+        delta
+      );
+      eyeRig.rotation.x = THREE.MathUtils.damp(
+        eyeRig.rotation.x,
+        baseRot.current.x - pointer.y * 0.22,
+        6,
+        delta
       );
     }
-
-    // --- Blink ---
-    blinkTimer.current -= delta;
-    if (blinkTimer.current <= 0) {
-      blinkTimer.current = 3 + Math.random() * 5;
-      blinkClosing.current = true;
+    if (group.current) {
+      group.current.rotation.y = THREE.MathUtils.damp(
+        group.current.rotation.y,
+        pointer.x * 0.18,
+        4,
+        delta
+      );
+      group.current.rotation.x = THREE.MathUtils.damp(
+        group.current.rotation.x,
+        -pointer.y * 0.10,
+        4,
+        delta
+      );
     }
-    if (blinkClosing.current) {
-      blinkScale.current = THREE.MathUtils.lerp(blinkScale.current, 0.05, 0.20);
-      if (blinkScale.current < 0.08) blinkClosing.current = false;
-    } else if (!squintActive.current) {
-      blinkScale.current = THREE.MathUtils.lerp(blinkScale.current, 1.0, 0.14);
-    }
-    if (outerRef.current) outerRef.current.scale.y = blinkScale.current;
-    if (innerRef.current) innerRef.current.scale.y = blinkScale.current;
-
-    // --- Squint (blink takes priority) ---
-    squintTimer.current -= delta;
-    if (squintTimer.current <= 0 && !squintActive.current) {
-      squintActive.current = true;
-      squintHoldTimer.current = 1.5;
-      squintTimer.current = 12 + Math.random() * 8;
-    }
-    if (squintActive.current && !blinkClosing.current) {
-      squintHoldTimer.current -= delta;
-      const target = squintHoldTimer.current > 0 ? 0.35 : 1.0;
-      blinkScale.current = THREE.MathUtils.lerp(blinkScale.current, target, 0.12);
-      if (squintHoldTimer.current <= 0 && blinkScale.current > 0.92) {
-        squintActive.current = false;
-      }
-    }
-
-    // --- LED pulse ---
-    innerCoreMat.opacity = 0.85 + Math.sin(clock.getElapsedTime() * Math.PI) * 0.15;
   });
 
   return (
-    <group position={position}>
-      {/* Outer slit */}
-      <mesh ref={outerRef}>
-        <boxGeometry args={[0.38, 0.048, 0.006]} />
-        <meshBasicMaterial color="#00d4ff" transparent opacity={0.65} />
-      </mesh>
-      {/* Inner core — uses imperative mat for opacity mutation */}
-      <mesh ref={innerRef} position={[0, 0, 0.001]}>
-        <boxGeometry args={[0.22, 0.026, 0.005]} />
-        <primitive object={innerCoreMat} attach="material" />
-      </mesh>
-      {/* Pupil dot — slides on X axis */}
-      <mesh ref={pupilRef} position={[0, 0, 0.002]}>
-        <boxGeometry args={[0.07, 0.018, 0.004]} />
-        <meshBasicMaterial color="#c0ffff" />
-      </mesh>
-      {/* Glow */}
-      <pointLight color="#00d4ff" intensity={2.0} distance={1.2} position={[0, 0, 0.06]} />
+    <group ref={group} {...props}>
+      <primitive object={model} />
     </group>
   );
 }
 
-function ScanLine() {
-  const ref = useRef<THREE.Mesh>(null);
-  const scanMat = useMemo(
-    () =>
-      new THREE.MeshBasicMaterial({
-        color: "#00d4ff",
-        transparent: true,
-        opacity: 0.10,
-        depthWrite: false,
-      }),
-    []
-  );
-  useEffect(() => () => { scanMat.dispose(); }, []);
-
-  useFrame((state: { clock: THREE.Clock }) => {
-    if (ref.current) {
-      // Sweeps visor height (-0.38 to +0.38), period ~6s
-      ref.current.position.y = Math.sin(state.clock.getElapsedTime() * 1.047) * 0.38;
-    }
-  });
-
-  return (
-    <mesh ref={ref} position={[0, 0, 0.53]}>
-      <planeGeometry args={[1.0, 0.03]} />
-      <primitive object={scanMat} attach="material" />
-    </mesh>
-  );
-}
-
-function NeckStub() {
-  const neckGeo = useMemo(() => new THREE.CylinderGeometry(0.22, 0.30, 0.5, 6), []);
-  const neckEdgesGeo = useMemo(() => new THREE.EdgesGeometry(neckGeo), [neckGeo]);
-  const neckEdgesMat = useMemo(
-    () => new THREE.LineBasicMaterial({ color: "#00d4ff", transparent: true, opacity: 0.20 }),
-    []
-  );
-  useEffect(() => () => { neckGeo.dispose(); neckEdgesGeo.dispose(); neckEdgesMat.dispose(); }, []);
-
-  return (
-    <lineSegments geometry={neckEdgesGeo} position={[0, -1.0, 0]}>
-      <primitive object={neckEdgesMat} attach="material" />
-    </lineSegments>
-  );
-}
-
-function HeadGroup() {
-  const groupRef = useRef<THREE.Group>(null);
-
-  useFrame(({ mouse, clock }: { mouse: THREE.Vector2; clock: THREE.Clock }) => {
-    if (!groupRef.current) return;
-    const t = clock.getElapsedTime();
-    // Breathing idle
-    groupRef.current.position.y = 0.3 + Math.sin(t * 0.806) * 0.04;
-    groupRef.current.rotation.z = Math.sin(t * 0.4) * 0.010;
-    // Mouse head tilt — position.y and rotation.x/y operate on different properties, no conflict
-    groupRef.current.rotation.y = THREE.MathUtils.lerp(
-      groupRef.current.rotation.y,
-      mouse.x * 0.18,
-      0.06
-    );
-    groupRef.current.rotation.x = THREE.MathUtils.lerp(
-      groupRef.current.rotation.x,
-      -mouse.y * 0.12,
-      0.06
-    );
-  });
-
-  return (
-    <group ref={groupRef} position={[0, 0.3, 0]}>
-      <group scale={[0.92, 1.35, 0.88]}>
-        <HexPrismBody />
-        <VisorPanel />
-        <BrowAccents />
-        <ScanLine />
-        <NeckStub />
-      </group>
-      {/* Eyes outside scale group — preserves exact box proportions */}
-      <EyeSlit position={[-0.26, 0.20, 0.52]} />
-      <EyeSlit position={[ 0.26, 0.20, 0.52]} />
-    </group>
-  );
-}
+useGLTF.preload(MODEL_URL);
 
 export default function HeroScene() {
   return (
     <Canvas
+      shadows
       dpr={[1, 2]}
-      camera={{ position: [0, 0, 6], fov: 45 }}
-      gl={{ antialias: true, alpha: true }}
+      camera={{ position: [0, 0.5, 5.2], fov: 36, near: 0.1, far: 50 }}
+      gl={{ antialias: true, powerPreference: "high-performance", alpha: true }}
     >
-      <Suspense fallback={null}>
-        <ambientLight intensity={0.06} />
-        <pointLight position={[-2.5, 1.5, -2]} intensity={5}   color="#00d4ff" />
-        <pointLight position={[ 2.5, -1,  -2]} intensity={3.5} color="#8b5cf6" />
-        <pointLight position={[  0,   2,   3]} intensity={0.8} color="#ffffff" />
-        <HeadGroup />
+      {/* Ambient — base fill so dark surfaces aren't pure black */}
+      <ambientLight intensity={0.45} />
+      {/* Key light — top-right front, reveals helmet geometry */}
+      <spotLight
+        position={[2, 5, 4]}
+        angle={0.45}
+        penumbra={0.8}
+        intensity={180}
+        color="#ffffff"
+        castShadow
+        shadow-mapSize={[1024, 1024]}
+      />
+      {/* Front fill — soft white from camera direction to show detail */}
+      <pointLight position={[0, 1, 5]} intensity={60} color="#e0eeff" />
+      {/* Left cyan rim — edge highlight on helmet */}
+      <pointLight position={[-4, 2, 1]} intensity={80} color="#1fbfff" />
+      {/* Right violet rim — opposite edge */}
+      <pointLight position={[4, 1, 1]} intensity={50} color="#7c3aed" />
+      {/* Top down — defines the crown of the helmet */}
+      <pointLight position={[0, 6, 2]} intensity={40} color="#ffffff" />
+
+      <Suspense fallback={<Loader />}>
+        <Float speed={1.1} rotationIntensity={0.15} floatIntensity={0.4}>
+          <RobotHead position={[0, 0.35, 0]} scale={0.82} />
+        </Float>
+        <Environment preset="city" environmentIntensity={0.8} />
       </Suspense>
+
+      <ContactShadows
+        position={[0, -1.1, 0]}
+        opacity={0.5}
+        scale={6}
+        blur={2.6}
+        far={3}
+        color="#000000"
+      />
+
+      <EffectComposer enableNormalPass={false}>
+        <Bloom
+          intensity={0.9}
+          luminanceThreshold={0.6}
+          luminanceSmoothing={0.25}
+          mipmapBlur
+        />
+        <Vignette eskil={false} offset={0.25} darkness={0.85} />
+      </EffectComposer>
     </Canvas>
   );
 }

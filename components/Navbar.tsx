@@ -30,18 +30,20 @@ export default function Navbar() {
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4"
     >
+      {/* Logo — outside pill, anchored to viewport left */}
+      <a href="#top" className="absolute left-6 top-4 flex items-center">
+        <Image src="/logo.png" width={200} height={60} alt="UXCODESTUDIO" priority />
+      </a>
+
+      {/* Nav pill — nav links + CTA only */}
       <div
         className={cn(
-          "flex w-full max-w-6xl items-center justify-between rounded-2xl px-5 py-3 transition-all duration-500",
+          "flex items-center gap-4 rounded-2xl px-5 py-3 transition-all duration-500",
           scrolled
             ? "glass-strong shadow-[0_10px_60px_-20px_rgba(79,110,247,0.5)]"
             : "border border-white/5 bg-white/[0.02]"
         )}
       >
-        <a href="#top" className="flex items-center">
-          <Image src="/logo.png" width={120} height={36} alt="UXCODESTUDIO" priority />
-        </a>
-
         <nav className="hidden items-center gap-1 md:flex">
           {links.map((l) => (
             <a

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Syne } from "next/font/google";
+import { Inter, Syne, Barlow } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import Navbar from "@/components/Navbar";
@@ -16,6 +16,13 @@ const syne = Syne({
   subsets: ["latin"],
   weight: ["500", "600", "700", "800"],
   variable: "--font-syne",
+  display: "swap",
+});
+
+const barlow = Barlow({
+  subsets: ["latin"],
+  weight: ["800", "900"],
+  variable: "--font-barlow",
   display: "swap",
 });
 
@@ -38,7 +45,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${syne.variable}`}>
+    <html lang="en" className={`${inter.variable} ${syne.variable} ${barlow.variable}`}>
       <body className="bg-background text-white antialiased noise">
         <PageLoader />
         <CustomCursor />

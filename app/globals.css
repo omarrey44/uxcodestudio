@@ -80,6 +80,13 @@ html.lenis body {
     color: transparent;
   }
 
+  .text-gradient-sky {
+    background: linear-gradient(90deg, #ffffff 0%, #7dd3fc 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
   .text-gradient-accent {
     background: linear-gradient(90deg, #4f6ef7 0%, #00d4ff 50%, #8b5cf6 100%);
     -webkit-background-clip: text;
@@ -204,6 +211,13 @@ html.lenis body {
       transparent
     );
   }
+}
+
+/* Hero headline depth effect */
+.hero-headline {
+  text-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.5),
+    0 0 60px rgba(96, 165, 250, 0.12);
 }
 
 /* Animated aurora layer */

@@ -11,7 +11,7 @@ import { useMouseParallax } from "@/lib/hooks/useMouseParallax";
 
 const HeroScene = dynamic(() => import("./three/HeroScene"), { ssr: false });
 
-const ROTATING = ["Websites", "Landing Pages", "Web Apps", "SaaS Platforms"];
+const ROTATING = ["Websites", "Landings", "Web Apps", "SaaS"];
 
 export default function Hero() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -104,14 +104,16 @@ export default function Hero() {
     >
       {/* Backgrounds */}
       <div className="absolute inset-0 -z-10">
-        <div className="aurora-layer" />
-        <div className="absolute inset-0 grid-bg [mask-image:radial-gradient(ellipse_at_top,black_30%,transparent_70%)]" />
-        <div className="absolute inset-x-0 top-0 h-[600px] bg-radial-glow opacity-80" />
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/Hero1.png')" }}
+        />
+        <div className="absolute inset-0" style={{ background: "rgba(5,5,8,0.30)" }} />
       </div>
 
       <div className="container-x relative grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-8">
         {/* LEFT */}
-        <div className="lg:col-span-7">
+        <div className="lg:col-span-6">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -127,17 +129,17 @@ export default function Hero() {
 
           <h1
             ref={headlineRef}
-            className="font-display text-display font-bold text-balance"
+            className="hero-headline font-hero font-black uppercase"
+            style={{ fontSize: "clamp(3.2rem, 6.5vw, 6rem)", lineHeight: "0.93", letterSpacing: "-0.01em" }}
           >
             <span className="block overflow-hidden">
-              <span className="word inline-block">We&nbsp;</span>
-              <span className="word inline-block">design&nbsp;</span>
-              <span className="word inline-block">&amp;&nbsp;</span>
-              <span className="word inline-block">engineer</span>
+              <span className="word inline-block" style={{ color: "#ffffff" }}>We&nbsp;design&nbsp;&amp;</span>
             </span>
             <span className="block overflow-hidden">
-              <span className="word inline-block">immersive&nbsp;</span>
-              <span className="word inline-block text-gradient-accent">
+              <span className="word inline-block" style={{ color: "#60a5fa" }}>engineer</span>
+            </span>
+            <span className="block overflow-hidden">
+              <span className="word inline-block">
                 <RotatingWord />
               </span>
             </span>
@@ -180,7 +182,7 @@ export default function Hero() {
         </div>
 
         {/* RIGHT — 3D + Holographic UI */}
-        <div className="hero-scene relative lg:col-span-5">
+        <div className="hero-scene relative lg:col-span-6">
           <div className="relative aspect-[4/5] w-full">
             <div className="absolute inset-0 h-full w-full">
               <HeroScene />
@@ -210,7 +212,7 @@ export default function Hero() {
 
 function RotatingWord() {
   return (
-    <span className="relative inline-flex h-[1.05em] min-w-[6ch] overflow-hidden align-bottom">
+    <span className="relative inline-flex h-[1.05em] min-w-[10ch] overflow-hidden align-bottom">
       <AnimatePresence mode="popLayout">
         {ROTATING.map((word, idx) => (
           <RotatingItem key={word} word={word} index={idx} total={ROTATING.length} />
@@ -232,7 +234,7 @@ function RotatingItem({
   const cycle = 2.6;
   return (
     <motion.span
-      className="absolute left-0"
+      className="absolute left-0 text-gradient-accent"
       initial={{ y: "120%", opacity: 0 }}
       animate={{
         y: ["120%", "0%", "0%", "-120%"],
