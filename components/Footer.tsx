@@ -14,19 +14,28 @@ export default function Footer() {
       <div className="container-x relative py-20">
         {/* Huge wordmark */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1 }}
-          className="select-none pb-12 text-center font-display text-[18vw] font-bold leading-none tracking-tighter text-muted-dim md:text-[140px]"
+          className="select-none overflow-hidden pb-12"
         >
-          UXCODESTUDIO
+          <div className="flex animate-marquee gap-12 will-change-transform" style={{ animationDuration: "18s" }}>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <span
+                key={i}
+                className="shrink-0 font-display text-[18vw] font-bold leading-none tracking-tighter text-muted-dim md:text-[140px]"
+              >
+                UXCODESTUDIO <span className="text-accent-cyan/40">·</span>
+              </span>
+            ))}
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-2 gap-10 border-t border-white/5 pt-14 md:grid-cols-5">
           <div className="col-span-2">
             <div className="flex items-center">
-              <Image src="/Logo.png" width={160} height={48} alt="UXCODESTUDIO" />
+              <Image src="/logo.png" width={160} height={48} alt="UXCODESTUDIO" />
             </div>
             <p className="mt-4 max-w-xs text-sm text-muted-soft">{t.footer.description}</p>
             <div className="mt-6 flex gap-3">

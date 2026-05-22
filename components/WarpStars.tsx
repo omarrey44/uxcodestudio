@@ -4,54 +4,36 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-const NUM_TRACES = 22;
-const CYAN = "0, 212, 255";
+const COUNT = 80;
 
-interface Seg { x1: number; y1: number; x2: number; y2: number; len: number }
-interface Trace {
-  segs: Seg[];
-  totalLen: number;
-  delay: number;   // stagger 0–0.35
-  width: number;
-  opacity: number;
+interface Star {
+  x: number;
+  initialY: number;
+  speed: number;
+  size: number;
+  twinklePhase: number;
+  isStatic: boolean;
 }
 
-function buildTraces(w: number, h: number): Trace[] {
-  const out: Trace[] = [];
-  for (let i = 0; i < NUM_TRACES; i++) {
-    const segs: Seg[] = [];
-    let x = w * 0.05 + Math.random() * w * 0.9;
-    let y = h * 0.05 + Math.random() * h * 0.9;
-    let dir: "h" | "v" = Math.random() < 0.5 ? "h" : "v";
-    const numSegs = 2 + Math.floor(Math.random() * 3);
-    let totalLen = 0;
-
-    for (let s = 0; s < numSegs; s++) {
-      const len = 50 + Math.random() * 160;
-      const sign = Math.random() < 0.5 ? 1 : -1;
-      const x2 = dir === "h" ? x + sign * len : x;
-      const y2 = dir === "v" ? y + sign * len : y;
-      segs.push({ x1: x, y1: y, x2, y2, len });
-      totalLen += len;
-      x = x2; y = y2;
-      dir = dir === "h" ? "v" : "h";
-    }
-
-    out.push({
-      segs,
-      totalLen,
-      delay: Math.random() * 0.35,
-      width: 0.5 + Math.random() * 0.6,
-      opacity: 0.25 + Math.random() * 0.35,
-    });
-  }
-  return out;
+function buildStars(): Star[] {
+  return Array.from({ length: COUNT }, () => {
+    const isStatic = Math.random() < 0.3;
+    return {
+      x: Math.random(),
+      initialY: Math.random(),
+      speed: isStatic ? 0 : 0.2 + Math.random() * 0.6,
+      size: isStatic ? 1 + Math.random() * 0.5 : 1 + Math.random() * 2,
+      twinklePhase: Math.random() * Math.PI * 2,
+      isStatic,
+    };
+  });
 }
 
 export default function WarpStars() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const progressRef = useRef(0);
-  const tracesRef = useRef<Trace[]>([]);
+  const prevProgressRef = useRef(0);
+  const starsRef = useRef<Star[]>([]);
   const rafRef = useRef<number>(0);
 
   useEffect(() => {
@@ -65,7 +47,7 @@ export default function WarpStars() {
     const init = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      tracesRef.current = buildTraces(canvas.width, canvas.height);
+      starsRef.current = buildStars();
     };
     init();
     window.addEventListener("resize", init);
@@ -79,57 +61,53 @@ export default function WarpStars() {
       onUpdate: (self) => { progressRef.current = self.progress; },
     });
 
-    const drawSegments = (
-      trace: Trace,
-      drawnLen: number,
-      alpha: number
-    ) => {
-      let remaining = drawnLen;
-      ctx.strokeStyle = `rgba(${CYAN}, ${trace.opacity * alpha})`;
-      ctx.lineWidth = trace.width;
-      ctx.shadowBlur = 5;
-      ctx.shadowColor = `rgba(${CYAN}, ${alpha * 0.7})`;
-      ctx.lineCap = "round";
-
-      for (const seg of trace.segs) {
-        if (remaining <= 0) break;
-        const t = Math.min(remaining / seg.len, 1);
-        const x2 = seg.x1 + (seg.x2 - seg.x1) * t;
-        const y2 = seg.y1 + (seg.y2 - seg.y1) * t;
-        ctx.beginPath();
-        ctx.moveTo(seg.x1, seg.y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
-
-        // node dot at joint
-        if (t >= 1) {
-          ctx.beginPath();
-          ctx.arc(seg.x2, seg.y2, 1.8, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${CYAN}, ${trace.opacity * alpha * 1.4})`;
-          ctx.shadowBlur = 8;
-          ctx.fill();
-        }
-        remaining -= seg.len;
-      }
-    };
-
-    const render = () => {
+    const render = (time: number) => {
       const p = progressRef.current;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       if (p > 0.01 && p < 0.99) {
-        // bell alpha: peaks at center
         const alpha = Math.sin(p * Math.PI);
-        // draw progress: 0→1 over first half, stays 1 after
-        const drawP = Math.min(p * 2, 1);
+        const w = canvas.width;
+        const h = canvas.height;
 
-        tracesRef.current.forEach((trace) => {
-          const localP = Math.max(0, (drawP - trace.delay) / (1 - trace.delay));
-          const drawnLen = localP * trace.totalLen;
-          if (drawnLen > 0) drawSegments(trace, drawnLen, alpha);
+        // Derive velocity from progress delta between frames
+        const delta = Math.abs(p - prevProgressRef.current);
+        prevProgressRef.current = p;
+        const stretch = Math.max(1, Math.min(1 + delta * 900, 4));
+
+        // Approximate scroll position from progress (for star parallax)
+        const fakeScroll = p * h * 8;
+
+        starsRef.current.forEach((star) => {
+          const twinkle = 0.5 + 0.5 * Math.sin(time * 0.0008 + star.twinklePhase);
+
+          if (star.isStatic) {
+            const posY = star.initialY * h;
+            ctx.globalAlpha = alpha * twinkle * 0.7;
+            ctx.fillStyle = "#ffffff";
+            ctx.beginPath();
+            ctx.arc(star.x * w, posY, star.size * 0.5, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            let pos = (star.initialY - (fakeScroll * star.speed * 0.05) / h) % 1;
+            if (pos < 0) pos += 1;
+            const posY = pos * h;
+
+            ctx.globalAlpha = alpha * (0.7 + twinkle * 0.3);
+            ctx.save();
+            ctx.translate(star.x * w, posY);
+            ctx.scale(1, stretch);
+            ctx.fillStyle = "#ffffff";
+            ctx.shadowBlur = stretch > 1.5 ? 6 : 0;
+            ctx.shadowColor = "rgba(255,255,255,0.8)";
+            ctx.beginPath();
+            ctx.arc(0, 0, star.size * 0.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
         });
 
-        // reset shadow
+        ctx.globalAlpha = 1;
         ctx.shadowBlur = 0;
       }
 
