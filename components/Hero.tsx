@@ -60,21 +60,9 @@ export default function Hero() {
 
         gsap.from(".hero-scene", {
           opacity: 0,
-          scale: 0.92,
           duration: 1.4,
           delay: 0.4,
           ease: "expo.out",
-        });
-
-        gsap.to(rootRef.current, {
-          scrollTrigger: {
-            trigger: rootRef.current,
-            start: "top top",
-            end: "bottom top",
-            scrub: true,
-          },
-          opacity: 0.4,
-          ease: "none",
         });
 
       }, rootRef);
