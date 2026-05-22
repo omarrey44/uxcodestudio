@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import { gsap } from "gsap";
@@ -15,6 +15,7 @@ const ROTATING = ["Websites", "Landings", "Web Apps", "SaaS"];
 
 export default function Hero() {
   const rootRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
 
   const heroText = "UXCODESTUDIO is a digital product studio crafting cinematic interfaces and high-performing systems for ambitious teams that refuse to ship anything average.";
@@ -75,6 +76,16 @@ export default function Hero() {
             scrub: true,
           },
           opacity: 0.4,
+          ease: "none",
+        });
+
+        gsap.to(contentRef.current, {
+          scrollTrigger: {
+            trigger: rootRef.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
           scale: 0.96,
           ease: "none",
         });
@@ -111,7 +122,7 @@ export default function Hero() {
         <div className="absolute inset-0" style={{ background: "rgba(5,5,8,0.30)" }} />
       </div>
 
-      <div className="container-x relative grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-8">
+      <div ref={contentRef} className="container-x relative grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-8">
         {/* LEFT */}
         <div className="lg:col-span-6">
           <motion.div
@@ -211,46 +222,28 @@ export default function Hero() {
 }
 
 function RotatingWord() {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setIndex((i) => (i + 1) % ROTATING.length), 2600);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <span className="relative inline-flex h-[1.05em] min-w-[10ch] overflow-hidden align-bottom">
       <AnimatePresence mode="popLayout">
-        {ROTATING.map((word, idx) => (
-          <RotatingItem key={word} word={word} index={idx} total={ROTATING.length} />
-        ))}
+        <motion.span
+          key={ROTATING[index]}
+          className="absolute left-0 text-gradient-accent"
+          initial={{ y: "110%", opacity: 0 }}
+          animate={{ y: "0%", opacity: 1 }}
+          exit={{ y: "-110%", opacity: 0 }}
+          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {ROTATING[index]}
+        </motion.span>
       </AnimatePresence>
     </span>
-  );
-}
-
-function RotatingItem({
-  word,
-  index,
-  total,
-}: {
-  word: string;
-  index: number;
-  total: number;
-}) {
-  const cycle = 2.6;
-  return (
-    <motion.span
-      className="absolute left-0 text-gradient-accent"
-      initial={{ y: "120%", opacity: 0 }}
-      animate={{
-        y: ["120%", "0%", "0%", "-120%"],
-        opacity: [0, 1, 1, 0],
-      }}
-      transition={{
-        duration: cycle * total,
-        times: [0, 0.08, 0.25, 0.33],
-        delay: index * cycle,
-        repeat: Infinity,
-        repeatDelay: 0,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-    >
-      {word}
-    </motion.span>
   );
 }
 
