@@ -109,6 +109,7 @@ export default function Hero() {
     <section
       id="top"
       ref={rootRef}
+      data-custom-cursor-zone
       className="relative isolate min-h-screen overflow-hidden pt-24 md:pt-36"
     >
       {/* Backgrounds */}
