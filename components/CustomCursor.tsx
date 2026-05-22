@@ -20,13 +20,31 @@ export default function CustomCursor() {
     const cursor = cursorRef.current;
     if (!cursor) return;
 
-    cursor.style.opacity = "1";
-    trailRefs.current.forEach((t) => { if (t) t.style.opacity = "1"; });
-
     let rafId: number;
     const LERP = 0.14;
 
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
+    const showCursor = () => {
+      cursor.style.opacity = "1";
+      trailRefs.current.forEach((t) => { if (t) t.style.opacity = "1"; });
+    };
+
+    const hideCursor = () => {
+      cursor.style.opacity = "0";
+      trailRefs.current.forEach((t) => { if (t) t.style.opacity = "0"; });
+    };
+
+    const bindZones = () => {
+      document.querySelectorAll("[data-custom-cursor-zone]").forEach((zone) => {
+        zone.addEventListener("mouseenter", showCursor);
+        zone.addEventListener("mouseleave", hideCursor);
+      });
+    };
+
+    bindZones();
+    const zoneObserver = new MutationObserver(bindZones);
+    zoneObserver.observe(document.body, { childList: true, subtree: true });
 
     const animate = () => {
       const { x, y } = pos.current;
@@ -94,9 +112,14 @@ export default function CustomCursor() {
 
     return () => {
       observer.disconnect();
+      zoneObserver.disconnect();
       document.querySelectorAll("[data-cursor-hover]").forEach((el) => {
         el.removeEventListener("mouseenter", onMouseEnterHoverable);
         el.removeEventListener("mouseleave", onMouseLeaveHoverable);
+      });
+      document.querySelectorAll("[data-custom-cursor-zone]").forEach((zone) => {
+        zone.removeEventListener("mouseenter", showCursor);
+        zone.removeEventListener("mouseleave", hideCursor);
       });
       document.removeEventListener("mousemove", onMouseMove);
       cancelAnimationFrame(rafId);

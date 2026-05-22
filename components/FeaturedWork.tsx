@@ -32,7 +32,15 @@ const WORKS = [
 
 export default function FeaturedWork() {
   return (
-    <section id="work" className="relative py-32 md:py-40">
+    <section id="work" className="section-deep section-separator relative py-32 md:py-40">
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div
+          className="absolute inset-0 grid-bg opacity-[0.25]"
+          style={{ maskImage: "radial-gradient(ellipse 90% 80% at 50% 50%, black 25%, transparent 100%)" }}
+        />
+        <div className="absolute -right-24 top-1/3 h-[600px] w-[500px] rounded-full bg-accent-cyan/[0.09] blur-[120px]" />
+        <div className="absolute -left-16 bottom-1/4 h-[500px] w-[500px] rounded-full bg-accent-blue/[0.09] blur-[100px]" />
+      </div>
       <div className="container-x">
         <SectionHeader
           eyebrow="Featured work"

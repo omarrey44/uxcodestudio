@@ -35,13 +35,16 @@ export default function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="relative py-32 md:py-40">
+    <section id="faq" className="section-deep section-separator relative py-20 md:py-28">
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute -bottom-24 left-1/2 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-accent-cyan/[0.1] blur-[120px]" />
+        <div className="absolute -top-10 right-1/4 h-[350px] w-[400px] rounded-full bg-accent-violet/[0.07] blur-[100px]" />
+      </div>
       <div className="container-x">
         <SectionHeader
           eyebrow="FAQ"
           title="Everything you need"
           accent="to decide."
-          description="Still curious? Reach out — we reply in under a business day."
         />
 
         <div className="mx-auto mt-16 max-w-3xl space-y-3">

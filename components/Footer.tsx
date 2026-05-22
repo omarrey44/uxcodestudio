@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const COLUMNS = [
   {
@@ -37,16 +38,8 @@ export default function Footer() {
 
         <div className="grid grid-cols-2 gap-10 border-t border-white/5 pt-14 md:grid-cols-5">
           <div className="col-span-2">
-            <div className="flex items-center gap-2">
-              <span className="relative grid h-8 w-8 place-items-center overflow-hidden rounded-lg bg-gradient-to-br from-accent-blue via-accent-cyan to-accent-violet">
-                <span className="absolute inset-[1px] rounded-[7px] bg-background" />
-                <span className="relative font-display text-sm font-bold text-white">
-                  ux
-                </span>
-              </span>
-              <span className="font-display text-sm font-semibold tracking-wider text-white">
-                UXCODE<span className="text-accent-cyan">STUDIO</span>
-              </span>
+            <div className="flex items-center">
+              <Image src="/Logo.png" width={160} height={48} alt="UXCODESTUDIO" />
             </div>
             <p className="mt-4 max-w-xs text-sm text-muted-soft">
               A premium digital product studio crafting cinematic interfaces for

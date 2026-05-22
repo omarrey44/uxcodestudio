@@ -13,9 +13,11 @@ const STATS = [
 
 export default function WhyChooseUs() {
   return (
-    <section className="section-alt section-separator relative overflow-hidden py-32 md:py-40">
+    <section className="section-alt section-separator relative overflow-hidden py-24 md:py-32">
       <div className="absolute inset-0 -z-10">
-        <div className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-blue/10 blur-3xl" />
+        <div className="absolute left-1/2 top-1/2 h-[750px] w-[750px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-cyan/[0.13] blur-[120px]" />
+        <div className="absolute -right-24 top-1/4 h-[450px] w-[450px] rounded-full bg-accent-violet/[0.09] blur-[100px]" />
+        <div className="absolute -left-16 bottom-1/4 h-[350px] w-[400px] rounded-full bg-accent-blue/[0.08] blur-3xl" />
       </div>
 
       <div className="container-x">
@@ -23,7 +25,6 @@ export default function WhyChooseUs() {
           eyebrow="Why us"
           title={<>Numbers <em className="display-em">that</em> make</>}
           accent="founders relax."
-          description="We obsess over craft because craft compounds — into trust, retention, and revenue."
         />
 
         <div className="mt-20 grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">

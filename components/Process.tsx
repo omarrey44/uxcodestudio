@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SectionHeader } from "./Services";
 
 const STEPS = [
   {
@@ -73,13 +73,32 @@ export default function Process() {
 
   return (
     <section id="process" ref={sectionRef} className="section-deep section-separator relative py-32 md:py-40">
-      <div className="container-x">
-        <SectionHeader
-          eyebrow="Process"
-          title={<>A workflow <em className="display-em">tuned</em> for</>}
-          accent="cinematic outcomes."
-          description="Five tight phases — no fluff, no surprises. You always know what's next and what success looks like."
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div
+          className="absolute inset-0 grid-bg opacity-[0.28]"
+          style={{ maskImage: "radial-gradient(ellipse 85% 75% at 50% 50%, black 30%, transparent 100%)" }}
         />
+        <div className="absolute -left-32 top-1/4 h-[600px] w-[500px] rounded-full bg-accent-violet/[0.11] blur-[120px]" />
+        <div className="absolute -right-20 bottom-1/4 h-[450px] w-[450px] rounded-full bg-accent-blue/[0.08] blur-[100px]" />
+      </div>
+      <div className="container-x">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <h2
+            className="font-display font-bold text-white"
+            style={{ fontSize: "clamp(2.8rem, 5vw, 5rem)", lineHeight: "1.05" }}
+          >
+            A workflow <em className="display-em">tuned</em> for<br />
+            <span className="text-gradient-accent">cinematic outcomes.</span>
+          </h2>
+          <p className="mt-4 max-w-lg text-muted-soft">
+            Five tight phases — no fluff, no surprises.
+          </p>
+        </motion.div>
 
         <div className="relative mx-auto mt-20 max-w-3xl">
           {/* Timeline line */}

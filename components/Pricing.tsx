@@ -58,7 +58,9 @@ export default function Pricing() {
   return (
     <section id="pricing" className="section-alt section-separator relative py-32 md:py-40">
       <div className="absolute inset-0 -z-10">
-        <div className="absolute left-1/2 top-1/2 h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-violet/10 blur-3xl" />
+        <div className="absolute left-1/2 top-1/2 h-[850px] w-[850px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-violet/[0.14] blur-[130px]" />
+        <div className="absolute -left-24 top-1/3 h-[450px] w-[450px] rounded-full bg-accent-blue/[0.1] blur-[100px]" />
+        <div className="absolute -right-16 bottom-1/3 h-[400px] w-[400px] rounded-full bg-accent-cyan/[0.07] blur-3xl" />
       </div>
 
       <div className="container-x">

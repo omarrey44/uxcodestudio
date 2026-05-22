@@ -6,57 +6,73 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 const SERVICES = [
   {
     title: "Marketing Websites",
-    description:
-      "Cinematic, brand-defining sites engineered to convert and rank.",
+    description: "Cinematic, brand-defining sites engineered to convert and rank.",
     icon: "◇",
     tags: ["Design", "Webflow", "Next.js"],
     glow: "from-accent-blue/40 to-accent-cyan/20",
+    iconColor: "rgba(79,110,247,0.85)",
+    iconGlow: "rgba(79,110,247,0.55)",
+    lineColor: "rgba(79,110,247,0.7)",
   },
   {
     title: "Landing Pages",
-    description:
-      "High-velocity launch pages optimized for paid traffic and growth loops.",
+    description: "High-velocity launch pages optimized for paid traffic and growth loops.",
     icon: "◆",
     tags: ["CRO", "A/B Tests", "Analytics"],
     glow: "from-accent-cyan/40 to-accent-violet/20",
+    iconColor: "rgba(0,212,255,0.85)",
+    iconGlow: "rgba(0,212,255,0.5)",
+    lineColor: "rgba(0,212,255,0.7)",
   },
   {
     title: "Web Applications",
-    description:
-      "Production-grade interfaces, design systems and full-stack engineering.",
+    description: "Production-grade interfaces, design systems and full-stack engineering.",
     icon: "◈",
     tags: ["React", "TS", "Node"],
     glow: "from-accent-violet/40 to-accent-blue/20",
+    iconColor: "rgba(139,92,246,0.85)",
+    iconGlow: "rgba(139,92,246,0.5)",
+    lineColor: "rgba(139,92,246,0.7)",
   },
   {
     title: "SaaS Platforms",
-    description:
-      "End-to-end product studios: from 0→1 architecture to billing flows.",
+    description: "End-to-end product studios: from 0→1 architecture to billing flows.",
     icon: "✦",
     tags: ["Stripe", "Auth", "AI"],
     glow: "from-accent-blue/40 to-accent-violet/30",
+    iconColor: "rgba(79,110,247,0.85)",
+    iconGlow: "rgba(79,110,247,0.55)",
+    lineColor: "rgba(79,110,247,0.7)",
   },
   {
     title: "Brand & Identity",
-    description:
-      "Visual systems, motion principles and verbal identity for tech-first brands.",
+    description: "Visual systems, motion principles and verbal identity for tech-first brands.",
     icon: "✺",
     tags: ["Logo", "Motion", "Tone"],
     glow: "from-accent-cyan/40 to-accent-blue/20",
+    iconColor: "rgba(0,212,255,0.85)",
+    iconGlow: "rgba(0,212,255,0.5)",
+    lineColor: "rgba(0,212,255,0.7)",
   },
   {
     title: "Motion & 3D",
-    description:
-      "WebGL, GSAP and Three.js choreography for unforgettable interactions.",
+    description: "WebGL, GSAP and Three.js choreography for unforgettable interactions.",
     icon: "✸",
     tags: ["GSAP", "Three.js", "Shader"],
     glow: "from-accent-violet/40 to-accent-cyan/20",
+    iconColor: "rgba(139,92,246,0.85)",
+    iconGlow: "rgba(139,92,246,0.5)",
+    lineColor: "rgba(139,92,246,0.7)",
   },
 ];
 
 export default function Services() {
   return (
-    <section id="services" className="section-alt section-separator relative py-32 md:py-40">
+    <section id="services" className="section-alt section-separator relative py-24 md:py-32">
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute -bottom-28 left-1/3 h-[600px] w-[600px] rounded-full bg-accent-blue/[0.12] blur-[100px]" />
+        <div className="absolute -bottom-16 right-1/4 h-[500px] w-[400px] rounded-full bg-accent-cyan/[0.07] blur-3xl" />
+      </div>
       <div className="container-x">
         <SectionHeader
           eyebrow="Services"
@@ -81,6 +97,9 @@ function TiltCard({
   icon,
   tags,
   glow,
+  iconColor,
+  iconGlow,
+  lineColor,
   index,
 }: (typeof SERVICES)[number] & { index: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -115,8 +134,19 @@ function TiltCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.7, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative h-full overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-7 transition-colors hover:border-white/20"
+      className="group relative h-full overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-8 transition-colors hover:border-white/20"
     >
+      {/* Top accent line */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-px opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        style={{ background: `linear-gradient(90deg, transparent, ${lineColor}, transparent)` }}
+      />
+      {/* Always-on subtle top line */}
+      <div
+        className="pointer-events-none absolute inset-x-6 top-0 h-px"
+        style={{ background: `linear-gradient(90deg, transparent, ${lineColor}55, transparent)` }}
+      />
+
       <motion.div
         style={{
           background: `radial-gradient(400px circle at ${glowX.get()} ${glowY.get()}, rgba(79,110,247,0.18), transparent 70%)`,
@@ -128,8 +158,17 @@ function TiltCard({
       />
 
       <div className="relative">
-        <div className="mb-6 inline-grid h-12 w-12 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-xl text-accent-cyan transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6">
-          {icon}
+        {/* 3D glass icon */}
+        <div
+          className="relative mb-7 inline-grid h-16 w-16 overflow-hidden rounded-2xl place-items-center transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-3"
+          style={{
+            background: `radial-gradient(circle at 35% 35%, ${iconColor}, rgba(5,5,8,0.95))`,
+            boxShadow: `0 8px 28px -6px ${iconGlow}, inset 0 1px 0 rgba(255,255,255,0.18)`,
+          }}
+        >
+          {/* glass shine */}
+          <span className="pointer-events-none absolute inset-x-0 top-0 h-2/5 rounded-t-2xl bg-gradient-to-b from-white/30 to-transparent" />
+          <span className="relative text-2xl text-white">{icon}</span>
         </div>
         <h3 className="font-display text-2xl font-semibold text-white">
           {title}

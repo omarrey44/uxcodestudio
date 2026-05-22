@@ -53,13 +53,16 @@ export default function Testimonials() {
   const row = [...QUOTES, ...QUOTES];
 
   return (
-    <section className="section-deep section-separator relative overflow-hidden py-32 md:py-40">
+    <section className="section-alt section-separator relative overflow-hidden py-20 md:py-28">
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute -top-16 left-1/4 h-[500px] w-[700px] rounded-full bg-accent-violet/[0.1] blur-[120px]" />
+        <div className="absolute -bottom-16 right-1/4 h-[450px] w-[600px] rounded-full bg-accent-blue/[0.09] blur-[100px]" />
+      </div>
       <div className="container-x">
         <SectionHeader
           eyebrow="Loved by founders"
           title="Trusted by teams who"
           accent="don't settle."
-          description="From seed-stage labs to public SaaS — we ship work the whole team is proud of."
         />
       </div>
 

@@ -5,7 +5,7 @@ import MagneticButton from "./MagneticButton";
 
 export default function FinalCTA() {
   return (
-    <section id="contact" className="section-deep relative overflow-hidden py-32 md:py-40">
+    <section id="contact" className="section-deep relative overflow-hidden py-40 md:py-56">
       <div className="absolute inset-0 -z-10">
         <div className="aurora-layer opacity-90" />
         <div className="absolute inset-0 grid-bg opacity-30 [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]" />
