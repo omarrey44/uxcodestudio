@@ -1,12 +1,12 @@
 "use client";
-//test
-import { Suspense, useRef, useMemo, useEffect } from "react";
+
+import { Suspense, useRef, useMemo, useEffect, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   useGLTF,
   useAnimations,
   Environment,
-  ContactShadows,
+  Lightformer,
   Float,
   Html,
 } from "@react-three/drei";
@@ -44,9 +44,12 @@ function RobotHead(props: RobotHeadProps) {
     if (eyeRig) baseRot.current.copy(eyeRig.rotation);
   }, [eyeRig]);
 
+  // Play ALL baked clips (root float/breathing + eye blink)
   useEffect(() => {
-    const first = actions && Object.values(actions)[0];
-    if (first) first.reset().setLoop(THREE.LoopRepeat, Infinity).play();
+    if (!actions) return;
+    Object.values(actions).forEach((a) => {
+      if (a) a.reset().setLoop(THREE.LoopRepeat, Infinity).play();
+    });
   }, [actions]);
 
   useEffect(() => {
@@ -57,20 +60,43 @@ function RobotHead(props: RobotHeadProps) {
       mesh.receiveShadow = true;
       const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
       materials.forEach((mat) => {
-        const m = mat as THREE.MeshStandardMaterial;
+        const m = mat as THREE.MeshStandardMaterial & {
+          transmission?: number;
+          clearcoat?: number;
+          clearcoatRoughness?: number;
+        };
         if (!m?.isMeshStandardMaterial) return;
-        const name = m.name?.toLowerCase() ?? "";
-        if (name.includes("eye") || name.includes("led") || name.includes("emit")) {
+        const name = (m.name ?? "").toLowerCase();
+
+        // Visor: flat matte black — zero reflections, no mirror effect
+        if (name.includes("visor")) {
+          m.transmission = 0;
+          m.metalness = 0.0;
+          m.roughness = 0.92;
+          m.envMapIntensity = 0.0;
+          m.clearcoat = 0.0;
+          m.clearcoatRoughness = 0.0;
+        } else if (name.includes("brushedmetal")) {
+          // Dark satin titanium — controlled reflections, not chrome
+          m.envMapIntensity = 0.45;
+          m.roughness = Math.max(m.roughness ?? 0.4, 0.42);
+          m.metalness = Math.min(m.metalness ?? 0.72, 0.72);
+        } else if (name.includes("panel")) {
+          m.envMapIntensity = 0.3;
+          m.roughness = Math.max(m.roughness ?? 0.5, 0.50);
+        } else if (name.includes("eye")) {
+          // toneMapped=false is critical so bloom captures the cyan glow
           m.emissive = new THREE.Color(0x00d8ff);
-          m.emissiveIntensity = 5.0;
+          m.emissiveIntensity = 6.0;
           m.toneMapped = false;
+          m.envMapIntensity = 0.0;
+        } else if (name.includes("holo")) {
+          m.emissiveIntensity = 0.0;
+          m.visible = false;
         } else {
-          // Force helmet body materials to be readable under light
-          m.roughness = Math.max(m.roughness, 0.35);
-          m.metalness = Math.min(m.metalness, 0.75);
-          m.envMapIntensity = 0.4;
-          m.needsUpdate = true;
+          if (m.envMapIntensity == null) m.envMapIntensity = 0.5;
         }
+        m.needsUpdate = true;
       });
     });
   }, [model]);
@@ -116,59 +142,79 @@ function RobotHead(props: RobotHeadProps) {
 useGLTF.preload(MODEL_URL);
 
 export default function HeroScene() {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [frameloop, setFrameloop] = useState<"always" | "never">("always");
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => setFrameloop(e.isIntersecting ? "always" : "never"),
+      { rootMargin: "200px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   return (
-    <Canvas
-      shadows
-      dpr={[1, 2]}
-      camera={{ position: [0, 0.4, 5.2], fov: 36, near: 0.1, far: 50 }}
-      gl={{ antialias: true, powerPreference: "high-performance", alpha: true }}
-    >
-      {/* Ambient — base fill so dark surfaces aren't pure black */}
-      <ambientLight intensity={0.45} />
-      {/* Key light — top-right front, reveals helmet geometry */}
-      <spotLight
-        position={[2, 5, 4]}
-        angle={0.45}
-        penumbra={0.8}
-        intensity={180}
-        color="#ffffff"
-        castShadow
-        shadow-mapSize={[1024, 1024]}
-      />
-      {/* Front fill — soft white from camera direction to show detail */}
-      <pointLight position={[0, 1, 5]} intensity={60} color="#e0eeff" />
-      {/* Left cyan rim — edge highlight on helmet */}
-      <pointLight position={[-4, 2, 1]} intensity={80} color="#1fbfff" />
-      {/* Right violet rim — opposite edge */}
-      <pointLight position={[4, 1, 1]} intensity={50} color="#7c3aed" />
-      {/* Top down — defines the crown of the helmet */}
-      <pointLight position={[0, 6, 2]} intensity={40} color="#ffffff" />
-
-      <Suspense fallback={<Loader />}>
-        <Float speed={1.1} rotationIntensity={0.15} floatIntensity={0.4}>
-          <RobotHead position={[0, 0.1, 0]} scale={0.88} />
-        </Float>
-        <Environment preset="city" environmentIntensity={0.8} />
-      </Suspense>
-
-      <ContactShadows
-        position={[0, -1.1, 0]}
-        opacity={0.5}
-        scale={6}
-        blur={2.6}
-        far={3}
-        color="#000000"
-      />
-
-      <EffectComposer enableNormalPass={false}>
-        <Bloom
-          intensity={0.9}
-          luminanceThreshold={0.6}
-          luminanceSmoothing={0.25}
-          mipmapBlur
+    <div ref={wrapRef} style={{ width: "100%", height: "100%" }}>
+      <Canvas
+        frameloop={frameloop}
+        shadows
+        dpr={[1, 1.5]}
+        camera={{ position: [0, 0.4, 5.2], fov: 36, near: 0.1, far: 50 }}
+        gl={{ antialias: true, powerPreference: "high-performance", alpha: true }}
+      >
+        <ambientLight intensity={0.18} />
+        <spotLight
+          position={[2.5, 4, 4]}
+          angle={0.6}
+          penumbra={1}
+          intensity={40}
+          color="#c8d8e8"
+          castShadow
+          shadow-mapSize={[512, 512]}
         />
-        <Vignette eskil={false} offset={0.25} darkness={0.85} />
-      </EffectComposer>
-    </Canvas>
+        <pointLight position={[-3, 0.5, 2]} intensity={18} color="#23c9ff" />
+        <pointLight position={[3, 0.5, 2]} intensity={18} color="#23c9ff" />
+
+        <Suspense fallback={<Loader />}>
+          <Float speed={1.1} rotationIntensity={0.15} floatIntensity={0.4}>
+            <RobotHead position={[0, 0.1, 0]} scale={0.88} />
+          </Float>
+
+          {/* Controlled environment — white top + cyan sides, no random color bleed */}
+          <Environment resolution={256}>
+            <color attach="background" args={["#05070b"]} />
+            <Lightformer intensity={1.4} color="#d0dce8" position={[0, 3, 2]} scale={[5, 2, 1]} />
+            <Lightformer
+              intensity={1.2}
+              color="#2fd2ff"
+              position={[-4, 0, 2]}
+              rotation={[0, Math.PI / 2, 0]}
+              scale={[3, 4, 1]}
+            />
+            <Lightformer
+              intensity={1.2}
+              color="#2f9bff"
+              position={[4, 0, 2]}
+              rotation={[0, -Math.PI / 2, 0]}
+              scale={[3, 4, 1]}
+            />
+          </Environment>
+        </Suspense>
+
+
+        <EffectComposer disableNormalPass>
+          <Bloom
+            intensity={0.9}
+            luminanceThreshold={0.85}
+            luminanceSmoothing={0.15}
+            mipmapBlur
+          />
+          <Vignette eskil={false} offset={0.35} darkness={0.6} />
+        </EffectComposer>
+      </Canvas>
+    </div>
   );
 }

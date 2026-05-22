@@ -7,19 +7,17 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import MagneticButton from "./MagneticButton";
 import { useTextScramble } from "@/lib/hooks/useTextScramble";
-import { useMouseParallax } from "@/lib/hooks/useMouseParallax";
+import { useLanguage } from "@/lib/i18n";
 
 const HeroScene = dynamic(() => import("./three/HeroScene"), { ssr: false });
-
-const ROTATING = ["Websites", "Landings", "Web Apps", "SaaS"];
 
 export default function Hero() {
   const rootRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
 
-  const heroText = "UXCODESTUDIO is a digital product studio crafting cinematic interfaces and high-performing systems for ambitious teams that refuse to ship anything average.";
-  const scrambledHero = useTextScramble(heroText, 1600);
+  const { t } = useLanguage();
+  const scrambledHero = useTextScramble(t.hero.desc, 1600);
 
   useEffect(() => {
     // SSR-safe — runs only on client
@@ -111,7 +109,7 @@ export default function Hero() {
     <section
       id="top"
       ref={rootRef}
-      className="relative isolate min-h-screen overflow-hidden pt-32 md:pt-36"
+      className="relative isolate min-h-screen overflow-hidden pt-24 md:pt-36"
     >
       {/* Backgrounds */}
       <div className="absolute inset-0 -z-10">
@@ -135,37 +133,37 @@ export default function Hero() {
               <span className="absolute inset-0 animate-ping rounded-full bg-accent-cyan opacity-75" />
               <span className="relative h-2 w-2 rounded-full bg-accent-cyan" />
             </span>
-            Booking new projects · Q3 2026
+            {t.hero.badge}
           </motion.div>
 
           <h1
             ref={headlineRef}
-            className="hero-headline font-hero font-black uppercase"
-            style={{ fontSize: "clamp(3.2rem, 6.5vw, 6rem)", lineHeight: "0.93", letterSpacing: "-0.01em" }}
+            className="hero-headline font-hero font-black uppercase text-center md:text-left"
+            style={{ fontSize: "clamp(2.2rem, 6.5vw, 6rem)", lineHeight: "0.93", letterSpacing: "-0.01em" }}
           >
             <span className="block overflow-hidden">
-              <span className="word inline-block" style={{ color: "#ffffff" }}>We&nbsp;design&nbsp;&amp;</span>
+              <span className="word inline-block" style={{ color: "#ffffff" }}>{t.hero.headlinePart1}</span>
             </span>
             <span className="block overflow-hidden">
-              <span className="word inline-block" style={{ color: "#60a5fa" }}>engineer</span>
+              <span className="word inline-block" style={{ color: "#60a5fa" }}>{t.hero.headlinePart2}</span>
             </span>
             <span className="block overflow-hidden">
               <span className="word inline-block">
-                <RotatingWord />
+                <RotatingWord words={t.hero.rotating} />
               </span>
             </span>
           </h1>
 
-          <p className="hero-sub mt-8 max-w-xl text-balance text-base text-muted-soft md:text-lg">
+          <p className="hero-sub mt-8 min-h-[5rem] max-w-xl text-balance text-base text-muted-soft md:text-lg">
             {scrambledHero}
           </p>
 
           <div className="hero-cta mt-10 flex flex-wrap items-center gap-4">
             <MagneticButton href="#contact" variant="primary">
-              Start your project <span aria-hidden>→</span>
+              {t.hero.cta1} <span aria-hidden>→</span>
             </MagneticButton>
             <MagneticButton href="#work" variant="secondary">
-              View our work
+              {t.hero.cta2}
             </MagneticButton>
           </div>
 
@@ -182,19 +180,15 @@ export default function Hero() {
               ))}
             </div>
             <div>
-              <div className="font-display text-lg text-white">
-                40+ products shipped
-              </div>
-              <div className="text-xs text-muted-soft">
-                Rated 4.9/5 by founders &amp; design leads
-              </div>
+              <div className="font-display text-lg text-white">{t.hero.statsCount}</div>
+              <div className="text-xs text-muted-soft">{t.hero.statsRating}</div>
             </div>
           </div>
         </div>
 
         {/* RIGHT — 3D + Holographic UI */}
         <div className="hero-scene relative lg:col-span-6">
-          <div className="relative aspect-[4/5] w-full">
+          <div className="relative h-[240px] sm:h-auto sm:aspect-[4/5] w-full">
             <div className="absolute inset-0 h-full w-full">
               <HeroScene />
             </div>
@@ -221,158 +215,95 @@ export default function Hero() {
   );
 }
 
-function RotatingWord() {
+function RotatingWord({ words }: { words: string[] }) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const id = setInterval(() => setIndex((i) => (i + 1) % ROTATING.length), 2600);
+    setIndex(0);
+  }, [words]);
+
+  useEffect(() => {
+    const id = setInterval(() => setIndex((i) => (i + 1) % words.length), 2600);
     return () => clearInterval(id);
-  }, []);
+  }, [words]);
 
   return (
-    <span className="relative inline-flex h-[1.05em] min-w-[10ch] overflow-hidden align-bottom">
+    <span className="relative inline-block h-[1.05em] min-w-[8ch] overflow-hidden align-bottom">
       <AnimatePresence mode="popLayout">
         <motion.span
-          key={ROTATING[index]}
-          className="absolute left-0 text-gradient-accent"
+          key={words[index]}
+          className="absolute inset-x-0 text-center text-gradient-accent"
           initial={{ y: "110%", opacity: 0 }}
           animate={{ y: "0%", opacity: 1 }}
           exit={{ y: "-110%", opacity: 0 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         >
-          {ROTATING[index]}
+          {words[index]}
         </motion.span>
       </AnimatePresence>
     </span>
   );
 }
 
-function FloatingDashboard() {
-  const parallax = useMouseParallax();
-  const card1Ref = useRef<HTMLDivElement>(null);
-  const card2Ref = useRef<HTMLDivElement>(null);
-  const card3Ref = useRef<HTMLDivElement>(null);
+const CODE_LINES = [
+  { text: "export default function Ship() {", color: "#c792ea" },
+  { text: "  const ui = useDesign({",         color: "#82aaff" },
+  { text: "    polish: 100,",                 color: "#f78c6c" },
+  { text: '    motion: "cinematic",',         color: "#c3e88d" },
+  { text: "  });",                            color: "#82aaff" },
+  { text: "  return <Beautiful {...ui} />;",  color: "#89ddff" },
+  { text: "}",                               color: "#c792ea" },
+];
+
+function TypedCode() {
+  const full = CODE_LINES.map((l) => l.text).join("\n");
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
-    let rafId: number;
-    const tick = () => {
-      const px = parallax.current.x;
-      const py = parallax.current.y;
-      if (card1Ref.current)
-        card1Ref.current.style.transform = `translate(${px * 1.2 * 18}px, ${py * 1.2 * 12}px)`;
-      if (card2Ref.current)
-        card2Ref.current.style.transform = `translate(${px * 0.6 * 18}px, ${py * 0.6 * 12}px)`;
-      if (card3Ref.current)
-        card3Ref.current.style.transform = `translate(${px * 0.9 * 18}px, ${py * 0.9 * 12}px)`;
-      rafId = requestAnimationFrame(tick);
-    };
-    rafId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafId);
-  }, [parallax]);
+    if (count >= full.length) {
+      const id = setTimeout(() => setCount(0), 2600);
+      return () => clearTimeout(id);
+    }
+    const id = setTimeout(() => setCount((c) => c + 1), 30);
+    return () => clearTimeout(id);
+  }, [count, full.length]);
+
+  const typed = full.slice(0, count);
+  const lines = typed.split("\n");
 
   return (
-    <>
-      {/* Card 1: Conversion chart — depth 1.2× (closest) */}
-      <div
-        ref={card1Ref}
-        className="absolute"
-        style={{ top: "2.5rem", left: "-1.5rem", willChange: "transform" }}
-      >
-        <motion.div
-          animate={{ y: [0, -7, 0] }}
-          transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1, duration: 0.8 }}
-            className="w-[220px] rounded-2xl glass-strong p-4 neon-border glow-blue"
-          >
-            <div className="flex items-center justify-between text-[10px] text-muted-soft">
-              <span>Conversion</span>
-              <span className="text-accent-cyan">+318%</span>
-            </div>
-            <div className="mt-2 flex items-end gap-1">
-              {[40, 55, 38, 70, 50, 82, 65, 92].map((h, i) => (
-                <motion.span
-                  key={i}
-                  initial={{ height: 0 }}
-                  animate={{ height: h }}
-                  transition={{ delay: 1.3 + i * 0.06, duration: 0.6 }}
-                  className="w-2.5 rounded-sm bg-gradient-to-t from-accent-blue to-accent-cyan"
-                  style={{ height: h }}
-                />
-              ))}
-            </div>
-            <div className="mt-3 font-display text-2xl font-bold text-white">
-              12,847
-            </div>
-            <div className="text-[10px] text-muted-dim">unique sessions / 24h</div>
-          </motion.div>
-        </motion.div>
-      </div>
+    <pre className="font-mono text-[11px] leading-[1.75]">
+      {lines.map((lineText, li) => {
+        const isLast = li === lines.length - 1;
+        return (
+          <div key={li}>
+            <span style={{ color: CODE_LINES[li]?.color ?? "#fff" }}>{lineText}</span>
+            {isLast && <span className="animate-pulse" style={{ color: "#00d4ff" }}>▌</span>}
+          </div>
+        );
+      })}
+    </pre>
+  );
+}
 
-      {/* Card 2: Code editor — depth 0.6× (furthest) */}
-      <div
-        ref={card2Ref}
-        className="absolute"
-        style={{ bottom: "6rem", right: "-1rem", willChange: "transform" }}
-      >
-        <motion.div
-          animate={{ y: [0, -7, 0] }}
-          transition={{ duration: 4.1, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.3, duration: 0.8 }}
-            className="w-[260px] rounded-2xl glass-strong p-3 neon-border"
-          >
-            <div className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
-              <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
-              <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
-              <span className="ml-auto text-[10px] text-muted-dim">App.tsx</span>
-            </div>
-            <pre className="mt-3 overflow-hidden text-[10.5px] leading-relaxed text-muted">
-{`export default function Ship() {
-  const ui = useDesign({
-    polish: 100,
-    motion: "cinematic",
-  });
-  return <Beautiful {...ui} />;
-}`}
-            </pre>
-          </motion.div>
-        </motion.div>
+function FloatingDashboard() {
+  return (
+    <motion.div
+      className="absolute inset-x-0 hidden sm:block"
+      style={{ top: "-4.5rem" }}
+      initial={{ opacity: 0, y: -12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 1.1, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div className="rounded-2xl glass-strong p-4 neon-border">
+        <div className="mb-3 flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
+          <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/80" />
+          <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
+          <span className="ml-auto text-[10px] tracking-widest text-muted-dim">App.tsx</span>
+        </div>
+        <TypedCode />
       </div>
-
-      {/* Card 3: Lighthouse badge — depth 0.9× (medium) */}
-      <div
-        ref={card3Ref}
-        className="absolute"
-        style={{ bottom: "0.5rem", left: "1rem", willChange: "transform" }}
-      >
-        <motion.div
-          animate={{ y: [0, -7, 0] }}
-          transition={{ duration: 4.7, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.5, duration: 0.8 }}
-            className="flex items-center gap-3 rounded-full glass-strong px-4 py-2.5 glow-violet"
-          >
-            <span className="grid h-7 w-7 place-items-center rounded-full bg-gradient-to-br from-accent-violet to-accent-blue text-xs">
-              ✦
-            </span>
-            <div className="leading-tight">
-              <div className="text-[11px] font-medium text-white">Lighthouse 100</div>
-              <div className="text-[9px] text-muted-dim">Perf · A11y · SEO</div>
-            </div>
-          </motion.div>
-        </motion.div>
-      </div>
-    </>
+    </motion.div>
   );
 }

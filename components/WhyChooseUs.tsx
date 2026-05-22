@@ -3,15 +3,11 @@
 import { motion } from "framer-motion";
 import { SectionHeader } from "./Services";
 import AnimatedCounter from "./AnimatedCounter";
-
-const STATS = [
-  { value: 187, suffix: "%", label: "Avg. conversion lift", sub: "across 24 launches" },
-  { value: 42, suffix: "", label: "Industry awards", sub: "Awwwards · CSSDA · FWA" },
-  { value: 98, suffix: "/100", label: "Lighthouse score", sub: "median across shipped sites" },
-  { value: 14, suffix: " days", label: "Average to launch", sub: "for landing pages" },
-];
+import { useLanguage } from "@/lib/i18n";
 
 export default function WhyChooseUs() {
+  const { t } = useLanguage();
+
   return (
     <section className="section-alt section-separator relative overflow-hidden py-24 md:py-32">
       <div className="absolute inset-0 -z-10">
@@ -22,13 +18,13 @@ export default function WhyChooseUs() {
 
       <div className="container-x">
         <SectionHeader
-          eyebrow="Why us"
-          title={<>Numbers <em className="display-em">that</em> make</>}
-          accent="founders relax."
+          eyebrow={t.why.eyebrow}
+          title={<>{t.why.titlePart1} <em className="display-em">{t.why.titleEmphasis}</em>{t.why.titlePart2 ? ` ${t.why.titlePart2}` : ""}</>}
+          accent={t.why.accent}
         />
 
         <div className="mt-20 grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
-          {STATS.map((s, i) => (
+          {t.why.stats.map((s, i) => (
             <StatCard key={s.label} {...s} index={i} />
           ))}
         </div>
@@ -46,29 +42,17 @@ export default function WhyChooseUs() {
           <div className="relative grid grid-cols-1 gap-10 md:grid-cols-2 md:items-center">
             <div>
               <div className="font-display text-3xl font-semibold leading-tight text-white md:text-4xl">
-                Senior team. <span className="text-gradient-accent">Zero handoffs.</span> Real partners.
+                {t.why.teamHeadline}{" "}
+                <span className="text-gradient-accent">{t.why.teamHeadlineAccent}</span>{" "}
+                Real partners.
               </div>
-              <p className="mt-4 text-muted-soft">
-                You work directly with the designers and engineers shipping the
-                pixels — no account managers, no juniors silently learning on
-                your project.
-              </p>
+              <p className="mt-4 text-muted-soft">{t.why.teamDesc}</p>
             </div>
 
             <ul className="grid grid-cols-1 gap-3 text-sm text-muted">
-              {[
-                "Embedded Slack channel from day 1",
-                "Weekly demo + Loom updates",
-                "Dedicated Figma + GitHub workspace",
-                "Lifetime micro-fixes on shipped work",
-              ].map((f) => (
-                <li
-                  key={f}
-                  className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3"
-                >
-                  <span className="grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-accent-blue to-accent-cyan text-[10px] text-black">
-                    ✓
-                  </span>
+              {t.why.features.map((f) => (
+                <li key={f} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                  <span className="grid h-6 w-6 place-items-center rounded-full bg-gradient-to-br from-accent-blue to-accent-cyan text-[10px] text-black">✓</span>
                   {f}
                 </li>
               ))}
@@ -80,39 +64,19 @@ export default function WhyChooseUs() {
   );
 }
 
-function StatCard({
-  value,
-  suffix,
-  label,
-  sub,
-  index,
-}: {
-  value: number;
-  suffix: string;
-  label: string;
-  sub: string;
-  index: number;
-}) {
+function StatCard({ value, suffix, label, sub, index }: { value: number; suffix: string; label: string; sub: string; index: number }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{
-        duration: 0.9,
-        delay: index * 0.08,
-        ease: [0.22, 1, 0.36, 1],
-      }}
+      transition={{ duration: 0.9, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
       className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-6 transition-colors hover:border-white/20"
     >
       <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-accent-blue/10 via-transparent to-accent-violet/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
       <div className="relative">
         <div className="font-display text-4xl font-bold leading-none md:text-5xl">
-          <AnimatedCounter
-            value={value}
-            suffix={suffix}
-            className="text-gradient"
-          />
+          <AnimatedCounter value={value} suffix={suffix} className="text-gradient" />
         </div>
         <div className="mt-3 text-sm font-medium text-white">{label}</div>
         <div className="text-xs text-muted-dim">{sub}</div>

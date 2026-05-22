@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { SectionHeader } from "./Services";
+import { useLanguage } from "@/lib/i18n";
 
 const QUOTES = [
   {
@@ -49,7 +50,7 @@ const QUOTES = [
 ];
 
 export default function Testimonials() {
-  // duplicate for seamless marquee
+  const { t } = useLanguage();
   const row = [...QUOTES, ...QUOTES];
 
   return (
@@ -60,9 +61,9 @@ export default function Testimonials() {
       </div>
       <div className="container-x">
         <SectionHeader
-          eyebrow="Loved by founders"
-          title="Trusted by teams who"
-          accent="don't settle."
+          eyebrow={t.testimonials.eyebrow}
+          title={t.testimonials.titlePart1}
+          accent={t.testimonials.accent}
         />
       </div>
 

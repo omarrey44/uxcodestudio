@@ -2,8 +2,10 @@
 
 import { motion } from "framer-motion";
 import MagneticButton from "./MagneticButton";
+import { useLanguage } from "@/lib/i18n";
 
 export default function FinalCTA() {
+  const { t } = useLanguage();
   return (
     <section id="contact" className="section-deep relative overflow-hidden py-40 md:py-56">
       <div className="absolute inset-0 -z-10">
@@ -24,33 +26,30 @@ export default function FinalCTA() {
 
           <div className="relative">
             <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] uppercase tracking-[0.3em] text-muted">
-              <span className="h-1 w-1 rounded-full bg-accent-cyan" /> Let's build
+              <span className="h-1 w-1 rounded-full bg-accent-cyan" /> {t.cta.badge}
             </div>
 
             <h2 className="font-display text-4xl font-bold leading-[1.05] text-balance text-white md:text-7xl">
-              Ready to ship something
+              {t.cta.headlinePart1}
               <br />
-              <span className="text-gradient-accent">people screenshot?</span>
+              <span style={{ background: "linear-gradient(90deg, #ffffff 0%, #a5f3fc 55%, #ddd6fe 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>{t.cta.headlinePart2}</span>
             </h2>
 
             <p className="mx-auto mt-6 max-w-xl text-balance text-muted md:text-lg">
-              Book a 30-minute call. Walk out with a clear scope, a fixed quote
-              and an honest opinion on whether we're the right fit.
+              {t.cta.description}
             </p>
 
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
               <MagneticButton href="mailto:hello@uxcodestudio.com" variant="primary">
-                Book a discovery call <span aria-hidden>→</span>
+                {t.cta.cta1} <span aria-hidden>→</span>
               </MagneticButton>
               <MagneticButton href="#work" variant="secondary">
-                Or browse the work
+                {t.cta.cta2}
               </MagneticButton>
             </div>
 
             <div className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs text-muted-dim">
-              <span>✦ Fixed quote in 24h</span>
-              <span>✦ NDA on request</span>
-              <span>✦ Remote-first · Worldwide</span>
+              {t.cta.features.map((f) => <span key={f}>✦ {f}</span>)}
             </div>
           </div>
         </motion.div>

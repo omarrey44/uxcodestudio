@@ -7,8 +7,17 @@ const CHARS = "!@#$%^&*()_+-=[]{}|;:,.<>?/~`ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghij
 export function useTextScramble(text: string, duration = 1200) {
   const [displayText, setDisplayText] = useState(text);
   const rafRef = useRef<number>(0);
+  const mountedRef = useRef(false);
 
   useEffect(() => {
+    // Only run the scramble animation on initial mount.
+    // Language changes just update the text instantly to avoid layout shift.
+    if (mountedRef.current) {
+      setDisplayText(text);
+      return;
+    }
+    mountedRef.current = true;
+
     const startTime = performance.now();
     const totalChars = text.length;
 

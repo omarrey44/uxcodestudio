@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { SectionHeader } from "./Services";
+import { useLanguage } from "@/lib/i18n";
 
 const WORKS = [
   {
@@ -31,6 +32,7 @@ const WORKS = [
 ];
 
 export default function FeaturedWork() {
+  const { t } = useLanguage();
   return (
     <section id="work" className="section-deep section-separator relative py-32 md:py-40">
       <div className="pointer-events-none absolute inset-0 -z-10">
@@ -43,10 +45,10 @@ export default function FeaturedWork() {
       </div>
       <div className="container-x">
         <SectionHeader
-          eyebrow="Featured work"
-          title="Selected pieces from"
-          accent="our 2025–2026 lab."
-          description="A few products we engineered end-to-end. Every detail tuned for clarity, depth and feel."
+          eyebrow={t.work.eyebrow}
+          title={t.work.titlePart1}
+          accent={t.work.accent}
+          description={t.work.description}
         />
 
         <div className="mt-20 grid grid-cols-1 gap-6 md:grid-cols-2">

@@ -2,23 +2,10 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-
-const COLUMNS = [
-  {
-    title: "Studio",
-    links: ["About", "Process", "Careers", "Contact"],
-  },
-  {
-    title: "Services",
-    links: ["Websites", "Landing Pages", "Web Apps", "SaaS Platforms"],
-  },
-  {
-    title: "Resources",
-    links: ["Work", "Pricing", "FAQ", "Blog"],
-  },
-];
+import { useLanguage } from "@/lib/i18n";
 
 export default function Footer() {
+  const { t } = useLanguage();
   return (
     <footer className="relative overflow-hidden border-t border-white/5">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent-cyan/60 to-transparent" />
@@ -41,10 +28,7 @@ export default function Footer() {
             <div className="flex items-center">
               <Image src="/Logo.png" width={160} height={48} alt="UXCODESTUDIO" />
             </div>
-            <p className="mt-4 max-w-xs text-sm text-muted-soft">
-              A premium digital product studio crafting cinematic interfaces for
-              ambitious teams worldwide.
-            </p>
+            <p className="mt-4 max-w-xs text-sm text-muted-soft">{t.footer.description}</p>
             <div className="mt-6 flex gap-3">
               {["x", "in", "be", "dr"].map((s) => (
                 <a
@@ -58,20 +42,13 @@ export default function Footer() {
             </div>
           </div>
 
-          {COLUMNS.map((c) => (
+          {t.footer.columns.map((c) => (
             <div key={c.title}>
-              <div className="mb-4 text-[11px] uppercase tracking-[0.3em] text-muted-dim">
-                {c.title}
-              </div>
+              <div className="mb-4 text-[11px] uppercase tracking-[0.3em] text-muted-dim">{c.title}</div>
               <ul className="space-y-2.5 text-sm">
                 {c.links.map((l) => (
                   <li key={l}>
-                    <a
-                      href="#"
-                      className="text-muted transition-colors hover:text-white"
-                    >
-                      {l}
-                    </a>
+                    <a href="#" className="text-muted transition-colors hover:text-white">{l}</a>
                   </li>
                 ))}
               </ul>
@@ -80,20 +57,16 @@ export default function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 text-xs text-muted-dim md:flex-row">
-          <div>© {new Date().getFullYear()} UXCODESTUDIO. All rights reserved.</div>
+          <div>© {new Date().getFullYear()} UXCODESTUDIO. {t.footer.copyright}</div>
           <div className="flex items-center gap-6">
-            <a href="#" className="hover:text-white">
-              Privacy
-            </a>
-            <a href="#" className="hover:text-white">
-              Terms
-            </a>
+            <a href="#" className="hover:text-white">{t.footer.privacy}</a>
+            <a href="#" className="hover:text-white">{t.footer.terms}</a>
             <span className="inline-flex items-center gap-2">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400/70" />
                 <span className="relative h-2 w-2 rounded-full bg-emerald-400" />
               </span>
-              All systems operational
+              {t.footer.status}
             </span>
           </div>
         </div>

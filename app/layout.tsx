@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Syne, Barlow } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
+import { LanguageProvider } from "@/lib/i18n";
 import Navbar from "@/components/Navbar";
 import CustomCursor from "@/components/CustomCursor";
 import PageLoader from "@/components/PageLoader";
@@ -51,10 +52,12 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: "if('scrollRestoration'in history){history.scrollRestoration='manual';}window.scrollTo(0,0);" }} />
         <PageLoader />
         <CustomCursor />
-        <SmoothScroll>
-          <Navbar />
-          {children}
-        </SmoothScroll>
+        <LanguageProvider>
+          <SmoothScroll>
+            <Navbar />
+            {children}
+          </SmoothScroll>
+        </LanguageProvider>
       </body>
     </html>
   );

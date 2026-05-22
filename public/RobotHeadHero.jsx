@@ -13,6 +13,11 @@
  *
  * Coloca robot_head.glb en /public  (se carga desde "/robot_head.glb").
  * ---------------------------------------------------------------------------
+ * v3.6 — Materiales optimizados para eliminar:
+ *   - Punto blanco de reflejo especular en el visor
+ *   - Efecto cromado/plateado en el casco (ahora es titanio oscuro satinado)
+ *   - Ojos diminutos (ahora son cápsulas LED anchas y brillantes)
+ * ---------------------------------------------------------------------------
  */
 import React, { Suspense, useRef, useMemo, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
@@ -20,6 +25,7 @@ import {
   useGLTF,
   useAnimations,
   Environment,
+  Lightformer,
   ContactShadows,
   Float,
   Html,
@@ -27,7 +33,7 @@ import {
 import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 
-const MODEL_URL = "/robot_head.glb";
+const MODEL_URL = "/robot.glb";
 
 /* ------------------------------------------------------------------ */
 /* Modelo + comportamiento                                            */
@@ -50,16 +56,18 @@ function RobotHead(props) {
     if (eyeRig) baseRot.current.copy(eyeRig.rotation);
   }, [eyeRig]);
 
-  // Reproduce el clip Idle horneado (si existe).
+  // Reproduce TODOS los clips horneados (flotación/breathing del root + blink de los ojos).
   useEffect(() => {
-    const first = actions && Object.values(actions)[0];
-    if (first) {
-      first.reset().setLoop(THREE.LoopRepeat, Infinity).play();
-      first.timeScale = 1.0;
-    }
+    if (!actions) return;
+    Object.values(actions).forEach((a) => {
+      if (a) a.reset().setLoop(THREE.LoopRepeat, Infinity).play();
+    });
   }, [actions]);
 
-  // Mejora visual de materiales tras la carga.
+  // ─── Mejora visual de materiales tras la carga ───────────────────
+  // El glTF ya trae los valores optimizados desde Blender v3.6,
+  // pero hacemos overrides finales para el contexto específico de
+  // Three.js + React Three Fiber + nuestro Environment/Lightformers.
   useEffect(() => {
     model.traverse((o) => {
       if (!o.isMesh) return;
@@ -67,22 +75,60 @@ function RobotHead(props) {
       o.receiveShadow = true;
       const m = o.material;
       if (!m) return;
-      // Refuerza el visor como vidrio negro reflectante.
+
+      // ── VISOR: negro profundo mate-satinado ──
+      // CLAVE: clearcoat = 0, envMapIntensity bajo.
+      // Esto elimina el punto blanco de reflejo de ventana/IBL.
       if (m.name && m.name.includes("Visor")) {
-        m.transmission = Math.max(m.transmission ?? 0, 0.5);
-        m.thickness = 0.4;
-        m.roughness = 0.04;
-        m.envMapIntensity = 1.4;
-        m.clearcoat = 1.0;
-        m.clearcoatRoughness = 0.03;
+        m.transmission = 0;
+        m.metalness = 0.08;
+        m.roughness = 0.18;
+        m.envMapIntensity = 0.35;     // Muy bajo: el visor es negro, no un espejo
+        m.clearcoat = 0.0;            // CERO: elimina el punto blanco reflejado
+        m.clearcoatRoughness = 0.0;
       }
-      // Refuerza la emisión cyan de los LEDs.
+
+      // ── METAL DEL CASCO: titanio oscuro satinado ──
+      // envMapIntensity controlado para que no se convierta en cromo.
+      if (m.name && m.name.includes("BrushedMetal")) {
+        m.envMapIntensity = 0.45;     // Reflejos sutiles, no cromado
+        m.roughness = Math.max(m.roughness ?? 0.4, 0.42);
+        m.metalness = Math.min(m.metalness ?? 0.72, 0.72);
+      }
+
+      // ── PANEL ACCENT: acento oscuro mate ──
+      if (m.name && m.name.includes("Panel")) {
+        m.envMapIntensity = 0.3;
+        m.roughness = Math.max(m.roughness ?? 0.5, 0.50);
+      }
+
+      // ── OJOS: emisión cyan ultra intensa ──
+      // toneMapped=false es CRÍTICO para que el bloom los agarre
+      // y genere el halo de neón soberbio.
       if (m.name && m.name.includes("Eye")) {
+        m.emissive = new THREE.Color(0x00d8ff);
+        m.emissiveIntensity = 6.0;
+        m.toneMapped = false;         // Bypass del tonemapper para brillo puro
+        m.envMapIntensity = 0.0;      // Los ojos brillan por sí solos, no reflejan entorno
+      }
+
+      // ── HOLO: anillo de base cyan ──
+      if (m.name && m.name.includes("Holo")) {
         m.emissive = new THREE.Color(0x00d8ff);
         m.emissiveIntensity = 4.0;
         m.toneMapped = false;
+        m.envMapIntensity = 0.0;
       }
-      if (m.isMeshStandardMaterial) m.envMapIntensity = m.envMapIntensity ?? 1.0;
+
+      // Default para cualquier otro material
+      if (
+        m.isMeshStandardMaterial &&
+        m.envMapIntensity == null &&
+        !m.name?.includes("Eye") &&
+        !m.name?.includes("Holo")
+      ) {
+        m.envMapIntensity = 0.5;
+      }
     });
   }, [model]);
 
@@ -150,25 +196,57 @@ export default function RobotHeadHero() {
         gl={{ antialias: true, powerPreference: "high-performance" }}
         camera={{ position: [0, 0.25, 3.4], fov: 38, near: 0.1, far: 50 }}
       >
-        {/* Iluminación dark futurista */}
-        <ambientLight intensity={0.15} />
+        {/* ── Iluminación dark futurista ──
+            Spotlight reducido para evitar el punto blanco en el visor.
+            Point lights cyan simétricas para el rim glow lateral. */}
+        <ambientLight intensity={0.18} />
         <spotLight
-          position={[3, 4, 3]}
-          angle={0.5}
+          position={[2.5, 4, 4]}
+          angle={0.6}
           penumbra={1}
-          intensity={120}
-          color="#ffffff"
+          intensity={40}
+          color="#c8d8e8"
           castShadow
           shadow-mapSize={[1024, 1024]}
         />
-        <pointLight position={[-3, 1, 2]} intensity={40} color="#1fbfff" />
-        <pointLight position={[0, -1.5, 2.5]} intensity={12} color="#3a6cff" />
+        <pointLight position={[-3, 0.5, 2]} intensity={18} color="#23c9ff" />
+        <pointLight position={[3, 0.5, 2]} intensity={18} color="#23c9ff" />
 
         <Suspense fallback={<Loader />}>
           <Float speed={1.1} rotationIntensity={0.15} floatIntensity={0.4}>
             <RobotHead position={[0, -0.15, 0]} scale={1.0} />
           </Float>
-          <Environment preset="night" environmentIntensity={0.6} />
+
+          {/* ── Environment CONTROLADO ──
+              Lightformers con intensidad moderada para iluminar la forma
+              del casco sin crear ventanas blancas gigantes reflejadas.
+              La clave es mantener intensidades bajas (< 2.0). */}
+          <Environment resolution={256}>
+            <color attach="background" args={["#05070b"]} />
+            {/* Luz superior suave — revela la coronilla del casco */}
+            <Lightformer
+              intensity={1.4}
+              color="#d0dce8"
+              position={[0, 3, 2]}
+              scale={[5, 2, 1]}
+            />
+            {/* Rim cyan izquierda — perfila el borde metálico */}
+            <Lightformer
+              intensity={1.2}
+              color="#2fd2ff"
+              position={[-4, 0, 2]}
+              rotation={[0, Math.PI / 2, 0]}
+              scale={[3, 4, 1]}
+            />
+            {/* Rim cyan derecha — simétrico */}
+            <Lightformer
+              intensity={1.2}
+              color="#2f9bff"
+              position={[4, 0, 2]}
+              rotation={[0, -Math.PI / 2, 0]}
+              scale={[3, 4, 1]}
+            />
+          </Environment>
         </Suspense>
 
         <ContactShadows
@@ -180,12 +258,15 @@ export default function RobotHeadHero() {
           color="#000000"
         />
 
-        {/* Post: bloom para el glow cyan + viñeta cinematográfica */}
+        {/* ── Post-processing ──
+            Bloom: threshold ajustado para que SOLO los ojos y el holo ring
+            generen glow (no el reflejo blanco del casco).
+            Viñeta cinematográfica para enfocar la atención en el robot. */}
         <EffectComposer disableNormalPass>
           <Bloom
             intensity={0.9}
-            luminanceThreshold={0.6}
-            luminanceSmoothing={0.25}
+            luminanceThreshold={0.85}
+            luminanceSmoothing={0.15}
             mipmapBlur
           />
           <Vignette eskil={false} offset={0.25} darkness={0.85} />
