@@ -4,20 +4,54 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-const NUM_STARS = 200;
+const NUM_TRACES = 22;
+const CYAN = "0, 212, 255";
 
-interface Star {
-  x: number; // offset from center
-  y: number;
-  speed: number; // px at full warp
-  size: number;
-  hue: number; // 185–220 = white-cyan range
+interface Seg { x1: number; y1: number; x2: number; y2: number; len: number }
+interface Trace {
+  segs: Seg[];
+  totalLen: number;
+  delay: number;   // stagger 0–0.35
+  width: number;
+  opacity: number;
+}
+
+function buildTraces(w: number, h: number): Trace[] {
+  const out: Trace[] = [];
+  for (let i = 0; i < NUM_TRACES; i++) {
+    const segs: Seg[] = [];
+    let x = w * 0.05 + Math.random() * w * 0.9;
+    let y = h * 0.05 + Math.random() * h * 0.9;
+    let dir: "h" | "v" = Math.random() < 0.5 ? "h" : "v";
+    const numSegs = 2 + Math.floor(Math.random() * 3);
+    let totalLen = 0;
+
+    for (let s = 0; s < numSegs; s++) {
+      const len = 50 + Math.random() * 160;
+      const sign = Math.random() < 0.5 ? 1 : -1;
+      const x2 = dir === "h" ? x + sign * len : x;
+      const y2 = dir === "v" ? y + sign * len : y;
+      segs.push({ x1: x, y1: y, x2, y2, len });
+      totalLen += len;
+      x = x2; y = y2;
+      dir = dir === "h" ? "v" : "h";
+    }
+
+    out.push({
+      segs,
+      totalLen,
+      delay: Math.random() * 0.35,
+      width: 0.5 + Math.random() * 0.6,
+      opacity: 0.25 + Math.random() * 0.35,
+    });
+  }
+  return out;
 }
 
 export default function WarpStars() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const warpRef = useRef(0);
-  const starsRef = useRef<Star[]>([]);
+  const progressRef = useRef(0);
+  const tracesRef = useRef<Trace[]>([]);
   const rafRef = useRef<number>(0);
 
   useEffect(() => {
@@ -31,76 +65,72 @@ export default function WarpStars() {
     const init = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      const cx = canvas.width / 2;
-      const cy = canvas.height / 2;
-      const diag = Math.sqrt(cx * cx + cy * cy);
-      starsRef.current = Array.from({ length: NUM_STARS }, () => {
-        const angle = Math.random() * Math.PI * 2;
-        const dist = 60 + Math.random() * diag * 0.9;
-        return {
-          x: Math.cos(angle) * dist,
-          y: Math.sin(angle) * dist,
-          speed: 120 + Math.random() * 280,
-          size: 0.6 + Math.random() * 1.4,
-          hue: 185 + Math.random() * 35,
-        };
-      });
+      tracesRef.current = buildTraces(canvas.width, canvas.height);
     };
-
     init();
     window.addEventListener("resize", init);
 
     const st = ScrollTrigger.create({
       trigger: "#top",
-      start: "bottom 85%",
+      start: "bottom 88%",
       endTrigger: "#services",
-      end: "top 15%",
-      scrub: 0.8,
-      onUpdate: (self) => {
-        // bell curve: 0 at both ends, 1 at center
-        warpRef.current = Math.sin(self.progress * Math.PI);
-      },
+      end: "top 12%",
+      scrub: 1,
+      onUpdate: (self) => { progressRef.current = self.progress; },
     });
 
-    const render = () => {
-      const warp = warpRef.current;
-      const w = canvas.width;
-      const h = canvas.height;
-      const cx = w / 2;
-      const cy = h / 2;
+    const drawSegments = (
+      trace: Trace,
+      drawnLen: number,
+      alpha: number
+    ) => {
+      let remaining = drawnLen;
+      ctx.strokeStyle = `rgba(${CYAN}, ${trace.opacity * alpha})`;
+      ctx.lineWidth = trace.width;
+      ctx.shadowBlur = 5;
+      ctx.shadowColor = `rgba(${CYAN}, ${alpha * 0.7})`;
+      ctx.lineCap = "round";
 
-      ctx.clearRect(0, 0, w, h);
+      for (const seg of trace.segs) {
+        if (remaining <= 0) break;
+        const t = Math.min(remaining / seg.len, 1);
+        const x2 = seg.x1 + (seg.x2 - seg.x1) * t;
+        const y2 = seg.y1 + (seg.y2 - seg.y1) * t;
+        ctx.beginPath();
+        ctx.moveTo(seg.x1, seg.y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
 
-      if (warp > 0.01) {
-        starsRef.current.forEach((star) => {
-          const sx = cx + star.x;
-          const sy = cy + star.y;
-
-          const len = Math.sqrt(star.x * star.x + star.y * star.y) || 1;
-          const nx = star.x / len;
-          const ny = star.y / len;
-
-          const tailX = sx - nx * star.size * 2;
-          const tailY = sy - ny * star.size * 2;
-          const headX = sx + nx * warp * star.speed;
-          const headY = sy + ny * warp * star.speed;
-
-          const alpha = (0.35 + warp * 0.65) * warp;
-          const lineW = star.size * (0.4 + warp * 2.8);
-
-          const grad = ctx.createLinearGradient(tailX, tailY, headX, headY);
-          grad.addColorStop(0, `hsla(${star.hue},90%,95%,0)`);
-          grad.addColorStop(0.6, `hsla(${star.hue},90%,95%,${alpha * 0.5})`);
-          grad.addColorStop(1, `hsla(${star.hue},90%,98%,${alpha})`);
-
+        // node dot at joint
+        if (t >= 1) {
           ctx.beginPath();
-          ctx.moveTo(tailX, tailY);
-          ctx.lineTo(headX, headY);
-          ctx.strokeStyle = grad;
-          ctx.lineWidth = lineW;
-          ctx.lineCap = "round";
-          ctx.stroke();
+          ctx.arc(seg.x2, seg.y2, 1.8, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${CYAN}, ${trace.opacity * alpha * 1.4})`;
+          ctx.shadowBlur = 8;
+          ctx.fill();
+        }
+        remaining -= seg.len;
+      }
+    };
+
+    const render = () => {
+      const p = progressRef.current;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (p > 0.01 && p < 0.99) {
+        // bell alpha: peaks at center
+        const alpha = Math.sin(p * Math.PI);
+        // draw progress: 0→1 over first half, stays 1 after
+        const drawP = Math.min(p * 2, 1);
+
+        tracesRef.current.forEach((trace) => {
+          const localP = Math.max(0, (drawP - trace.delay) / (1 - trace.delay));
+          const drawnLen = localP * trace.totalLen;
+          if (drawnLen > 0) drawSegments(trace, drawnLen, alpha);
         });
+
+        // reset shadow
+        ctx.shadowBlur = 0;
       }
 
       rafRef.current = requestAnimationFrame(render);
@@ -119,12 +149,7 @@ export default function WarpStars() {
     <canvas
       ref={canvasRef}
       aria-hidden
-      style={{
-        position: "fixed",
-        inset: 0,
-        pointerEvents: "none",
-        zIndex: 25,
-      }}
+      style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 25 }}
     />
   );
 }
