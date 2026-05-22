@@ -53,21 +53,28 @@ export default function Process() {
         <div className="absolute -right-20 bottom-1/4 h-[450px] w-[450px] rounded-full bg-accent-blue/[0.08] blur-[100px]" />
       </div>
       <div className="container-x">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <h2
+        <div>
+          <motion.h2
+            initial={{ clipPath: "inset(100% 0 0% 0)" }}
+            whileInView={{ clipPath: "inset(0% 0 0% 0)" }}
+            viewport={{ once: true, margin: "-20px" }}
+            transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
             className="font-display font-bold text-white"
             style={{ fontSize: "clamp(2.8rem, 5vw, 5rem)", lineHeight: "1.05" }}
           >
             {t.process.headlinePart1} <em className="display-em">{t.process.headlineEmphasis}</em> {t.process.headlinePart2}<br />
             <span className="text-gradient-accent">{t.process.headlineAccent}</span>
-          </h2>
-          <p className="mt-4 max-w-lg text-muted-soft">{t.process.sub}</p>
-        </motion.div>
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-20px" }}
+            transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
+            className="mt-4 max-w-lg text-muted-soft"
+          >
+            {t.process.sub}
+          </motion.p>
+        </div>
 
         <div className="relative mx-auto mt-20 max-w-3xl">
           <div className="absolute left-6 top-0 h-full w-px bg-white/10 md:left-1/2">

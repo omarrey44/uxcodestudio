@@ -19,7 +19,7 @@ export default function FinalCTA() {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-auto max-w-5xl overflow-hidden rounded-[36px] glass-strong p-12 text-center md:p-20"
+          className="relative mx-auto max-w-5xl overflow-hidden rounded-[36px] glass-strong p-12 text-center md:p-16"
         >
           <div className="absolute -inset-px rounded-[36px] bg-gradient-to-br from-accent-blue/50 via-accent-cyan/30 to-accent-violet/50 opacity-60 blur-2xl" />
           <div className="absolute -inset-px rounded-[36px] bg-gradient-to-br from-accent-blue via-accent-cyan to-accent-violet [mask:linear-gradient(#000_0_0)_content-box,linear-gradient(#000_0_0)] [mask-composite:exclude] p-px opacity-60" />
@@ -48,8 +48,39 @@ export default function FinalCTA() {
               </MagneticButton>
             </div>
 
-            <div className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs text-muted-dim">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs text-muted-dim">
               {t.cta.features.map((f) => <span key={f}>✦ {f}</span>)}
+            </div>
+
+            {/* Divider */}
+            <div className="my-10 h-px w-full bg-white/10" />
+
+            {/* Contact methods — integrated */}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              {t.cta.contactMethods.map((m, i) => (
+                <motion.a
+                  key={m.label}
+                  href={m.href}
+                  target={m.href.startsWith("http") ? "_blank" : undefined}
+                  rel={m.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.7, delay: 0.5 + i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                  whileHover={{ y: -3 }}
+                  className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-left transition-colors hover:border-white/20 hover:bg-white/[0.08]"
+                >
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/[0.05] text-base text-accent-cyan transition-colors group-hover:border-accent-cyan/40 group-hover:bg-accent-cyan/10">
+                    {m.icon}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[10px] uppercase tracking-[0.2em] text-muted-dim">{m.label}</div>
+                    <div className="mt-0.5 truncate text-sm font-medium text-white">{m.value}</div>
+                    <div className="text-[10px] text-muted-dim">{m.hint}</div>
+                  </div>
+                  <span className="shrink-0 text-muted-dim transition-transform group-hover:translate-x-1 group-hover:text-accent-cyan">→</span>
+                </motion.a>
+              ))}
             </div>
           </div>
         </motion.div>

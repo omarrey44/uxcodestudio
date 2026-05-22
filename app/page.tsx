@@ -1,6 +1,6 @@
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
-import WarpStars from "@/components/WarpStars";
+import ScanlineReveal from "@/components/ScanlineReveal";
 import Process from "@/components/Process";
 import WhyChooseUs from "@/components/WhyChooseUs";
 import FeaturedWork from "@/components/FeaturedWork";
@@ -13,7 +13,7 @@ import Footer from "@/components/Footer";
 export default function HomePage() {
   return (
     <main className="relative overflow-hidden">
-      <WarpStars />
+      <ScanlineReveal />
       <Hero />
       <Services />
       <Process />

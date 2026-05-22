@@ -167,7 +167,7 @@ export default function Hero() {
 
         {/* RIGHT — 3D + Holographic UI */}
         <div className="hero-scene relative lg:col-span-6">
-          <div className="relative h-[240px] sm:h-auto sm:aspect-[4/5] w-full">
+          <div className="relative h-[320px] sm:h-auto sm:aspect-[4/5] w-full">
             <div className="absolute inset-0 h-full w-full">
               <HeroScene />
             </div>

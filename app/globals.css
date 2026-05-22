@@ -6,8 +6,8 @@
   --background: #050508;
   --foreground: #f5f7ff;
   --bg-base: #050508;
-  --bg-section: #080810;
-  --bg-section-deep: #0c0c18;
+  --bg-section: #08080f;
+  --bg-section-deep: #060b1a;
 }
 
 * {
@@ -161,7 +161,7 @@ html.lenis body {
     content: "";
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at 50% -20%, rgba(139, 92, 246, 0.06), transparent 60%);
+    background: radial-gradient(ellipse at 50% -20%, rgba(79, 110, 247, 0.09), transparent 55%);
     pointer-events: none;
     z-index: 0;
   }
@@ -169,6 +169,11 @@ html.lenis body {
   .section-separator {
     position: relative;
   }
+  /* Per-section hue identity */
+  #process    { background-color: #060c1e; }
+  #work       { background-color: #050d14; }
+  #pricing    { background-color: #09071a; }
+
   .section-separator::after {
     content: "";
     position: absolute;

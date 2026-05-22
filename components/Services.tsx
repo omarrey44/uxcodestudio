@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef, MouseEvent } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { useLanguage } from "@/lib/i18n";
 
 const VISUAL = [
@@ -78,37 +77,12 @@ function TiltCard({
   lineColor,
   index,
 }: TiltCardProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const x = useMotionValue(0.5);
-  const y = useMotionValue(0.5);
-  const sx = useSpring(x, { stiffness: 150, damping: 18 });
-  const sy = useSpring(y, { stiffness: 150, damping: 18 });
-
-  const rotateY = useTransform(sx, [0, 1], [8, -8]);
-  const rotateX = useTransform(sy, [0, 1], [-8, 8]);
-  const glowX = useTransform(sx, [0, 1], ["0%", "100%"]);
-  const glowY = useTransform(sy, [0, 1], ["0%", "100%"]);
-
-  const onMove = (e: MouseEvent<HTMLDivElement>) => {
-    const rect = ref.current?.getBoundingClientRect();
-    if (!rect) return;
-    x.set((e.clientX - rect.left) / rect.width);
-    y.set((e.clientY - rect.top) / rect.height);
-  };
-
   return (
     <motion.div
-      ref={ref}
       data-cursor-hover
-      onMouseMove={onMove}
-      onMouseLeave={() => {
-        x.set(0.5);
-        y.set(0.5);
-      }}
-      style={{ rotateX, rotateY, transformPerspective: 900 }}
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
+      viewport={{ once: true, margin: "-20px" }}
       transition={{ duration: 0.7, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
       className="group relative h-full overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-8 transition-colors hover:border-white/20"
     >
@@ -121,13 +95,6 @@ function TiltCard({
       <div
         className="pointer-events-none absolute inset-x-6 top-0 h-px"
         style={{ background: `linear-gradient(90deg, transparent, ${lineColor}55, transparent)` }}
-      />
-
-      <motion.div
-        style={{
-          background: `radial-gradient(400px circle at ${glowX.get()} ${glowY.get()}, rgba(79,110,247,0.18), transparent 70%)`,
-        }}
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
       />
       <div
         className={`absolute -inset-px rounded-2xl bg-gradient-to-br ${glow} opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-70`}
@@ -185,26 +152,40 @@ export function SectionHeader({
   description?: string;
 }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-      className="mx-auto max-w-3xl text-center"
-    >
-      <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-muted-soft">
+    <div className="mx-auto max-w-3xl text-center">
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-20px" }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-muted-soft"
+      >
         <span className="h-1 w-1 rounded-full bg-accent-cyan" />
         {eyebrow}
-      </div>
-      <h2 className="font-display text-h2 font-bold text-white text-balance">
+      </motion.div>
+
+      <motion.h2
+        initial={{ clipPath: "inset(100% 0 0% 0)" }}
+        whileInView={{ clipPath: "inset(0% 0 0% 0)" }}
+        viewport={{ once: true, margin: "-20px" }}
+        transition={{ duration: 1.0, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+        className="font-display text-h2 font-bold text-white text-balance"
+      >
         {title}{" "}
         {accent && <span className="text-gradient-accent">{accent}</span>}
-      </h2>
+      </motion.h2>
+
       {description && (
-        <p className="mx-auto mt-6 max-w-2xl text-balance text-muted-soft md:text-lg">
+        <motion.p
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-20px" }}
+          transition={{ duration: 0.9, delay: 0.28, ease: "easeOut" }}
+          className="mx-auto mt-6 max-w-2xl text-balance text-muted-soft md:text-lg"
+        >
           {description}
-        </p>
+        </motion.p>
       )}
-    </motion.div>
+    </div>
   );
 }

@@ -1,6 +1,9 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SectionHeader } from "./Services";
 import { useLanguage } from "@/lib/i18n";
 
@@ -33,8 +36,59 @@ const WORKS = [
 
 export default function FeaturedWork() {
   const { t } = useLanguage();
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      const track = trackRef.current;
+      const section = sectionRef.current;
+      if (!track || !section) return;
+
+      const getScrollDist = () =>
+        track.scrollWidth - (window.innerWidth * 0.88);
+
+      let st: ScrollTrigger;
+
+      const build = () => {
+        st?.kill();
+        const dist = getScrollDist();
+        gsap.set(track, { x: 0 });
+
+        st = ScrollTrigger.create({
+          trigger: section,
+          start: "top top",
+          end: () => `+=${getScrollDist()}`,
+          scrub: 1.4,
+          pin: true,
+          anticipatePin: 1,
+          onUpdate: (self) => {
+            gsap.set(track, { x: -self.progress * dist });
+          },
+        });
+      };
+
+      build();
+      ScrollTrigger.addEventListener("refreshInit", build);
+
+      return () => {
+        st?.kill();
+        ScrollTrigger.removeEventListener("refreshInit", build);
+      };
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="work" className="section-deep section-separator relative py-32 md:py-40">
+    <section
+      id="work"
+      ref={sectionRef}
+      className="section-deep section-separator relative overflow-hidden"
+      style={{ height: "100vh" }}
+    >
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div
           className="absolute inset-0 grid-bg opacity-[0.25]"
@@ -43,54 +97,73 @@ export default function FeaturedWork() {
         <div className="absolute -right-24 top-1/3 h-[600px] w-[500px] rounded-full bg-accent-cyan/[0.09] blur-[120px]" />
         <div className="absolute -left-16 bottom-1/4 h-[500px] w-[500px] rounded-full bg-accent-blue/[0.09] blur-[100px]" />
       </div>
-      <div className="container-x">
-        <SectionHeader
-          eyebrow={t.work.eyebrow}
-          title={t.work.titlePart1}
-          accent={t.work.accent}
-          description={t.work.description}
-        />
 
-        <div className="mt-20 grid grid-cols-1 gap-6 md:grid-cols-2">
-          {WORKS.map((w, i) => (
-            <motion.article
-              key={w.title}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{
-                duration: 0.9,
-                delay: i * 0.1,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="group relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-6"
-            >
-              <div
-                className={`absolute -inset-px rounded-3xl bg-gradient-to-br ${w.accent} opacity-0 blur-2xl transition-opacity duration-700 group-hover:opacity-30`}
-              />
-              <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-white/10 bg-ink">
-                <div className="absolute inset-0 grid-bg opacity-30" />
-                <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.04]">
-                  {w.mock}
-                </div>
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
-              </div>
+      <div className="flex h-full flex-col justify-center">
+        <div className="container-x mb-12 shrink-0">
+          <SectionHeader
+            eyebrow={t.work.eyebrow}
+            title={t.work.titlePart1}
+            accent={t.work.accent}
+            description={t.work.description}
+          />
+        </div>
 
-              <div className="relative mt-6 flex items-end justify-between">
-                <div>
-                  <div className="text-[11px] uppercase tracking-[0.3em] text-muted-dim">
-                    {w.tag}
+        {/* Horizontal track */}
+        <div className="relative w-full overflow-visible">
+          <div
+            ref={trackRef}
+            className="flex gap-6 will-change-transform"
+            style={{ paddingLeft: "6vw", paddingRight: "6vw", width: "max-content" }}
+          >
+            {WORKS.map((w, i) => (
+              <motion.article
+                key={w.title}
+                className="work-card group relative shrink-0 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-6"
+                style={{ width: "clamp(320px, 38vw, 520px)" }}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.9, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div
+                  className={`absolute -inset-px rounded-3xl bg-gradient-to-br ${w.accent} opacity-0 blur-2xl transition-opacity duration-700 group-hover:opacity-30`}
+                />
+                <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-white/10 bg-ink">
+                  <div className="absolute inset-0 grid-bg opacity-30" />
+                  <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.04]">
+                    {w.mock}
                   </div>
-                  <div className="mt-2 font-display text-2xl font-semibold text-white">
-                    {w.title}
-                  </div>
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
                 </div>
-                <span className="grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-white transition-all duration-500 group-hover:rotate-45 group-hover:bg-white group-hover:text-black">
-                  →
-                </span>
-              </div>
-            </motion.article>
-          ))}
+
+                <div className="relative mt-6 flex items-end justify-between">
+                  <div>
+                    <div className="text-[11px] uppercase tracking-[0.3em] text-muted-dim">{w.tag}</div>
+                    <div className="mt-2 font-display text-2xl font-semibold text-white">{w.title}</div>
+                  </div>
+                  <span className="grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-white transition-all duration-500 group-hover:rotate-45 group-hover:bg-white group-hover:text-black">
+                    →
+                  </span>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+
+        {/* Progress indicator */}
+        <div className="container-x mt-10 shrink-0">
+          <div className="mx-auto h-px w-48 overflow-hidden rounded-full bg-white/10">
+            <motion.div
+              className="h-full bg-gradient-to-r from-accent-blue to-accent-cyan"
+              initial={{ scaleX: 0, originX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: false }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
+            />
+          </div>
+          <p className="mt-3 text-center text-[11px] uppercase tracking-[0.25em] text-muted-dim">
+            Scroll to explore
+          </p>
         </div>
       </div>
     </section>
@@ -177,9 +250,7 @@ function HelioMock() {
       </div>
       <div className="absolute bottom-6 left-6 right-6 rounded-xl bg-white/[0.05] p-3 backdrop-blur">
         <div className="flex items-center justify-between">
-          <div className="text-[10px] uppercase tracking-widest text-muted-soft">
-            Balance
-          </div>
+          <div className="text-[10px] uppercase tracking-widest text-muted-soft">Balance</div>
           <div className="text-[10px] text-emerald-300">+ 12.4%</div>
         </div>
         <div className="font-display text-2xl text-white">$ 48,219.04</div>
@@ -204,16 +275,12 @@ function OrbitMock() {
           <span
             key={i}
             className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-cyan shadow-[0_0_10px_rgba(0,212,255,0.8)]"
-            style={{
-              transform: `translate(-50%,-50%) rotate(${deg}deg) translateY(-100px)`,
-            }}
+            style={{ transform: `translate(-50%,-50%) rotate(${deg}deg) translateY(-100px)` }}
           />
         ))}
       </div>
       <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between rounded-xl bg-white/[0.04] p-3 backdrop-blur">
-        <div className="text-[10px] uppercase tracking-widest text-muted-soft">
-          orbit.ai
-        </div>
+        <div className="text-[10px] uppercase tracking-widest text-muted-soft">orbit.ai</div>
         <div className="font-display text-sm text-white">v3.2 · live</div>
       </div>
     </div>
@@ -247,11 +314,7 @@ function LumenMock() {
             <div className="h-3 w-1/2 rounded bg-white/15" />
             <div className="mt-3 space-y-2">
               {[90, 70, 80, 60, 75, 65].map((w, i) => (
-                <div
-                  key={i}
-                  className="h-2 rounded bg-white/10"
-                  style={{ width: `${w}%` }}
-                />
+                <div key={i} className="h-2 rounded bg-white/10" style={{ width: `${w}%` }} />
               ))}
             </div>
             <div className="mt-4 grid grid-cols-3 gap-2">

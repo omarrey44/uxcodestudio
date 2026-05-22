@@ -91,6 +91,8 @@ interface Translations {
     cta1: string;
     cta2: string;
     features: string[];
+    contactTitle: string;
+    contactMethods: { icon: string; label: string; value: string; href: string; hint: string }[];
   };
   footer: {
     description: string;
@@ -139,7 +141,7 @@ const en: Translations = {
       { title: "Web Applications",    description: "Production-grade interfaces, design systems and full-stack engineering.",                   tags: ["React", "TS", "Node"], learnMore: "Learn more" },
       { title: "SaaS Platforms",      description: "End-to-end product studios: from 0→1 architecture to billing flows.",                     tags: ["Stripe", "Auth", "AI"], learnMore: "Learn more" },
       { title: "Brand & Identity",    description: "Visual systems, motion principles and verbal identity for tech-first brands.",              tags: ["Logo", "Motion", "Tone"], learnMore: "Learn more" },
-      { title: "Motion & 3D",         description: "WebGL, GSAP and Three.js choreography for unforgettable interactions.",                    tags: ["GSAP", "Three.js", "Shader"], learnMore: "Learn more" },
+      { title: "Mobile Apps",          description: "Native-quality iOS and Android apps built with React Native and Flutter — fast, beautiful and App Store ready.",  tags: ["React Native", "Flutter", "iOS", "Android"], learnMore: "Learn more" },
     ],
   },
   process: {
@@ -194,25 +196,25 @@ const en: Translations = {
     title:       "Transparent pricing.",
     accent:      "No surprises.",
     description: "Pick a plan, get a fixed quote within 24h, and lock your start date.",
-    badge:       "Most loved",
+    badge:       "Most popular",
     plans: [
       {
-        name: "Launchpad", price: "$4,900", cadence: "/ project", highlight: false,
-        description: "A premium landing or single-page site to convert your next campaign.",
-        features: ["Strategy + copy direction", "Custom design (Figma)", "Next.js + Tailwind build", "GSAP motion baseline", "1 round of revisions"],
+        name: "Launchpad", price: "$100–$200", cadence: "/ landing page", highlight: false,
+        description: "A high-converting landing page — basic or premium finish, shipped fast.",
+        features: ["Custom design (Figma)", "Next.js + Tailwind build", "Mobile responsive", "Basic animations", "1 round of revisions"],
         cta: "Start a Launchpad",
       },
       {
-        name: "Studio", price: "$14,800", cadence: "/ project", highlight: true,
-        description: "Our flagship engagement — multi-page sites with cinematic motion and CMS.",
-        features: ["Everything in Launchpad", "Up to 8 pages + CMS", "Full motion choreography", "Three.js / WebGL elements", "A/B + analytics setup", "30-day post-launch support"],
+        name: "Studio", price: "$350–$500", cadence: "/ project", highlight: true,
+        description: "Full-stack web app or site — frontend, backend, analytics and everything in between.",
+        features: ["Everything in Launchpad", "Backend API + database", "Analytics integration", "Auth + third-party integrations", "Performance optimization", "30-day post-launch support"],
         cta: "Book the Studio",
       },
       {
-        name: "Product", price: "Custom", cadence: "", highlight: false,
-        description: "A long-term partnership: design + engineering for SaaS, AI, fintech.",
-        features: ["Embedded design + dev team", "Design system + component lib", "Full-stack engineering", "Quarterly product strategy", "Always-on Slack channel"],
-        cta: "Talk to founders",
+        name: "Support", price: "Custom", cadence: "", highlight: false,
+        description: "Ongoing maintenance, updates and dedicated support — priced separately per need.",
+        features: ["Bug fixes & updates", "Performance monitoring", "Feature iterations", "Priority response", "Monthly reporting"],
+        cta: "Talk to us",
       },
     ],
   },
@@ -237,6 +239,12 @@ const en: Translations = {
     cta1:          "Book a discovery call",
     cta2:          "Or browse the work",
     features:      ["Fixed quote in 24h", "NDA on request", "Remote-first · Worldwide"],
+    contactTitle:  "Or reach us directly",
+    contactMethods: [
+      { icon: "✉", label: "Send an email", value: "hello@uxcodestudio.com", href: "mailto:hello@uxcodestudio.com", hint: "We reply within 24h" },
+      { icon: "✆", label: "Call us", value: "+1 (000) 000-0000", href: "tel:+10000000000", hint: "Mon–Fri · 9am–6pm" },
+      { icon: "◈", label: "Book a meeting", value: "Schedule 30 min", href: "https://calendly.com/uxcodestudio", hint: "Free discovery call" },
+    ],
   },
   footer: {
     description: "A premium digital product studio crafting cinematic interfaces for ambitious teams worldwide.",
@@ -289,7 +297,7 @@ const es: Translations = {
       { title: "Aplicaciones Web",    description: "Interfaces de nivel producción, sistemas de diseño e ingeniería full-stack.",                        tags: ["React", "TS", "Node"], learnMore: "Saber más" },
       { title: "Plataformas SaaS",    description: "Estudio de producto end-to-end: de la arquitectura 0→1 a los flujos de pago.",                      tags: ["Stripe", "Auth", "AI"], learnMore: "Saber más" },
       { title: "Marca e Identidad",   description: "Sistemas visuales, principios de movimiento e identidad verbal para marcas tech-first.",             tags: ["Logo", "Motion", "Tono"], learnMore: "Saber más" },
-      { title: "Motion & 3D",         description: "Coreografía con WebGL, GSAP y Three.js para interacciones inolvidables.",                           tags: ["GSAP", "Three.js", "Shader"], learnMore: "Saber más" },
+      { title: "Apps Móviles",         description: "Apps iOS y Android de calidad nativa con React Native y Flutter — rápidas, hermosas y listas para el App Store.",  tags: ["React Native", "Flutter", "iOS", "Android"], learnMore: "Saber más" },
     ],
   },
   process: {
@@ -347,22 +355,22 @@ const es: Translations = {
     badge:       "Más popular",
     plans: [
       {
-        name: "Launchpad", price: "$4,900", cadence: "/ proyecto", highlight: false,
-        description: "Un landing o sitio de una página premium para convertir tu próxima campaña.",
-        features: ["Estrategia + dirección de copy", "Diseño personalizado (Figma)", "Next.js + Tailwind build", "GSAP motion baseline", "1 ronda de revisiones"],
+        name: "Launchpad", price: "$100–$200", cadence: "/ landing page", highlight: false,
+        description: "Landing page de alta conversión — acabado básico o premium, entregada rápido.",
+        features: ["Diseño personalizado (Figma)", "Next.js + Tailwind build", "Responsive mobile", "Animaciones básicas", "1 ronda de revisiones"],
         cta: "Comenzar Launchpad",
       },
       {
-        name: "Studio", price: "$14,800", cadence: "/ proyecto", highlight: true,
-        description: "Nuestro compromiso estrella — sitios multipágina con motion cinematográfico y CMS.",
-        features: ["Todo lo de Launchpad", "Hasta 8 páginas + CMS", "Coreografía de motion completa", "Three.js / WebGL elements", "A/B + analytics setup", "30 días de soporte post-lanzamiento"],
+        name: "Studio", price: "$350–$500", cadence: "/ proyecto", highlight: true,
+        description: "Aplicación web full-stack — frontend, backend, analytics y todo lo necesario.",
+        features: ["Todo lo de Launchpad", "Backend API + base de datos", "Integración de analytics", "Auth + integraciones externas", "Optimización de rendimiento", "30 días de soporte post-lanzamiento"],
         cta: "Reservar Studio",
       },
       {
-        name: "Product", price: "Custom", cadence: "", highlight: false,
-        description: "Una alianza a largo plazo: diseño + ingeniería para SaaS, AI, fintech.",
-        features: ["Equipo de diseño + dev integrado", "Sistema de diseño + librería de componentes", "Full-stack engineering", "Estrategia de producto trimestral", "Canal de Slack permanente"],
-        cta: "Hablar con founders",
+        name: "Soporte", price: "Custom", cadence: "", highlight: false,
+        description: "Mantenimiento continuo, actualizaciones y soporte dedicado — precio según necesidad.",
+        features: ["Corrección de bugs y updates", "Monitoreo de rendimiento", "Iteraciones de funciones", "Respuesta prioritaria", "Reporte mensual"],
+        cta: "Contáctanos",
       },
     ],
   },
@@ -387,6 +395,12 @@ const es: Translations = {
     cta1:          "Reserva una llamada",
     cta2:          "O ve nuestro trabajo",
     features:      ["Cotización fija en 24h", "NDA bajo solicitud", "Remoto primero · Mundial"],
+    contactTitle:  "O contáctanos directamente",
+    contactMethods: [
+      { icon: "✉", label: "Envíanos un email", value: "hello@uxcodestudio.com", href: "mailto:hello@uxcodestudio.com", hint: "Respondemos en 24h" },
+      { icon: "✆", label: "Llámanos", value: "+1 (000) 000-0000", href: "tel:+10000000000", hint: "Lun–Vie · 9am–6pm" },
+      { icon: "◈", label: "Agenda una cita", value: "Reservar 30 min", href: "https://calendly.com/uxcodestudio", hint: "Llamada de discovery gratis" },
+    ],
   },
   footer: {
     description: "Un estudio premium de producto digital creando interfaces cinematográficas para equipos ambiciosos en todo el mundo.",

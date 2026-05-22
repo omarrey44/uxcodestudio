@@ -51,9 +51,16 @@ export default function Pricing() {
 
               <div className="relative">
                 <div className="font-display text-lg font-semibold text-white">{p.name}</div>
-                <div className="mt-4 flex items-baseline gap-1">
-                  <span className="font-display text-5xl font-bold text-white">{p.price}</span>
-                  <span className="text-sm text-muted-soft">{p.cadence}</span>
+                <div className="mt-4">
+                  <div className="flex items-baseline gap-2 whitespace-nowrap">
+                    <span className="font-display text-4xl font-bold text-white">{p.price}</span>
+                    {p.price !== "Custom" && (
+                      <span className="text-xs font-medium uppercase tracking-widest text-muted-dim">USD</span>
+                    )}
+                  </div>
+                  {p.cadence && (
+                    <div className="mt-0.5 text-sm text-muted-soft">{p.cadence}</div>
+                  )}
                 </div>
                 <p className="mt-4 text-sm text-muted-soft">{p.description}</p>
 
