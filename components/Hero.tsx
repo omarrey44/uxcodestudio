@@ -7,7 +7,6 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import MagneticButton from "./MagneticButton";
 import { useTextScramble } from "@/lib/hooks/useTextScramble";
-import { useMouseParallax } from "@/lib/hooks/useMouseParallax";
 
 const HeroScene = dynamic(() => import("./three/HeroScene"), { ssr: false });
 
@@ -112,7 +111,7 @@ export default function Hero() {
       id="top"
       ref={rootRef}
       data-custom-cursor-zone
-      className="relative isolate min-h-screen overflow-hidden pt-32 md:pt-36"
+      className="relative isolate overflow-hidden pt-24 md:pt-28"
     >
       {/* Backgrounds */}
       <div className="absolute inset-0 -z-10">
@@ -125,7 +124,7 @@ export default function Hero() {
 
       <div ref={contentRef} className="container-x relative grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-8">
         {/* LEFT */}
-        <div className="lg:col-span-6">
+        <div className="lg:col-span-5">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -194,8 +193,8 @@ export default function Hero() {
         </div>
 
         {/* RIGHT — 3D + Holographic UI */}
-        <div className="hero-scene relative lg:col-span-6">
-          <div className="relative aspect-[4/5] w-full">
+        <div className="hero-scene relative lg:col-span-7 lg:-mt-8">
+          <div className="relative aspect-[4/3.6] w-full">
             <div className="absolute inset-0 h-full w-full">
               <HeroScene />
             </div>
@@ -248,132 +247,73 @@ function RotatingWord() {
   );
 }
 
-function FloatingDashboard() {
-  const parallax = useMouseParallax();
-  const card1Ref = useRef<HTMLDivElement>(null);
-  const card2Ref = useRef<HTMLDivElement>(null);
-  const card3Ref = useRef<HTMLDivElement>(null);
+const CODE_LINES = [
+  { text: "export default function Ship() {", color: "#c792ea" },
+  { text: "  const ui = useDesign({",         color: "#82aaff" },
+  { text: "    polish: 100,",                 color: "#f78c6c" },
+  { text: '    motion: "cinematic",',         color: "#c3e88d" },
+  { text: "  });",                            color: "#82aaff" },
+  { text: "  return <Beautiful {...ui} />;",  color: "#89ddff" },
+  { text: "}",                               color: "#c792ea" },
+];
+
+function TypedCode() {
+  const full = CODE_LINES.map((l) => l.text).join("\n");
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
-    let rafId: number;
-    const tick = () => {
-      const px = parallax.current.x;
-      const py = parallax.current.y;
-      if (card1Ref.current)
-        card1Ref.current.style.transform = `translate(${px * 1.2 * 18}px, ${py * 1.2 * 12}px)`;
-      if (card2Ref.current)
-        card2Ref.current.style.transform = `translate(${px * 0.6 * 18}px, ${py * 0.6 * 12}px)`;
-      if (card3Ref.current)
-        card3Ref.current.style.transform = `translate(${px * 0.9 * 18}px, ${py * 0.9 * 12}px)`;
-      rafId = requestAnimationFrame(tick);
-    };
-    rafId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafId);
-  }, [parallax]);
+    if (count >= full.length) {
+      const id = setTimeout(() => setCount(0), 2400);
+      return () => clearTimeout(id);
+    }
+    const id = setTimeout(() => setCount((c) => c + 1), 28);
+    return () => clearTimeout(id);
+  }, [count, full.length]);
+
+  const rendered = full.slice(0, count);
+  const linesSoFar = rendered.split("\n");
 
   return (
-    <>
-      {/* Card 1: Conversion chart — depth 1.2× (closest) */}
-      <div
-        ref={card1Ref}
-        className="absolute"
-        style={{ top: "2.5rem", left: "-1.5rem", willChange: "transform" }}
-      >
-        <motion.div
-          animate={{ y: [0, -7, 0] }}
-          transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1, duration: 0.8 }}
-            className="w-[220px] rounded-2xl glass-strong p-4 neon-border glow-blue"
-          >
-            <div className="flex items-center justify-between text-[10px] text-muted-soft">
-              <span>Conversion</span>
-              <span className="text-accent-cyan">+318%</span>
-            </div>
-            <div className="mt-2 flex items-end gap-1">
-              {[40, 55, 38, 70, 50, 82, 65, 92].map((h, i) => (
-                <motion.span
-                  key={i}
-                  initial={{ height: 0 }}
-                  animate={{ height: h }}
-                  transition={{ delay: 1.3 + i * 0.06, duration: 0.6 }}
-                  className="w-2.5 rounded-sm bg-gradient-to-t from-accent-blue to-accent-cyan"
-                  style={{ height: h }}
-                />
-              ))}
-            </div>
-            <div className="mt-3 font-display text-2xl font-bold text-white">
-              12,847
-            </div>
-            <div className="text-[10px] text-muted-dim">unique sessions / 24h</div>
-          </motion.div>
-        </motion.div>
-      </div>
-
-      {/* Card 2: Code editor — depth 0.6× (furthest) */}
-      <div
-        ref={card2Ref}
-        className="absolute"
-        style={{ bottom: "6rem", right: "-1rem", willChange: "transform" }}
-      >
-        <motion.div
-          animate={{ y: [0, -7, 0] }}
-          transition={{ duration: 4.1, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.3, duration: 0.8 }}
-            className="w-[260px] rounded-2xl glass-strong p-3 neon-border"
-          >
-            <div className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
-              <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
-              <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
-              <span className="ml-auto text-[10px] text-muted-dim">App.tsx</span>
-            </div>
-            <pre className="mt-3 overflow-hidden text-[10.5px] leading-relaxed text-muted">
-{`export default function Ship() {
-  const ui = useDesign({
-    polish: 100,
-    motion: "cinematic",
-  });
-  return <Beautiful {...ui} />;
-}`}
-            </pre>
-          </motion.div>
-        </motion.div>
-      </div>
-
-      {/* Card 3: Lighthouse badge — depth 0.9× (medium) */}
-      <div
-        ref={card3Ref}
-        className="absolute"
-        style={{ bottom: "0.5rem", left: "1rem", willChange: "transform" }}
-      >
-        <motion.div
-          animate={{ y: [0, -7, 0] }}
-          transition={{ duration: 4.7, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.5, duration: 0.8 }}
-            className="flex items-center gap-3 rounded-full glass-strong px-4 py-2.5 glow-violet"
-          >
-            <span className="grid h-7 w-7 place-items-center rounded-full bg-gradient-to-br from-accent-violet to-accent-blue text-xs">
-              ✦
+    <pre className="overflow-hidden font-mono text-[11px] leading-[1.7]">
+      {CODE_LINES.map((line, li) => {
+        const typed = linesSoFar[li] ?? "";
+        const done = li < linesSoFar.length - 1;
+        if (li >= linesSoFar.length) return null;
+        return (
+          <div key={li}>
+            <span style={{ color: line.color }}>
+              {done ? line.text : typed}
             </span>
-            <div className="leading-tight">
-              <div className="text-[11px] font-medium text-white">Lighthouse 100</div>
-              <div className="text-[9px] text-muted-dim">Perf · A11y · SEO</div>
-            </div>
-          </motion.div>
-        </motion.div>
+            {!done && (
+              <span className="animate-pulse" style={{ color: "#00d4ff" }}>▌</span>
+            )}
+          </div>
+        );
+      })}
+    </pre>
+  );
+}
+
+function FloatingDashboard() {
+  return (
+    <motion.div
+      className="absolute inset-x-0 top-3"
+      initial={{ opacity: 0, y: -14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 1.2, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div className="rounded-2xl glass-strong p-4 neon-border">
+        {/* Terminal chrome */}
+        <div className="mb-3 flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
+          <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/80" />
+          <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
+          <span className="ml-auto text-[10px] text-muted-dim tracking-widest">
+            App.tsx
+          </span>
+        </div>
+        <TypedCode />
       </div>
-    </>
+    </motion.div>
   );
 }

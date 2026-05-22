@@ -120,7 +120,7 @@ export default function HeroScene() {
     <Canvas
       shadows
       dpr={[1, 2]}
-      camera={{ position: [0, 0.5, 5.2], fov: 36, near: 0.1, far: 50 }}
+      camera={{ position: [0, 0.4, 5.2], fov: 36, near: 0.1, far: 50 }}
       gl={{ antialias: true, powerPreference: "high-performance", alpha: true }}
     >
       {/* Ambient — base fill so dark surfaces aren't pure black */}
@@ -146,7 +146,7 @@ export default function HeroScene() {
 
       <Suspense fallback={<Loader />}>
         <Float speed={1.1} rotationIntensity={0.15} floatIntensity={0.4}>
-          <RobotHead position={[0, 0.35, 0]} scale={0.82} />
+          <RobotHead position={[0, 0.1, 0]} scale={0.88} />
         </Float>
         <Environment preset="city" environmentIntensity={0.8} />
       </Suspense>

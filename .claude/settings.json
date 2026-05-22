@@ -14,7 +14,13 @@
       "Bash(npm list *)",
       "Bash(node -e \"const pkg = require\\('./node_modules/@react-three/fiber/package.json'\\); console.log\\(JSON.stringify\\({exports: pkg.exports, types: pkg.types, main: pkg.main}, null, 2\\)\\)\")",
       "Bash(node -e \"const pkg = require\\('./node_modules/@react-three/postprocessing/package.json'\\); console.log\\(JSON.stringify\\({exports: pkg.exports, types: pkg.types, main: pkg.main}, null, 2\\)\\)\")",
-      "Bash(grep -E \"\\\\.d\\\\.ts$\")"
+      "Bash(grep -E \"\\\\.d\\\\.ts$\")",
+      "Bash(node -e \"require\\('@react-three/fiber'\\); console.log\\('ok'\\)\")",
+      "Bash(Select-String \"index.d\\\\|types\")",
+      "Bash(node -e \"const p = require\\('./node_modules/@react-three/fiber/package.json'\\); console.log\\(p.types || p.typings || p.exports?.['.']?.types || 'no types field'\\)\")",
+      "Bash(node -e \"const p = require\\('./node_modules/@react-three/fiber/package.json'\\); console.log\\(JSON.stringify\\(p.exports, null, 2\\)\\)\")",
+      "Bash(node -e \"const p = require\\('./node_modules/@react-three/fiber/package.json'\\); console.log\\('main:', p.main, 'types:', p.types, 'module:', p.module\\)\")",
+      "Bash(grep -E \"\\\\.d\\\\.ts$|next-env\")"
     ]
   }
 }
