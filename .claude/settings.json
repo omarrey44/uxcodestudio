@@ -20,7 +20,8 @@
       "Bash(node -e \"const p = require\\('./node_modules/@react-three/fiber/package.json'\\); console.log\\(p.types || p.typings || p.exports?.['.']?.types || 'no types field'\\)\")",
       "Bash(node -e \"const p = require\\('./node_modules/@react-three/fiber/package.json'\\); console.log\\(JSON.stringify\\(p.exports, null, 2\\)\\)\")",
       "Bash(node -e \"const p = require\\('./node_modules/@react-three/fiber/package.json'\\); console.log\\('main:', p.main, 'types:', p.types, 'module:', p.module\\)\")",
-      "Bash(grep -E \"\\\\.d\\\\.ts$|next-env\")"
+      "Bash(grep -E \"\\\\.d\\\\.ts$|next-env\")",
+      "Bash(node -e \"const p = require\\('./node_modules/lenis/package.json'\\); console.log\\(p.version\\)\")"
     ]
   }
 }

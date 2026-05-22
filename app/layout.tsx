@@ -47,6 +47,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${syne.variable} ${barlow.variable}`}>
       <body className="bg-background text-white antialiased noise">
+        {/* Runs synchronously before React hydrates — prevents browser scroll restoration fighting Lenis */}
+        <script dangerouslySetInnerHTML={{ __html: "if('scrollRestoration'in history){history.scrollRestoration='manual';}window.scrollTo(0,0);" }} />
         <PageLoader />
         <CustomCursor />
         <SmoothScroll>
