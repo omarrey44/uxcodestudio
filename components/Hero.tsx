@@ -219,11 +219,11 @@ function RotatingWord({ words }: { words: string[] }) {
   }, [words]);
 
   return (
-    <span className="relative inline-block h-[1.05em] min-w-[8ch] overflow-hidden align-bottom">
+    <span className="relative inline-block h-[1.05em] min-w-[8ch] [clip-path:inset(0_-9999px)] align-bottom">
       <AnimatePresence mode="popLayout">
         <motion.span
           key={words[index]}
-          className="absolute inset-x-0 text-center text-gradient-accent"
+          className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-gradient-accent"
           initial={{ y: "110%", opacity: 0 }}
           animate={{ y: "0%", opacity: 1 }}
           exit={{ y: "-110%", opacity: 0 }}
