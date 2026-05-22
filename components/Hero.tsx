@@ -77,16 +77,6 @@ export default function Hero() {
           ease: "none",
         });
 
-        gsap.to(contentRef.current, {
-          scrollTrigger: {
-            trigger: rootRef.current,
-            start: "top top",
-            end: "bottom top",
-            scrub: true,
-          },
-          scale: 0.96,
-          ease: "none",
-        });
       }, rootRef);
       return () => ctx.revert();
     }
@@ -140,15 +130,15 @@ export default function Hero() {
           <h1
             ref={headlineRef}
             className="hero-headline font-hero font-black uppercase text-center md:text-left"
-            style={{ fontSize: "clamp(2.2rem, 6.5vw, 6rem)", lineHeight: "0.93", letterSpacing: "-0.01em" }}
+            style={{ fontSize: "clamp(2.2rem, 5.6vw, 6rem)", lineHeight: "0.93", letterSpacing: "-0.01em" }}
           >
-            <span className="block overflow-hidden">
+            <span className="block [clip-path:inset(0_-9999px)]">
               <span className="word inline-block" style={{ color: "#ffffff" }}>{t.hero.headlinePart1}</span>
             </span>
-            <span className="block overflow-hidden">
+            <span className="block [clip-path:inset(0_-9999px)]">
               <span className="word inline-block" style={{ color: "#60a5fa" }}>{t.hero.headlinePart2}</span>
             </span>
-            <span className="block overflow-hidden">
+            <span className="block [clip-path:inset(0_-9999px)]">
               <span className="word inline-block">
                 <RotatingWord words={t.hero.rotating} />
               </span>
