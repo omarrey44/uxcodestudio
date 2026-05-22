@@ -139,7 +139,7 @@ export default function Hero() {
               <span className="word inline-block" style={{ color: "#60a5fa" }}>{t.hero.headlinePart2}</span>
             </span>
             <span className="block [clip-path:inset(0_-9999px)]">
-              <span className="word inline-block">
+              <span className="word block text-center md:text-left">
                 <RotatingWord words={t.hero.rotating} />
               </span>
             </span>
@@ -219,11 +219,11 @@ function RotatingWord({ words }: { words: string[] }) {
   }, [words]);
 
   return (
-    <span className="relative inline-block h-[1.05em] min-w-[8ch] [clip-path:inset(0_-9999px)] align-bottom">
+    <span className="relative block h-[1.05em] [clip-path:inset(0_-9999px)]">
       <AnimatePresence mode="popLayout">
         <motion.span
           key={words[index]}
-          className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-gradient-accent"
+          className="absolute inset-x-0 text-center whitespace-nowrap text-gradient-accent"
           initial={{ y: "110%", opacity: 0 }}
           animate={{ y: "0%", opacity: 1 }}
           exit={{ y: "-110%", opacity: 0 }}
