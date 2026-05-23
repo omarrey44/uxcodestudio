@@ -1,40 +1,25 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
+import { createPortal } from "react-dom";
 import { useLanguage } from "@/lib/i18n";
+import { useState, useEffect } from "react";
+import React from "react";
 
 const ShaderBackground = dynamic(() => import("./ui/ShaderBackground"), { ssr: false });
 
-// ── App-icon SVGs per service ─────────────────────────────────────────────────
+/* ── App-icon SVGs ──────────────────────────────────────────────────────────── */
 const SERVICE_ICONS = [
-  // Marketing Websites — globe
-  <svg key="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white">
-    <circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-  </svg>,
-  // Landing Pages — rocket
-  <svg key="rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white">
-    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" /><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" /><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" /><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
-  </svg>,
-  // Web Applications — code
-  <svg key="code" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white">
-    <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
-  </svg>,
-  // SaaS Platforms — layers
-  <svg key="layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white">
-    <polygon points="12 2 2 7 12 12 22 7 12 2" /><polyline points="2 17 12 22 22 17" /><polyline points="2 12 12 17 22 12" />
-  </svg>,
-  // Brand & Identity — fingerprint
-  <svg key="fingerprint" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white">
-    <path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4" /><path d="M5 19.5C5.5 18 6 15 6 12c0-1.7.4-3.2 1.1-4.6" /><path d="M22 12c0 4.7-1.3 7.5-3.4 9" /><path d="M9 12c0-1.66.67-3.16 1.75-4.25" /><path d="M14 12c0 .82-.09 1.61-.26 2.37" /><path d="M12 12c0 3-1 5.5-3 7.5" /><path d="M12 8a4 4 0 0 1 4 4" />
-  </svg>,
-  // Mobile Apps — smartphone
-  <svg key="phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white">
-    <rect x="5" y="2" width="14" height="20" rx="2" ry="2" /><path d="M12 18h.01" />
-  </svg>,
+  <svg key="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
+  <svg key="rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>,
+  <svg key="code" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>,
+  <svg key="layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>,
+  <svg key="fp" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4"/><path d="M5 19.5C5.5 18 6 15 6 12c0-1.7.4-3.2 1.1-4.6"/><path d="M22 12c0 4.7-1.3 7.5-3.4 9"/><path d="M9 12c0-1.66.67-3.16 1.75-4.25"/><path d="M14 12c0 .82-.09 1.61-.26 2.37"/><path d="M12 12c0 3-1 5.5-3 7.5"/><path d="M12 8a4 4 0 0 1 4 4"/></svg>,
+  <svg key="phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><path d="M12 18h.01"/></svg>,
 ];
 
-// ── Icon style per service ────────────────────────────────────────────────────
+/* ── Card visual configs ────────────────────────────────────────────────────── */
 const VISUALS = [
   { bg: "linear-gradient(135deg,#3b30cc 0%,#4f6ef7 100%)", glow: "rgba(79,110,247,0.55)",  glowBg: "rgba(79,110,247,0.10)",  border: "rgba(79,110,247,0.35)"  },
   { bg: "linear-gradient(135deg,#0a9bd4 0%,#00d4ff 100%)", glow: "rgba(0,212,255,0.50)",   glowBg: "rgba(0,212,255,0.09)",   border: "rgba(0,212,255,0.35)"   },
@@ -44,7 +29,7 @@ const VISUALS = [
   { bg: "linear-gradient(135deg,#0284c7 0%,#06b6d4 100%)", glow: "rgba(6,182,212,0.50)",   glowBg: "rgba(6,182,212,0.09)",   border: "rgba(6,182,212,0.35)"   },
 ];
 
-// ── Tag icons map ─────────────────────────────────────────────────────────────
+/* ── Tag icons ──────────────────────────────────────────────────────────────── */
 const TAG_ICONS: Record<string, React.ReactNode> = {
   "Design":       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>,
   "Webflow":      <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3"><path d="M17.82 7.5s-2.09 6.46-2.27 7.07c-.07-.61-.73-7.07-.73-7.07H11.5s-2.05 7-2.17 7.44C9.25 14.27 7.7 7.5 7.7 7.5H4.5l3.66 9h3.44l2.1-6.67L15.82 16.5h3.44l3.24-9h-4.68z"/></svg>,
@@ -62,6 +47,8 @@ const TAG_ICONS: Record<string, React.ReactNode> = {
   "Motion":       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3"><path d="M5 12s2.3-1 4-1 4 2 6 2 4-1 4-1V3s-2.3 1-4 1-4-2-6-2-4 1-4 1z"/><path d="M5 19v-7"/></svg>,
   "Tone":         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>,
   "Tono":         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/></svg>,
+  "Angular":      <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3"><path d="M12 2.25L2.2 5.77l1.52 13.23L12 22.5l8.28-3.5L21.8 5.77 12 2.25zm0 2.19l7.34 2.56-1.17 10.19L12 19.72l-6.17-2.53L4.66 6.94 12 4.44zm0 3.06L7.2 16.5h1.93l.98-2.45h3.78l.98 2.45H16.8L12 7.5zm0 2.19l1.38 3.36H10.62L12 9.69z" fill="#DD0031"/></svg>,
+  "Python":       <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3"><path d="M11.914 0C5.82 0 6.2 2.656 6.2 2.656l.007 2.752h5.814v.826H3.9S0 5.789 0 11.969c0 6.18 3.403 5.96 3.403 5.96h2.03v-2.867s-.109-3.403 3.347-3.403h5.768s3.24.052 3.24-3.13V3.19S18.28 0 11.914 0zm-3.21 1.849a1.05 1.05 0 1 1 0 2.1 1.05 1.05 0 0 1 0-2.1zM12.086 24c6.094 0 5.714-2.656 5.714-2.656l-.007-2.752h-5.814v-.826h8.121S24 18.211 24 12.031c0-6.18-3.403-5.96-3.403-5.96h-2.03v2.867s.109 3.403-3.347 3.403h-5.768s-3.24-.052-3.24 3.13v5.339S5.72 24 12.086 24zm3.21-1.849a1.05 1.05 0 1 1 0-2.1 1.05 1.05 0 0 1 0 2.1z" fill="#3776AB"/></svg>,
   "React Native": <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-3 w-3"><circle cx="12" cy="12" r="2"/><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/></svg>,
   "Flutter":      <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3"><path d="M14.314 0L2.3 12 6 15.7 21.684 0h-7.37zm.014 11.072L7.857 17.53l6.47 6.47H21.7l-6.46-6.468 6.46-6.46h-7.37z" fill="#54C5F8"/></svg>,
   "iOS":          <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" fill="#555"/></svg>,
@@ -69,44 +56,564 @@ const TAG_ICONS: Record<string, React.ReactNode> = {
   "Diseño":       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>,
 };
 
-export default function Services() {
-  const { t } = useLanguage();
-  const services = t.services.items.map((item, i) => ({ ...item, ...VISUALS[i], svgIcon: SERVICE_ICONS[i] }));
+/* ── Extended service data ──────────────────────────────────────────────────── */
+type Metric   = { value: string; label: string };
+type DetailCopy = {
+  eyebrow: string;
+  extendedDesc: string;
+  includes: string[];
+  metrics: Metric[];
+  idealFor?: string[];
+  process?: string[];
+  features?: string[];
+  deliverables?: string[];
+  attributes?: string[];
+  cta: string;
+};
+type ServiceDetail = DetailCopy & {
+  accentColor: string;
+  accentRgb: string;
+  heroBg: string;
+  es: DetailCopy;
+};
 
+const SERVICE_DETAILS: ServiceDetail[] = [
+  {
+    eyebrow: "Marketing", extendedDesc: "Cinematic websites that convert visitors into believers. We combine branding precision, performance engineering, and motion design to create digital flagships.",
+    includes: ["Marketing websites", "CMS editable (Sanity)", "SEO architecture", "Motion design", "Performance optimization", "Interactive storytelling"],
+    metrics: [{ value: "+58%", label: "Engagement" }, { value: "<1s", label: "Load speed" }, { value: "100", label: "SEO score" }],
+    idealFor: ["Startups", "SaaS companies", "Premium brands", "Product launches"],
+    cta: "Launch Your Brand Presence",
+    accentColor: "#4f6ef7", accentRgb: "79,110,247",
+    heroBg: "linear-gradient(135deg,#0a0f2e 0%,#1a1060 60%,#0d1845 100%)",
+    es: {
+      eyebrow: "Marketing", extendedDesc: "Sitios web cinemáticos que convierten visitantes en clientes. Combinamos branding de precisión, ingeniería de rendimiento y motion design para crear experiencias que definen categorías.",
+      includes: ["Sitios de marketing", "CMS editable (Sanity)", "Arquitectura SEO", "Motion design", "Optimización de rendimiento", "Storytelling interactivo"],
+      metrics: [{ value: "+58%", label: "Engagement" }, { value: "<1s", label: "Velocidad de carga" }, { value: "100", label: "Score SEO" }],
+      idealFor: ["Startups", "Empresas SaaS", "Marcas premium", "Lanzamientos de producto"],
+      cta: "Lanza tu Presencia de Marca",
+    },
+  },
+  {
+    eyebrow: "Growth", extendedDesc: "We equip companies with the systems and strategies to understand and accelerate their growth. CRO frameworks, analytics dashboards, and high-speed delivery — built with Next.js, React, Angular, and Python.",
+    includes: ["CRO strategy", "Analytics integration", "High-speed delivery", "Next.js & React", "Angular", "Python"],
+    metrics: [{ value: "+43%", label: "Conversion uplift" }, { value: "2x", label: "Qualified leads" }, { value: "↓ CAC", label: "Acquisition cost" }],
+    idealFor: ["Growing companies", "SaaS teams", "E-commerce", "Scale-ups"],
+    cta: "Start Growing Smarter",
+    accentColor: "#00d4ff", accentRgb: "0,212,255",
+    heroBg: "linear-gradient(135deg,#041824 0%,#083048 60%,#041824 100%)",
+    es: {
+      eyebrow: "Crecimiento", extendedDesc: "Equipamos a empresas con los sistemas y estrategias para entender y acelerar su crecimiento. Frameworks CRO, dashboards de analytics y entrega ultra-rápida — construidos con Next.js, React, Angular y Python.",
+      includes: ["Estrategia CRO", "Integración de analytics", "Entrega ultra-rápida", "Next.js & React", "Angular", "Python"],
+      metrics: [{ value: "+43%", label: "Aumento de conversión" }, { value: "2x", label: "Leads calificados" }, { value: "↓ CAC", label: "Costo de adquisición" }],
+      idealFor: ["Empresas en crecimiento", "Equipos SaaS", "E-commerce", "Scale-ups"],
+      cta: "Empieza a Crecer con Inteligencia",
+    },
+  },
+  {
+    eyebrow: "Engineering", extendedDesc: "Scalable web applications built with serious architecture. From admin dashboards to collaborative SaaS tools — production-grade systems designed for growth.",
+    includes: ["SaaS platforms", "Admin dashboards", "Authentication systems", "REST & GraphQL APIs", "Real-time features", "Team collaboration"],
+    metrics: [{ value: "99.9%", label: "Uptime SLA" }, { value: "<50ms", label: "API response" }, { value: "∞", label: "Scalable" }],
+    process: ["Frontend", "Backend", "Database", "APIs", "Deploy"],
+    cta: "Build Your Platform",
+    accentColor: "#7c3aed", accentRgb: "124,58,237",
+    heroBg: "linear-gradient(135deg,#0d0820 0%,#1e0d4a 60%,#0d0820 100%)",
+    es: {
+      eyebrow: "Ingeniería", extendedDesc: "Aplicaciones web escalables con arquitectura seria. Desde dashboards administrativos hasta herramientas SaaS colaborativas — sistemas de producción diseñados para crecer.",
+      includes: ["Plataformas SaaS", "Dashboards admin", "Sistemas de autenticación", "APIs REST & GraphQL", "Funciones en tiempo real", "Colaboración en equipo"],
+      metrics: [{ value: "99.9%", label: "Uptime SLA" }, { value: "<50ms", label: "Respuesta API" }, { value: "∞", label: "Escalable" }],
+      process: ["Frontend", "Backend", "Base de datos", "APIs", "Deploy"],
+      cta: "Construye tu Plataforma",
+    },
+  },
+  {
+    eyebrow: "Product", extendedDesc: "Full SaaS systems — from onboarding to billing, permissions to analytics. Enterprise-ready architecture that scales with your MRR from day one.",
+    includes: ["Multi-tenant architecture", "Subscription billing", "Onboarding systems", "Team management", "Role permissions", "Usage analytics"],
+    metrics: [{ value: "MRR+", label: "Revenue ready" }, { value: "∞", label: "Multi-tenant" }, { value: "SOC2", label: "Enterprise-ready" }],
+    features: ["AI copilots", "Workflow automation", "Semantic search", "AI dashboards"],
+    cta: "Launch Your SaaS",
+    accentColor: "#3b82f6", accentRgb: "59,130,246",
+    heroBg: "linear-gradient(135deg,#030d24 0%,#0a2060 60%,#030d24 100%)",
+    es: {
+      eyebrow: "Producto", extendedDesc: "Sistemas SaaS completos — desde onboarding hasta billing, permisos hasta analytics. Arquitectura enterprise-ready que escala con tu MRR desde el día uno.",
+      includes: ["Arquitectura multi-tenant", "Billing por suscripción", "Sistemas de onboarding", "Gestión de equipos", "Permisos por roles", "Analytics de uso"],
+      metrics: [{ value: "MRR+", label: "Listo para ingresos" }, { value: "∞", label: "Multi-tenant" }, { value: "SOC2", label: "Enterprise-ready" }],
+      features: ["Copilotos IA", "Automatización de flujos", "Búsqueda semántica", "Dashboards IA"],
+      cta: "Lanza tu SaaS",
+    },
+  },
+  {
+    eyebrow: "Creative", extendedDesc: "Visual identities with personality and longevity. We define how your brand looks, moves, speaks, and feels — across every touchpoint.",
+    includes: ["Visual identity system", "Brand guidelines", "Typography direction", "Motion language", "Verbal tone & voice", "UI aesthetic standards"],
+    metrics: [{ value: "∞", label: "Brand clarity" }, { value: "100%", label: "Custom-built" }, { value: "Full IP", label: "Ownership" }],
+    deliverables: ["Logo suite", "Brand guidelines", "Motion principles", "Asset library"],
+    attributes: ["Minimal", "Timeless", "Tech-first", "Cinematic"],
+    cta: "Define Your Brand",
+    accentColor: "#a855f7", accentRgb: "168,85,247",
+    heroBg: "linear-gradient(135deg,#130820 0%,#2d0d50 60%,#130820 100%)",
+    es: {
+      eyebrow: "Creativo", extendedDesc: "Identidades visuales con personalidad y longevidad. Definimos cómo tu marca se ve, se mueve, habla y se siente — en cada punto de contacto.",
+      includes: ["Sistema de identidad visual", "Manual de marca", "Dirección tipográfica", "Lenguaje de movimiento", "Tono y voz verbal", "Estándares de UI"],
+      metrics: [{ value: "∞", label: "Claridad de marca" }, { value: "100%", label: "A medida" }, { value: "IP total", label: "Propiedad" }],
+      deliverables: ["Suite de logos", "Manual de marca", "Principios de motion", "Librería de assets"],
+      attributes: ["Minimal", "Atemporal", "Tech-first", "Cinemático"],
+      cta: "Define tu Marca",
+    },
+  },
+  {
+    eyebrow: "Mobile", extendedDesc: "App Store-quality mobile experiences. Native performance, fluid interactions, and thoughtful UX — built for iOS and Android with no compromises.",
+    includes: ["iOS native apps", "Android apps", "Cross-platform (RN/Flutter)", "Native-feel UX", "Offline support", "Push notifications"],
+    metrics: [{ value: "60fps", label: "Animations" }, { value: "4.9★", label: "App Store" }, { value: "Native", label: "Interactions" }],
+    features: ["Onboarding flows", "Biometric auth", "In-app payments", "Realtime sync", "App analytics"],
+    cta: "Build Your Mobile App",
+    accentColor: "#06b6d4", accentRgb: "6,182,212",
+    heroBg: "linear-gradient(135deg,#031218 0%,#062836 60%,#031218 100%)",
+    es: {
+      eyebrow: "Mobile", extendedDesc: "Experiencias móviles nivel App Store. Rendimiento nativo, interacciones fluidas y UX pensada — construida para iOS y Android sin compromisos.",
+      includes: ["Apps nativas iOS", "Apps Android", "Cross-platform (RN/Flutter)", "UX de sensación nativa", "Soporte offline", "Notificaciones push"],
+      metrics: [{ value: "60fps", label: "Animaciones" }, { value: "4.9★", label: "App Store" }, { value: "Nativo", label: "Interacciones" }],
+      features: ["Flujos de onboarding", "Autenticación biométrica", "Pagos in-app", "Sync en tiempo real", "Analytics de app"],
+      cta: "Construye tu App Móvil",
+    },
+  },
+];
+
+/* ── Check icon ─────────────────────────────────────────────────────────────── */
+function CheckIcon({ color }: { color: string }) {
   return (
-    <section id="services" className="section-separator relative isolate py-24 md:py-32">
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        {/* Shader only on desktop — too heavy/odd on mobile */}
-        <div className="hidden md:block absolute inset-0">
-          <ShaderBackground />
-        </div>
-        {/* Mobile fallback: subtle radial glow */}
-        <div
-          className="block md:hidden absolute inset-0"
-          style={{ background: "radial-gradient(ellipse 100% 60% at 50% 40%, #0a1628 0%, #050508 70%)" }}
-        />
-        <div className="absolute inset-x-0 top-0 h-40" style={{ background: "linear-gradient(to bottom, #050508 0%, transparent 100%)" }} />
-        <div className="absolute inset-x-0 bottom-0 h-32" style={{ background: "linear-gradient(to top, #080810 0%, transparent 100%)" }} />
-      </div>
-
-      <div className="container-x">
-        <SectionHeader
-          eyebrow={t.services.eyebrow}
-          title={<>{t.services.titlePart1} <em className="display-em">{t.services.titleEmphasis}</em>{t.services.titlePart2 ? ` ${t.services.titlePart2}` : ""}</>}
-          accent={t.services.accent}
-          description={t.services.description}
-        />
-
-        <div className="mt-20 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {services.map((s, i) => (
-            <ServiceCard key={s.title} index={i} {...s} />
-          ))}
-        </div>
-      </div>
-    </section>
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+      <circle cx="7" cy="7" r="6.5" stroke={color} strokeOpacity="0.3"/>
+      <path d="M4.5 7l1.8 1.8L9.5 5.5" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
   );
 }
 
+/* ── Panel hero visuals (one per service) ──────────────────────────────────── */
+function PanelHeroVisual({ idx, detail }: { idx: number; detail: ServiceDetail }) {
+  const ac = detail.accentColor;
+  const rgb = detail.accentRgb;
+
+  const visuals = [
+    /* 0 — Marketing: browser window mockup */
+    <div key="mkt" className="relative w-full h-full flex items-center justify-center overflow-hidden">
+      <motion.div
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.15, duration: 0.5 }}
+        className="w-[85%] rounded-xl border border-white/10 bg-[#060912]/80 shadow-2xl overflow-hidden"
+      >
+        <div className="h-7 bg-white/[0.04] flex items-center px-3 gap-1.5 border-b border-white/[0.06]">
+          <span className="w-2.5 h-2.5 rounded-full bg-red-500/50"/>
+          <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/50"/>
+          <span className="w-2.5 h-2.5 rounded-full bg-green-500/50"/>
+          <span className="flex-1 mx-4 h-3.5 rounded-full bg-white/[0.06]"/>
+        </div>
+        <div className="p-4 space-y-2.5">
+          <motion.div initial={{ width: "30%" }} animate={{ width: "55%" }} transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
+            className="h-4 rounded" style={{ background: `rgba(${rgb},0.35)` }}/>
+          <div className="h-2.5 w-4/5 rounded bg-white/[0.08]"/>
+          <div className="h-2.5 w-3/5 rounded bg-white/[0.06]"/>
+          <div className="flex gap-2 mt-3">
+            <div className="h-7 w-24 rounded-full" style={{ background: ac + "33", border: `1px solid ${ac}44` }}/>
+            <div className="h-7 w-20 rounded-full bg-white/[0.05] border border-white/[0.08]"/>
+          </div>
+        </div>
+      </motion.div>
+      <motion.div animate={{ opacity: [0.4, 0.7, 0.4] }} transition={{ duration: 3, repeat: Infinity }}
+        className="absolute bottom-4 right-8 w-20 h-20 rounded-full blur-2xl"
+        style={{ background: `rgba(${rgb},0.4)` }}/>
+    </div>,
+
+    /* 1 — Landing Pages: conversion bar chart */
+    <div key="lp" className="relative w-full h-full flex items-end justify-center pb-6 gap-3 overflow-hidden">
+      {[40, 55, 48, 72, 65, 88, 95].map((h, i) => (
+        <motion.div key={i} className="w-8 rounded-t-md relative"
+          initial={{ height: 0 }}
+          animate={{ height: `${h}%` }}
+          transition={{ delay: 0.1 + i * 0.07, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          style={{ background: i === 6 ? ac : `rgba(${rgb},${0.2 + i * 0.06})` }}
+        >
+          {i === 6 && (
+            <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}
+              className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold whitespace-nowrap"
+              style={{ color: ac }}>+43%</motion.div>
+          )}
+        </motion.div>
+      ))}
+      <motion.div animate={{ opacity: [0.3, 0.6, 0.3] }} transition={{ duration: 2.5, repeat: Infinity }}
+        className="absolute top-3 right-6 w-16 h-16 rounded-full blur-2xl"
+        style={{ background: `rgba(${rgb},0.5)` }}/>
+    </div>,
+
+    /* 2 — Web Apps: terminal */
+    <div key="wa" className="relative w-full h-full flex items-center justify-center overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.1, duration: 0.4 }}
+        className="w-[85%] rounded-xl border border-white/10 bg-[#040408]/90 overflow-hidden font-mono text-xs"
+      >
+        <div className="h-6 bg-white/[0.03] flex items-center px-3 gap-1.5 border-b border-white/[0.06]">
+          <span className="w-2 h-2 rounded-full bg-white/20"/>
+          <span className="text-white text-[10px] ml-1">Terminal</span>
+        </div>
+        <div className="p-3 space-y-1.5">
+          {[
+            { t: "$ npm run build", c: "text-white", d: 0.2 },
+            { t: "✓ Compiled successfully", c: "text-green-400/80", d: 0.5 },
+            { t: "✓ API routes ready (12)", c: "text-green-400/60", d: 0.7 },
+            { t: "✓ Database connected", c: "text-green-400/60", d: 0.9 },
+            { t: "→ Deploying to production…", c: "", d: 1.1, ac: true },
+          ].map((l, i) => (
+            <motion.div key={i} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: l.d, duration: 0.3 }}
+              className={`${l.c}`} style={l.ac ? { color: ac } : {}}>{l.t}</motion.div>
+          ))}
+          <motion.span initial={{ opacity: 0 }} animate={{ opacity: [0, 1, 0] }}
+            transition={{ delay: 1.4, duration: 0.8, repeat: Infinity }}
+            className="inline-block w-1.5 h-3.5 rounded-sm" style={{ background: ac }}/>
+        </div>
+      </motion.div>
+    </div>,
+
+    /* 3 — SaaS: MRR line chart */
+    <div key="saas" className="relative w-full h-full flex items-center justify-center overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.1 }}
+        className="w-[85%]"
+      >
+        <div className="text-[10px] text-white mb-2 font-mono">Monthly Recurring Revenue</div>
+        <svg viewBox="0 0 200 80" className="w-full">
+          <defs>
+            <linearGradient id={`saas-grad-${idx}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={ac} stopOpacity="0.3"/>
+              <stop offset="100%" stopColor={ac} stopOpacity="0.0"/>
+            </linearGradient>
+          </defs>
+          <motion.path
+            d="M0 70 C20 65,40 55,60 45 C80 35,100 30,120 20 C140 10,160 8,200 4"
+            fill="none" stroke={ac} strokeWidth="2" strokeLinecap="round"
+            initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
+            transition={{ delay: 0.3, duration: 1.2, ease: "easeInOut" }}
+          />
+          <motion.path
+            d="M0 70 C20 65,40 55,60 45 C80 35,100 30,120 20 C140 10,160 8,200 4 L200 80 L0 80 Z"
+            fill={`url(#saas-grad-${idx})`}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            transition={{ delay: 1.0, duration: 0.4 }}
+          />
+          <motion.circle cx="200" cy="4" r="3" fill={ac}
+            initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 1.4 }}/>
+          <motion.text x="160" y="18" fill={ac} fontSize="8" fontFamily="monospace"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }}>
+            +MRR ↑
+          </motion.text>
+        </svg>
+        <div className="flex gap-4 mt-2">
+          {["$12k", "$28k", "$64k"].map((v, i) => (
+            <motion.div key={i} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 + i * 0.1 }} className="text-center">
+              <div className="text-sm font-bold" style={{ color: ac }}>{v}</div>
+              <div className="text-[9px] text-white">mo {i + 1}</div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+    </div>,
+
+    /* 4 — Brand: color palette + type */
+    <div key="brand" className="relative w-full h-full flex items-center justify-center gap-6 overflow-hidden px-6">
+      <div className="flex flex-col gap-2">
+        {["#a855f7","#7c3aed","#4f6ef7","#1e1040"].map((c, i) => (
+          <motion.div key={i} initial={{ width: 0 }} animate={{ width: 48 }}
+            transition={{ delay: 0.1 + i * 0.08, duration: 0.5, ease: [0.22,1,0.36,1] }}
+            className="h-10 rounded-lg overflow-hidden" style={{ background: c, minWidth: 0 }}/>
+        ))}
+      </div>
+      <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}
+        className="flex flex-col gap-1">
+        <div className="text-2xl font-bold tracking-tight text-white" style={{ fontFamily: "system-ui" }}>Brand</div>
+        <div className="text-sm text-white tracking-[0.2em] uppercase">Identity</div>
+        <div className="mt-2 flex gap-1.5">
+          {["Aa","Bb","Cc"].map((l, i) => (
+            <motion.span key={l} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 + i * 0.1 }}
+              className="text-xs px-2 py-1 rounded border border-white/[0.08] text-white">{l}</motion.span>
+          ))}
+        </div>
+      </motion.div>
+    </div>,
+
+    /* 5 — Mobile: iPhone mockup */
+    <div key="mob" className="relative w-full h-full flex items-center justify-center overflow-hidden">
+      <motion.div
+        initial={{ y: 12, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.1, duration: 0.5, ease: [0.22,1,0.36,1] }}
+        className="relative w-24 h-44 rounded-[22px] border-2 border-white/20 bg-[#060912]/80 overflow-hidden shadow-2xl"
+      >
+        {/* notch */}
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 w-10 h-3 rounded-full bg-black/60 z-10"/>
+        {/* screen content */}
+        <div className="absolute inset-0 pt-8 p-2 space-y-1.5">
+          <div className="h-4 w-3/4 rounded-md" style={{ background: `rgba(${rgb},0.4)` }}/>
+          <div className="h-2.5 w-full rounded bg-white/[0.08]"/>
+          <div className="h-2.5 w-4/5 rounded bg-white/[0.06]"/>
+          <div className="mt-2 grid grid-cols-2 gap-1">
+            <div className="h-10 rounded-lg bg-white/[0.05]"/>
+            <div className="h-10 rounded-lg" style={{ background: `rgba(${rgb},0.15)` }}/>
+          </div>
+          <motion.div animate={{ opacity: [0.6, 1, 0.6] }} transition={{ duration: 2, repeat: Infinity }}
+            className="mx-auto mt-2 h-6 w-16 rounded-full"
+            style={{ background: `rgba(${rgb},0.5)` }}/>
+        </div>
+      </motion.div>
+      <motion.div animate={{ opacity: [0.2, 0.5, 0.2] }} transition={{ duration: 2.5, repeat: Infinity }}
+        className="absolute w-32 h-32 rounded-full blur-3xl"
+        style={{ background: `rgba(${rgb},0.4)` }}/>
+    </div>,
+  ];
+
+  return (
+    <div className="relative w-full h-full" style={{ background: detail.heroBg }}>
+      <div className="absolute inset-0 opacity-20"
+        style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.12) 1px, transparent 0)", backgroundSize: "24px 24px" }}/>
+      {visuals[idx]}
+    </div>
+  );
+}
+
+
+
+/* ── Service panel (desktop side panel + mobile full-screen) ──────────────── */
+type PanelProps = {
+  idx: number;
+  title: string;
+  tags: string[];
+  detail: ServiceDetail;
+  lang: "en" | "es";
+  onClose: () => void;
+};
+
+const PANEL_LABELS = {
+  en: {
+    included:   "What's Included",
+    impact:     "Impact",
+    arch:       "Architecture",
+    stack:      "Tech Stack",
+    idealFor:   "Ideal For",
+    features:   "AI & Advanced Features",
+    deliver:    "Deliverables",
+    aesthetic:  "Aesthetic Direction",
+  },
+  es: {
+    included:   "Incluye",
+    impact:     "Impacto",
+    arch:       "Arquitectura",
+    stack:      "Stack Tecnológico",
+    idealFor:   "Ideal Para",
+    features:   "IA y Funciones Avanzadas",
+    deliver:    "Entregables",
+    aesthetic:  "Dirección Estética",
+  },
+};
+
+function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
+  const copy   = lang === "es" ? detail.es : detail;
+  const labels = PANEL_LABELS[lang];
+
+  const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.05 } } };
+  const fadeUp  = { hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] as [number,number,number,number] } } };
+
+  return (
+    <motion.div
+      className="fixed inset-y-0 right-0 flex w-full md:w-[480px] flex-col"
+      style={{ zIndex: 9001 }}
+      initial={{ x: "100%" }}
+      animate={{ x: 0 }}
+      exit={{ x: "100%" }}
+      transition={{ type: "spring", stiffness: 280, damping: 28, mass: 0.9 }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Glass panel — full viewport height, no overflow */}
+      <div className="flex h-full flex-col border-l border-white/[0.07] overflow-hidden"
+        style={{ background: "rgba(6,7,14,0.97)", backdropFilter: "blur(24px)" }}>
+
+        {/* Header — flex-none */}
+        <div className="relative z-20 flex-none flex items-center justify-between px-5 py-3 border-b border-white/[0.05]">
+          <div>
+            <span className="text-[10px] font-semibold uppercase tracking-[0.2em]"
+              style={{ color: detail.accentColor }}>{copy.eyebrow}</span>
+            <h2 className="text-base font-bold text-white leading-tight">{title}</h2>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-white/[0.06] text-white transition-all hover:bg-white/[0.12] hover:text-white border border-white/[0.08]"
+          >
+            <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5">
+              <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        {/* Hero visual — flex-none, fixed height */}
+        <div className="relative flex-none h-[155px]">
+          <PanelHeroVisual idx={idx} detail={detail}/>
+          <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[#060712] to-transparent pointer-events-none"/>
+        </div>
+
+        {/* Body — flex-1 with scroll */}
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 pb-5 pt-3">
+          <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-5">
+
+            <motion.p variants={fadeUp} className="text-sm leading-relaxed text-white">
+              {copy.extendedDesc}
+            </motion.p>
+
+            {/* Two-column layout for Included + Impact */}
+            <motion.div variants={fadeUp} className="grid grid-cols-2 gap-4">
+              {/* Included */}
+              <div>
+                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-2">{labels.included}</div>
+                <div className="space-y-1.5">
+                  {copy.includes.map((item) => (
+                    <div key={item} className="flex items-start gap-1.5">
+                      <span className="flex-none mt-0.5"><CheckIcon color={detail.accentColor}/></span>
+                      <span className="text-[12px] text-white leading-tight">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Metrics + extra list */}
+              <div className="space-y-3">
+                <div>
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-2">{labels.impact}</div>
+                  <div className="grid grid-cols-1 gap-1.5">
+                    {copy.metrics.map((m) => (
+                      <div key={m.label} className="rounded-lg border border-white/[0.07] bg-white/[0.03] px-2.5 py-1.5 flex items-center gap-2">
+                        <span className="text-sm font-bold leading-none" style={{ color: detail.accentColor }}>{m.value}</span>
+                        <span className="text-[10px] text-white">{m.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Features / Deliverables / Attributes — whichever exists */}
+                {copy.features && (
+                  <div>
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-2">{labels.features}</div>
+                    <div className="space-y-1">
+                      {copy.features.map((f) => (
+                        <div key={f} className="flex items-center gap-1.5">
+                          <span className="h-1.5 w-1.5 rounded-full flex-none" style={{ background: detail.accentColor }}/>
+                          <span className="text-[11px] text-white">{f}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {copy.deliverables && (
+                  <div>
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-2">{labels.deliver}</div>
+                    <div className="space-y-1">
+                      {copy.deliverables.map((d) => (
+                        <div key={d} className="flex items-center gap-1.5">
+                          <CheckIcon color={detail.accentColor}/>
+                          <span className="text-[11px] text-white">{d}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {copy.attributes && (
+                  <div>
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-2">{labels.aesthetic}</div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {copy.attributes.map((a) => (
+                        <span key={a} className="text-[11px] text-white border border-white/[0.08] rounded-full px-2 py-0.5">{a}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+
+            {/* Process flow */}
+            {copy.process && (
+              <motion.div variants={fadeUp}>
+                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-2">{labels.arch}</div>
+                <div className="flex flex-wrap items-center gap-1">
+                  {copy.process.map((step, i) => (
+                    <div key={step} className="flex items-center gap-1">
+                      <div className="rounded-lg border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-[11px] text-white">{step}</div>
+                      {i < copy.process!.length - 1 && (
+                        <svg viewBox="0 0 16 16" fill="none" width="14" height="14" className="flex-none opacity-40">
+                          <path d="M3 8h10M9 4l4 4-4 4" stroke={detail.accentColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {/* Tech stack + Ideal for — two columns */}
+            <motion.div variants={fadeUp} className="grid grid-cols-2 gap-4">
+              <div>
+                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-2">{labels.stack}</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {tags.map((tag) => (
+                    <span key={tag}
+                      className="inline-flex items-center gap-1 rounded-full border border-white/[0.09] bg-white/[0.04] px-2 py-0.5 text-[10px] font-medium text-white">
+                      {TAG_ICONS[tag] && <span className="opacity-70">{TAG_ICONS[tag]}</span>}
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              {copy.idealFor && (
+                <div>
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-2">{labels.idealFor}</div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {copy.idealFor.map((item) => (
+                      <span key={item} className="rounded-full px-2 py-0.5 text-[10px] border"
+                        style={{ color: detail.accentColor, borderColor: detail.accentColor + "44", background: detail.accentColor + "11" }}>
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </motion.div>
+
+            {/* CTA */}
+            <motion.div variants={fadeUp}>
+              <button
+                type="button"
+                className="group relative w-full overflow-hidden rounded-xl px-5 py-3 text-sm font-semibold text-white transition-all duration-300"
+                style={{ background: `linear-gradient(135deg,${detail.accentColor}cc,${detail.accentColor})` }}
+              >
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  {copy.cta}
+                  <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1">
+                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
+                <div className="absolute inset-0 bg-white/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"/>
+              </button>
+            </motion.div>
+
+          </motion.div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ── Service card ───────────────────────────────────────────────────────────── */
 type ServiceCardProps = {
   title: string;
   description: string;
@@ -118,83 +625,260 @@ type ServiceCardProps = {
   glowBg: string;
   border: string;
   index: number;
+  detail: ServiceDetail;
+  isActive: boolean;
+  isDimmed: boolean;
+  isMobile: boolean;
+  onClick: () => void;
 };
 
-function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, glowBg, border, index }: ServiceCardProps) {
+function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, glowBg, border, index, detail, isActive, isDimmed, isMobile, onClick }: ServiceCardProps) {
   return (
     <motion.div
+      layout
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-20px" }}
       transition={{ duration: 0.65, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-[#09090f] p-7 transition-all duration-500 hover:border-white/[0.15] hover:bg-[#0c0c14]"
+      animate={{
+        opacity: isDimmed ? 0.4 : 1,
+        scale: isDimmed ? 0.985 : 1,
+        filter: isDimmed ? "saturate(0.5)" : "saturate(1)",
+      }}
+      className={`group relative flex flex-col overflow-hidden rounded-2xl border bg-[#09090f] transition-colors duration-300 cursor-pointer
+        ${isActive ? "border-white/[0.22]" : "border-white/[0.08] hover:border-white/[0.15]"}`}
+      style={isActive ? { boxShadow: `0 0 0 1px ${detail.accentColor}44, 0 8px 32px ${detail.accentColor}22` } : {}}
+      onClick={onClick}
     >
       {/* Hover top glow line */}
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-px opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        style={{ background: `linear-gradient(90deg, transparent, ${border}, transparent)` }}
-      />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        style={{ background: `linear-gradient(90deg, transparent, ${border}, transparent)` }}/>
+
+      {/* Active top glow line */}
+      {isActive && (
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
+          style={{ background: `linear-gradient(90deg, transparent, ${detail.accentColor}, transparent)` }}/>
+      )}
+
       {/* Hover inner glow */}
-      <div
-        className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        style={{ background: `radial-gradient(600px circle at 50% 0%, ${glowBg}, transparent 70%)` }}
-      />
+      <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        style={{ background: `radial-gradient(600px circle at 50% 0%, ${glowBg}, transparent 70%)` }}/>
 
-      {/* App icon */}
-      <div className="relative mb-7 w-fit">
-        <div
-          className="relative flex h-[72px] w-[72px] items-center justify-center overflow-hidden rounded-[18px]"
-          style={{
-            background: bg,
-            boxShadow: `0 0 0 1px ${border}, inset 0 1px 0 rgba(255,255,255,0.2)`,
-          }}
-        >
-          {/* Glass shine */}
-          <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-[18px] bg-gradient-to-b from-white/25 to-transparent" />
-          {svgIcon}
+      <div className="p-7">
+        {/* Icon */}
+        <div className="relative mb-7 w-fit">
+          <div className="relative flex h-[72px] w-[72px] items-center justify-center overflow-hidden rounded-[18px] transition-transform duration-300 group-hover:scale-105"
+            style={{ background: bg, boxShadow: `0 0 0 1px ${border}, inset 0 1px 0 rgba(255,255,255,0.2)` }}>
+            <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-[18px] bg-gradient-to-b from-white/25 to-transparent"/>
+            {svgIcon}
+          </div>
+          <div className="absolute -bottom-2 left-1/2 h-8 w-14 -translate-x-1/2 rounded-full blur-xl opacity-70"
+            style={{ background: glow }}/>
         </div>
-        {/* Bloom glow below icon */}
-        <div
-          className="absolute -bottom-2 left-1/2 h-8 w-14 -translate-x-1/2 rounded-full blur-xl opacity-70"
-          style={{ background: glow }}
-        />
+
+        {/* Text */}
+        <h3 className="font-display text-[22px] font-bold leading-tight text-white">{title}</h3>
+        <p className="mt-3 flex-1 text-sm leading-relaxed text-white">{description}</p>
+
+        {/* Tags */}
+        <div className="mt-6 flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <span key={tag}
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.09] bg-white/[0.04] px-3 py-1 text-[11px] font-medium text-white">
+              {TAG_ICONS[tag] && <span className="opacity-70">{TAG_ICONS[tag]}</span>}
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        {/* Learn more */}
+        <div className="mt-6 flex items-center gap-1.5 text-sm font-medium transition-colors duration-300"
+          style={{ color: isActive ? detail.accentColor : "#ffffff" }}>
+          <span>{isActive && isMobile ? "Close" : learnMore}</span>
+          <motion.span animate={{ rotate: isActive && isMobile ? 180 : 0, x: isActive && isMobile ? 0 : 0 }}
+            transition={{ duration: 0.25 }}>
+            {isMobile ? "↓" : "→"}
+          </motion.span>
+        </div>
       </div>
 
-      {/* Text */}
-      <h3 className="font-display text-[22px] font-bold leading-tight text-white">
-        {title}
-      </h3>
-      <p className="mt-3 flex-1 text-sm leading-relaxed text-white">
-        {description}
-      </p>
-
-      {/* Tags */}
-      <div className="mt-6 flex flex-wrap gap-2">
-        {tags.map((tag) => (
-          <span
-            key={tag}
-            className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.09] bg-white/[0.04] px-3 py-1 text-[11px] font-medium text-white/60"
+      {/* Mobile accordion */}
+      <AnimatePresence>
+        {isActive && isMobile && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden border-t border-white/[0.07]"
           >
-            {TAG_ICONS[tag] && <span className="opacity-70">{TAG_ICONS[tag]}</span>}
-            {tag}
-          </span>
-        ))}
-      </div>
+            <div className="px-7 py-6 space-y-6">
+              {/* Extended desc */}
+              <p className="text-sm leading-relaxed text-white">{detail.extendedDesc}</p>
 
-      {/* Learn more */}
-      <div className="mt-6 flex items-center gap-1.5 text-sm font-medium text-white/40 transition-colors duration-300 group-hover:text-white/80">
-        <span>{learnMore}</span>
-        <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-      </div>
+              {/* Includes */}
+              <div>
+                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-3">What&apos;s Included</div>
+                <div className="grid grid-cols-1 gap-2">
+                  {detail.includes.map((item) => (
+                    <div key={item} className="flex items-center gap-2">
+                      <CheckIcon color={detail.accentColor}/>
+                      <span className="text-[13px] text-white">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Metrics */}
+              <div className="grid grid-cols-3 gap-3">
+                {detail.metrics.map((m) => (
+                  <div key={m.label} className="rounded-xl border border-white/[0.07] bg-white/[0.03] p-3 text-center">
+                    <div className="text-base font-bold" style={{ color: detail.accentColor }}>{m.value}</div>
+                    <div className="text-[10px] text-white mt-0.5">{m.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* CTA */}
+              <button
+                className="w-full rounded-xl py-3 text-sm font-semibold text-white"
+                style={{ background: `linear-gradient(135deg,${detail.accentColor}cc,${detail.accentColor})` }}
+                onClick={(e) => { e.stopPropagation(); }}
+              >
+                {detail.cta} →
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
 
+/* ── Main Services section ──────────────────────────────────────────────────── */
+export default function Services() {
+  const { t, lang } = useLanguage();
+  const [activeIdx, setActiveIdx] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  // ESC + body scroll lock — lives here so it's never blocked by stacking context
+  useEffect(() => {
+    if (activeIdx === null || isMobile) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setActiveIdx(null); };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [activeIdx, isMobile]);
+
+  const handleToggle = (i: number) => setActiveIdx((prev) => (prev === i ? null : i));
+  const handleClose  = () => setActiveIdx(null);
+
+  const services = t.services.items.map((item, i) => ({
+    ...item,
+    ...VISUALS[i],
+    svgIcon: SERVICE_ICONS[i],
+    detail: SERVICE_DETAILS[i],
+  }));
+
+  const showPanel = mounted && activeIdx !== null && !isMobile;
+
+  return (
+    <section id="services" className="section-separator relative isolate py-24 md:py-32">
+      {/* Background */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 block md:hidden"
+          style={{ backgroundImage: "url('/fondoMovilServices.png')", backgroundSize: "cover", backgroundPosition: "center" }} />
+        <div className="absolute inset-0 hidden md:block"
+          style={{ backgroundImage: "url('/fondoServices.png')", backgroundSize: "cover", backgroundPosition: "center" }} />
+        <div className="absolute inset-0 hidden md:block opacity-60">
+          <ShaderBackground/>
+        </div>
+        <div className="absolute inset-x-0 top-0 h-40"
+          style={{ background: "linear-gradient(to bottom, #050508 0%, transparent 100%)" }}/>
+        <div className="absolute inset-x-0 bottom-0 h-32"
+          style={{ background: "linear-gradient(to top, #080810 0%, transparent 100%)" }}/>
+      </div>
+
+      <div className="container-x relative z-10">
+        <SectionHeader
+          eyebrow={t.services.eyebrow}
+          title={<>{t.services.titlePart1} <em className="display-em">{t.services.titleEmphasis}</em>{t.services.titlePart2 ? ` ${t.services.titlePart2}` : ""}</>}
+          accent={t.services.accent}
+          description={t.services.description}
+        />
+
+        <div className="mt-20 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {services.map((s, i) => (
+            <ServiceCard
+              key={s.title}
+              index={i}
+              title={s.title}
+              description={s.description}
+              tags={s.tags}
+              learnMore={s.learnMore}
+              svgIcon={s.svgIcon}
+              bg={s.bg}
+              glow={s.glow}
+              glowBg={s.glowBg}
+              border={s.border}
+              detail={s.detail}
+              isActive={activeIdx === i}
+              isDimmed={activeIdx !== null && activeIdx !== i && !isMobile}
+              isMobile={isMobile}
+              onClick={() => handleToggle(i)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Desktop: backdrop + panel rendered in document.body via portal to escape stacking context */}
+      {mounted && createPortal(
+        <AnimatePresence>
+          {showPanel && (
+            <>
+              <motion.div
+                key="backdrop"
+                className="fixed inset-0"
+                style={{ zIndex: 9000, background: "rgba(3,4,10,0.6)", backdropFilter: "blur(4px)" }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.22 }}
+                onClick={handleClose}
+              />
+              <ServicePanel
+                key="panel"
+                idx={activeIdx!}
+                title={services[activeIdx!].title}
+                tags={services[activeIdx!].tags}
+                detail={services[activeIdx!].detail}
+                lang={lang}
+                onClose={handleClose}
+              />
+            </>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+    </section>
+  );
+}
+
+/* ── Section header (shared) ────────────────────────────────────────────────── */
 export function SectionHeader({
-  eyebrow,
-  title,
-  accent,
-  description,
+  eyebrow, title, accent, description,
 }: {
   eyebrow: string;
   title: React.ReactNode;
@@ -210,7 +894,7 @@ export function SectionHeader({
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-white"
       >
-        <span className="h-1 w-1 rounded-full bg-accent-cyan" />
+        <span className="h-1 w-1 rounded-full bg-accent-cyan"/>
         {eyebrow}
       </motion.div>
 

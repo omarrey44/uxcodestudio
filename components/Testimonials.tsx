@@ -104,13 +104,60 @@ export default function Testimonials() {
   const active = TESTIMONIALS[order[0]];
 
   return (
-    <section className="section-alt section-separator relative overflow-hidden py-24 md:py-32">
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute -top-16 left-1/4 h-[500px] w-[700px] rounded-full bg-accent-violet/[0.08] blur-[120px]" />
-        <div className="absolute -bottom-16 right-1/4 h-[450px] w-[600px] rounded-full bg-accent-blue/[0.07] blur-[100px]" />
+    <section className="section-separator relative overflow-hidden py-24 md:py-32">
+
+      {/* ── Atmospheric background ──────────────────────────────────────────── */}
+      <div className="pointer-events-none absolute inset-0">
+
+        {/* Responsive background image */}
+        <div className="absolute inset-0 block md:hidden"
+          style={{ backgroundImage: "url('/testimonioMovil.png')", backgroundSize: "cover", backgroundPosition: "center" }} />
+        <div className="absolute inset-0 hidden md:block"
+          style={{ backgroundImage: "url('/testimonioFondo.png')", backgroundSize: "cover", backgroundPosition: "center" }} />
+
+        {/* Aurora blob — top left, violet, ultra slow drift */}
+        <motion.div
+          animate={{ x: [0, 40, -20, 0], y: [0, -30, 18, 0] }}
+          transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-24 -left-16 h-[560px] w-[680px] rounded-full"
+          style={{ background: "radial-gradient(ellipse at center, rgba(99,102,241,0.10) 0%, transparent 68%)", filter: "blur(90px)" }}
+        />
+
+        {/* Aurora blob — bottom right, cyan, slow */}
+        <motion.div
+          animate={{ x: [0, -50, 28, 0], y: [0, 35, -20, 0] }}
+          transition={{ duration: 34, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -bottom-20 -right-20 h-[500px] w-[620px] rounded-full"
+          style={{ background: "radial-gradient(ellipse at center, rgba(6,182,212,0.08) 0%, transparent 70%)", filter: "blur(90px)" }}
+        />
+
+        {/* Center ambient — barely visible, ties both sides */}
+        <motion.div
+          animate={{ scale: [1, 1.08, 1], opacity: [0.4, 0.7, 0.4] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[600px] rounded-full"
+          style={{ background: "radial-gradient(ellipse at center, rgba(79,70,229,0.06) 0%, transparent 70%)", filter: "blur(80px)" }}
+        />
+
+        {/* Subtle dot grid */}
+        <div
+          className="absolute inset-0 opacity-[0.022]"
+          style={{
+            backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.55) 1px, transparent 0)",
+            backgroundSize: "36px 36px",
+          }}
+        />
+
+        {/* Top fade — blends with section above */}
+        <div className="absolute inset-x-0 top-0 h-32"
+          style={{ background: "linear-gradient(to bottom, #08090f 0%, transparent 100%)" }} />
+
+        {/* Bottom fade — transitions toward pricing aurora */}
+        <div className="absolute inset-x-0 bottom-0 h-40"
+          style={{ background: "linear-gradient(to bottom, transparent 0%, rgba(4,6,20,0.7) 60%, #05060f 100%)" }} />
       </div>
 
-      <div className="container-x">
+      <div className="container-x relative z-10">
         <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2 lg:gap-12">
 
           {/* ── Left: eyebrow + title + quote ── */}
@@ -137,7 +184,7 @@ export default function Testimonials() {
                 className="mt-10"
               >
                 <div className="mb-4 text-4xl leading-none text-accent-cyan">"</div>
-                <blockquote className="text-lg font-light leading-relaxed text-white/85 md:text-xl">
+                <blockquote className="text-lg font-light leading-relaxed text-white md:text-xl">
                   {active.quote}
                 </blockquote>
                 <div className="mt-7 flex items-center gap-3">
@@ -180,6 +227,18 @@ export default function Testimonials() {
 
           {/* ── Right: stacked cards ── */}
           <div className="flex justify-center lg:justify-end">
+            {/* Ambient glow behind stack — subtle depth */}
+            <div className="relative">
+              <motion.div
+                animate={{ opacity: [0.5, 0.8, 0.5], scale: [1, 1.05, 1] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                className="pointer-events-none absolute inset-0 -z-10 rounded-full"
+                style={{
+                  transform: "translate(-10%, 10%) scale(1.3)",
+                  background: "radial-gradient(ellipse at center, rgba(99,102,241,0.14) 0%, rgba(6,182,212,0.08) 45%, transparent 70%)",
+                  filter: "blur(32px)",
+                }}
+              />
             <div
               className="relative h-[420px] w-[340px] cursor-pointer select-none"
               onClick={shuffle}
@@ -206,7 +265,7 @@ export default function Testimonials() {
                       <>
                         <div className="flex flex-col items-center gap-4 text-center">
                           <ReviewStars rating={item.rating} className="text-accent-cyan" />
-                          <blockquote className="text-[15px] leading-relaxed text-white/80">
+                          <blockquote className="text-[15px] leading-relaxed text-white">
                             "{item.quote}"
                           </blockquote>
                         </div>
@@ -230,6 +289,7 @@ export default function Testimonials() {
                 );
               })}
             </div>
+            </div>{/* close glow wrapper */}
           </div>
         </div>
 
@@ -239,7 +299,7 @@ export default function Testimonials() {
             {LOGOS.map(({ name, icon }) => (
               <div
                 key={name}
-                className="flex items-center gap-3 text-white/35 transition-colors duration-300 hover:text-white/60"
+                className="flex items-center gap-3 text-white/50 transition-colors duration-300 hover:text-white"
               >
                 <span className="h-6 w-6 shrink-0">{icon}</span>
                 <span className="text-lg font-semibold tracking-tight">{name}</span>

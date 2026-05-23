@@ -137,7 +137,7 @@ const en: Translations = {
     description: "One studio. Six disciplines. A workflow optimized to ship measurable wins fast — without sacrificing craft.",
     items: [
       { title: "Marketing Websites",  description: "Cinematic, brand-defining sites engineered to convert and rank.",                          tags: ["Design", "Webflow", "Next.js"], learnMore: "Learn more" },
-      { title: "Landing Pages",       description: "High-velocity launch pages optimized for paid traffic and growth loops.",                  tags: ["CRO", "A/B Tests", "Analytics"], learnMore: "Learn more" },
+      { title: "Landing Pages",       description: "Systems and strategies to help companies understand and accelerate their growth.",          tags: ["CRO", "Analytics", "Next.js", "React", "Angular", "Python"], learnMore: "Learn more" },
       { title: "Web Applications",    description: "Production-grade interfaces, design systems and full-stack engineering.",                   tags: ["React", "TS", "Node"], learnMore: "Learn more" },
       { title: "SaaS Platforms",      description: "End-to-end product studios: from 0→1 architecture to billing flows.",                     tags: ["Stripe", "Auth", "AI"], learnMore: "Learn more" },
       { title: "Brand & Identity",    description: "Visual systems, motion principles and verbal identity for tech-first brands.",              tags: ["Logo", "Motion", "Tone"], learnMore: "Learn more" },
@@ -223,7 +223,7 @@ const en: Translations = {
     titlePart1: "Everything you need",
     accent:     "to decide.",
     items: [
-      { q: "How long does a typical project take?",       a: "Landing pages launch in 10–14 days. Full marketing sites: 4–6 weeks. SaaS products: 8–16 weeks depending on scope. We always lock the timeline in writing before kickoff." },
+      { q: "How long does a typical project take?",       a: "Landing pages launch in 5–7 days. Full marketing sites: 2–4 weeks. SaaS products: 8–16 weeks depending on scope. We always lock the timeline in writing before kickoff." },
       { q: "Do you work with our existing design or brand?", a: "Absolutely. We can pick up an existing system and elevate it, or build everything from scratch. We'll audit your brand in the discovery call and recommend the most efficient path." },
       { q: "What tech stack do you build on?",            a: "Our default stack is Next.js + TypeScript + Tailwind, with GSAP / Framer Motion / Three.js for motion. We also ship on Webflow, Shopify Hydrogen and headless CMS when it makes sense." },
       { q: "Can you take over an in-progress project?",   a: "Yes — about 30% of our work is rescues. We do a paid 1-week audit, give you a clear plan, and either ship it ourselves or coach your team to the finish line." },
@@ -293,7 +293,7 @@ const es: Translations = {
     description:  "Un estudio. Seis disciplinas. Un flujo de trabajo optimizado para lanzar victorias medibles rápido — sin sacrificar la calidad.",
     items: [
       { title: "Sitios de Marketing", description: "Sitios cinematográficos que definen tu marca, construidos para convertir y posicionarse.",          tags: ["Diseño", "Webflow", "Next.js"], learnMore: "Saber más" },
-      { title: "Landing Pages",       description: "Páginas de lanzamiento optimizadas para tráfico pago y bucles de crecimiento.",                     tags: ["CRO", "A/B Tests", "Analytics"], learnMore: "Saber más" },
+      { title: "Landing Pages",       description: "Sistemas y estrategias para que empresas entiendan y aceleren su crecimiento.",                     tags: ["CRO", "Analytics", "Next.js", "React", "Angular", "Python"], learnMore: "Saber más" },
       { title: "Aplicaciones Web",    description: "Interfaces de nivel producción, sistemas de diseño e ingeniería full-stack.",                        tags: ["React", "TS", "Node"], learnMore: "Saber más" },
       { title: "Plataformas SaaS",    description: "Estudio de producto end-to-end: de la arquitectura 0→1 a los flujos de pago.",                      tags: ["Stripe", "Auth", "AI"], learnMore: "Saber más" },
       { title: "Marca e Identidad",   description: "Sistemas visuales, principios de movimiento e identidad verbal para marcas tech-first.",             tags: ["Logo", "Motion", "Tono"], learnMore: "Saber más" },
@@ -324,7 +324,7 @@ const es: Translations = {
       { value: 187, suffix: "%",     label: "Aumento de conversión promedio", sub: "en 24 lanzamientos" },
       { value: 42,  suffix: "",      label: "Premios de la industria",        sub: "Awwwards · CSSDA · FWA" },
       { value: 98,  suffix: "/100",  label: "Puntuación Lighthouse",          sub: "mediana en sitios lanzados" },
-      { value: 14,  suffix: " días", label: "Promedio para lanzar",           sub: "para landing pages" },
+      { value: 5,  suffix: " días", label: "Promedio para lanzar",           sub: "para landing pages" },
     ],
     teamHeadline:       "Equipo senior.",
     teamHeadlineAccent: "Sin intermediarios.",
@@ -379,7 +379,7 @@ const es: Translations = {
     titlePart1: "Todo lo que necesitas",
     accent:     "para decidir.",
     items: [
-      { q: "¿Cuánto tiempo dura un proyecto típico?",        a: "Las landing pages se lanzan en 10–14 días. Sitios de marketing completos: 4–6 semanas. Productos SaaS: 8–16 semanas según el alcance. Siempre fijamos el plazo por escrito antes del inicio." },
+      { q: "¿Cuánto tiempo dura un proyecto típico?",        a: "Las landing pages se lanzan en 5–7 días. Sitios de marketing completos: 2–4 semanas. Productos SaaS: 8–16 semanas según el alcance. Siempre fijamos el plazo por escrito antes del inicio." },
       { q: "¿Trabajan con nuestro diseño o marca existente?",a: "Absolutamente. Podemos tomar un sistema existente y elevarlo, o construir todo desde cero. Auditaremos tu marca en la llamada de discovery y recomendaremos el camino más eficiente." },
       { q: "¿Qué stack tecnológico usan?",                   a: "Nuestro stack principal es Next.js + TypeScript + Tailwind, con GSAP / Framer Motion / Three.js para motion. También trabajamos en Webflow, Shopify Hydrogen y CMS headless cuando tiene sentido." },
       { q: "¿Pueden tomar un proyecto en curso?",            a: "Sí — alrededor del 30% de nuestro trabajo son rescates. Hacemos una auditoría paga de 1 semana, te damos un plan claro, y o bien lo terminamos nosotros o asesoramos a tu equipo hasta la meta." },
