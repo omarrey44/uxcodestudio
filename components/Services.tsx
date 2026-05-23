@@ -1,7 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
 import { useLanguage } from "@/lib/i18n";
+
+const ShaderBackground = dynamic(() => import("./ui/ShaderBackground"), { ssr: false });
 
 // ── App-icon SVGs per service ─────────────────────────────────────────────────
 const SERVICE_ICONS = [
@@ -73,11 +76,15 @@ export default function Services() {
   return (
     <section id="services" className="section-separator relative isolate py-24 md:py-32">
       <div className="pointer-events-none absolute inset-0 -z-10">
+        {/* Shader only on desktop — too heavy/odd on mobile */}
+        <div className="hidden md:block absolute inset-0">
+          <ShaderBackground />
+        </div>
+        {/* Mobile fallback: subtle radial glow */}
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/ServiceSection.png')" }}
+          className="block md:hidden absolute inset-0"
+          style={{ background: "radial-gradient(ellipse 100% 60% at 50% 40%, #0a1628 0%, #050508 70%)" }}
         />
-        <div className="absolute inset-0" style={{ background: "rgba(5,5,8,0.72)" }} />
         <div className="absolute inset-x-0 top-0 h-40" style={{ background: "linear-gradient(to bottom, #050508 0%, transparent 100%)" }} />
         <div className="absolute inset-x-0 bottom-0 h-32" style={{ background: "linear-gradient(to top, #080810 0%, transparent 100%)" }} />
       </div>

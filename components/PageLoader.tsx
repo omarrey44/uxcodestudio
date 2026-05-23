@@ -76,6 +76,7 @@ export default function PageLoader() {
           height={80}
           alt="UXCODESTUDIO"
           priority
+          style={{ height: "auto" }}
         />
       </motion.div>
     </motion.div>

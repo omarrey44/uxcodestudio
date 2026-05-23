@@ -7,7 +7,6 @@ import {
   useAnimations,
   Environment,
   Lightformer,
-  ContactShadows,
   Float,
   Html,
   Text,
@@ -54,8 +53,6 @@ function OrbitRobot(props: OrbitRobotProps) {
     model.traverse((o: THREE.Object3D) => {
       if (!(o as THREE.Mesh).isMesh) return;
       const mesh = o as THREE.Mesh;
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
       const m = mesh.material as THREE.MeshStandardMaterial & {
         clearcoat?: number;
       };
@@ -66,21 +63,19 @@ function OrbitRobot(props: OrbitRobotProps) {
       // GlossyBlack — dark titanium
       if (name.includes("glossy") || name.includes("gloss")) {
         m.color           = new THREE.Color(0x10121e);
-        m.metalness       = 0.90;
-        m.roughness       = 0.10;
-        m.envMapIntensity = 0.75;
+        m.metalness       = 0.85;
+        m.roughness       = 0.28;
+        m.envMapIntensity = 0.40;
         m.needsUpdate     = true;
       }
 
-      // VisorBlack — dark reflective glass, catches rim lights
+      // VisorBlack — match GlossyBlack style, darker to read as visor
       if (name.includes("visor")) {
-        mesh.material = new THREE.MeshStandardMaterial({
-          color: new THREE.Color(0x0a0e1a),
-          metalness: 0.15,
-          roughness: 0.08,
-          envMapIntensity: 0.6,
-        });
-        return;
+        m.color           = new THREE.Color(0x020305);
+        m.metalness       = 0.85;
+        m.roughness       = 0.28;
+        m.envMapIntensity = 0.40;
+        m.needsUpdate     = true;
       }
 
       // CyanLED — glowing eyes/rings
@@ -106,7 +101,8 @@ function OrbitRobot(props: OrbitRobotProps) {
     });
   }, [model]);
 
-  useFrame(({ clock }: { clock: THREE.Clock }, delta: number) => {
+  useFrame((state, delta) => {
+    const clock = state.clock;
     if (!group.current) return;
 
     // Parallax
@@ -180,7 +176,6 @@ export default function HeroScene() {
     <div ref={wrapRef} style={{ width: "100%", height: "100%" }}>
       <Canvas
         frameloop={frameloop}
-        shadows
         dpr={[1, 1.5]}
         camera={{ position: [0, -0.20, 5.5], fov: 46, near: 0.1, far: 50 }}
         gl={{ antialias: true, powerPreference: "high-performance", alpha: true }}
@@ -194,16 +189,14 @@ export default function HeroScene() {
           penumbra={1}
           intensity={90}
           color="#c8dce8"
-          castShadow
-          shadow-mapSize={[512, 512]}
         />
 
         {/* Fill light frontal suave — evita que el cuerpo sea puro negro */}
         <pointLight position={[0, 1.5, 4.5]} intensity={30} color="#7ab8d8" />
 
         {/* Rim lights cyan — silueta lateral del robot */}
-        <pointLight position={[-4.0, 1.0, 1.5]} intensity={40} color="#00c8ff" />
-        <pointLight position={[ 4.0, 1.0, 1.5]} intensity={40} color="#00c8ff" />
+        <pointLight position={[-4.0, 1.0, 1.5]} intensity={22} color="#00c8ff" />
+        <pointLight position={[ 4.0, 1.0, 1.5]} intensity={22} color="#00c8ff" />
 
         {/* Base LED glow — ilumina plataforma hacia arriba */}
         <pointLight position={[0, -2.0, 1.8]} intensity={35} color="#00aaff" />
@@ -221,14 +214,6 @@ export default function HeroScene() {
             <Lightformer intensity={1.6} color="#00c8ff" position={[0, -4, 1.5]} rotation={[Math.PI / 2, 0, 0]} scale={[5, 3, 1]} />
           </Environment>
 
-          <ContactShadows
-            position={[0, -1.80, 0]}
-            opacity={0.60}
-            scale={8}
-            blur={3.5}
-            far={4.0}
-            color="#000810"
-          />
         </Suspense>
 
         <EffectComposer enableNormalPass={false}>
