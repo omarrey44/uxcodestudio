@@ -18,6 +18,7 @@ export default function Hero() {
   const contentRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const [eyeColor, setEyeColor] = useState("#00d4ff");
+  const [uxOn, setUxOn] = useState(false);
 
   const { t } = useLanguage();
   const scrambledHero = useTextScramble(t.hero.desc, 1600);
@@ -175,11 +176,11 @@ export default function Hero() {
         <div className="hero-scene relative lg:col-span-6">
           <div className="relative h-[320px] sm:h-auto sm:aspect-[4/5] w-full">
             <div className="absolute inset-0 h-full w-full">
-              <HeroScene eyeColor={eyeColor} />
+              <HeroScene eyeColor={eyeColor} uxOn={uxOn} />
             </div>
 
             {/* Holographic floating cards */}
-            <FloatingDashboard />
+            <FloatingDashboard eyeColor={eyeColor} uxOn={uxOn} setUxOn={setUxOn} />
           </div>
         </div>
       </div>
@@ -272,7 +273,11 @@ function TypedCode() {
   );
 }
 
-function FloatingDashboard() {
+function FloatingDashboard({ eyeColor, uxOn, setUxOn }: {
+  eyeColor: string;
+  uxOn: boolean;
+  setUxOn: (v: boolean | ((p: boolean) => boolean)) => void;
+}) {
   return (
     <motion.div
       className="absolute inset-x-0 hidden sm:block"
@@ -286,7 +291,32 @@ function FloatingDashboard() {
           <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
           <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/80" />
           <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
-          <span className="ml-auto text-[10px] tracking-widest text-muted-dim">App.tsx</span>
+          {/* Visor toggle — centered in header */}
+          <div className="flex flex-1 items-center justify-center gap-2">
+            <span className="font-mono text-[10px]" style={{ color: uxOn ? eyeColor : "#546e7a" }}>
+              {uxOn ? "ONLINE" : "OFFLINE"}
+            </span>
+            <button
+              onClick={() => setUxOn((v) => !v)}
+              style={{
+                display: "flex", alignItems: "center",
+                width: 32, height: 18, borderRadius: 9, padding: 2,
+                border: "none", cursor: "pointer",
+                transition: "background 0.3s, box-shadow 0.3s",
+                background: uxOn ? eyeColor : "rgba(40,44,60,0.9)",
+                boxShadow: uxOn ? `0 0 8px ${eyeColor}88` : "0 0 0 1px rgba(255,255,255,0.1)",
+              }}
+            >
+              <div style={{
+                width: 14, height: 14, borderRadius: "50%",
+                background: "#fff",
+                transform: uxOn ? "translateX(14px)" : "translateX(0)",
+                transition: "transform 0.3s cubic-bezier(.4,0,.2,1)",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.4)",
+              }} />
+            </button>
+          </div>
+          <span className="text-[10px] tracking-widest text-muted-dim">App.tsx</span>
         </div>
         <TypedCode />
       </div>

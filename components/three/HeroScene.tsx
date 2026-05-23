@@ -30,15 +30,15 @@ type OrbitRobotProps = {
   position?: [number, number, number];
   scale?: number | [number, number, number];
   ledColor?: string;
+  uxOn?: boolean;
 };
 
-function OrbitRobot({ ledColor = "#00d8ff", ...props }: OrbitRobotProps) {
+function OrbitRobot({ ledColor = "#00d8ff", uxOn = false, ...props }: OrbitRobotProps) {
   const group = useRef<THREE.Group>(null);
   const { scene, animations } = useGLTF(MODEL_URL);
   const { actions } = useAnimations(animations, group);
   const { pointer } = useThree();
   const ledMats = useRef<THREE.MeshStandardMaterial[]>([]);
-  const [uxOn, setUxOn] = useState(false);
 
   const model = useMemo(() => scene.clone(true), [scene]);
 
@@ -135,25 +135,16 @@ function OrbitRobot({ ledColor = "#00d8ff", ...props }: OrbitRobotProps) {
     <group ref={group} {...props}>
       <primitive object={model} />
 
-      {/* Invisible click plane over visor area */}
-      <mesh
-        position={[0, 0.38, 0.72]}
-        onClick={(e) => { e.stopPropagation(); setUxOn((v) => !v); }}
-      >
-        <planeGeometry args={[0.65, 0.45]} />
-        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
-      </mesh>
-
-      {/* UX text — toggles on visor click */}
+      {/* UX text — toggles via switch in HeroScene wrapper */}
       <Text
         position={[0, 0.38, 0.82]}
         fontSize={0.26}
         letterSpacing={0.16}
-        color="#00d8ff"
+        color={ledColor}
         anchorX="center"
         anchorY="middle"
         fillOpacity={uxOn ? 0.55 : 0}
-        outlineColor="#00d8ff"
+        outlineColor={ledColor}
         outlineOpacity={uxOn ? 0.15 : 0}
         outlineWidth={0.008}
         renderOrder={999}
@@ -166,7 +157,7 @@ function OrbitRobot({ ledColor = "#00d8ff", ...props }: OrbitRobotProps) {
 
 useGLTF.preload(MODEL_URL);
 
-export default function HeroScene({ eyeColor }: { eyeColor?: string }) {
+export default function HeroScene({ eyeColor = "#00d4ff", uxOn = false }: { eyeColor?: string; uxOn?: boolean }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [frameloop, setFrameloop] = useState<"always" | "never">("always");
 
@@ -212,7 +203,7 @@ export default function HeroScene({ eyeColor }: { eyeColor?: string }) {
 
         <Suspense fallback={<Loader />}>
           <Float speed={0.9} rotationIntensity={0.04} floatIntensity={0.30}>
-            <OrbitRobot position={[0, -1.1, 0]} scale={1.18} ledColor={eyeColor} />
+            <OrbitRobot position={[0, -1.1, 0]} scale={1.18} ledColor={eyeColor} uxOn={uxOn} />
           </Float>
 
           <Environment resolution={256}>
