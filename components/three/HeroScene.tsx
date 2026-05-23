@@ -29,9 +29,10 @@ function Loader() {
 type OrbitRobotProps = {
   position?: [number, number, number];
   scale?: number | [number, number, number];
+  ledColor?: string;
 };
 
-function OrbitRobot(props: OrbitRobotProps) {
+function OrbitRobot({ ledColor = "#00d8ff", ...props }: OrbitRobotProps) {
   const group = useRef<THREE.Group>(null);
   const { scene, animations } = useGLTF(MODEL_URL);
   const { actions } = useAnimations(animations, group);
@@ -101,6 +102,14 @@ function OrbitRobot(props: OrbitRobotProps) {
     });
   }, [model]);
 
+  useEffect(() => {
+    const col = new THREE.Color(ledColor);
+    ledMats.current.forEach((m) => {
+      m.emissive = col;
+      m.needsUpdate = true;
+    });
+  }, [ledColor]);
+
   useFrame((state, delta) => {
     const clock = state.clock;
     if (!group.current) return;
@@ -157,7 +166,7 @@ function OrbitRobot(props: OrbitRobotProps) {
 
 useGLTF.preload(MODEL_URL);
 
-export default function HeroScene() {
+export default function HeroScene({ eyeColor }: { eyeColor?: string }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [frameloop, setFrameloop] = useState<"always" | "never">("always");
 
@@ -203,7 +212,7 @@ export default function HeroScene() {
 
         <Suspense fallback={<Loader />}>
           <Float speed={0.9} rotationIntensity={0.04} floatIntensity={0.30}>
-            <OrbitRobot position={[0, -1.1, 0]} scale={1.18} />
+            <OrbitRobot position={[0, -1.1, 0]} scale={1.18} ledColor={eyeColor} />
           </Float>
 
           <Environment resolution={256}>

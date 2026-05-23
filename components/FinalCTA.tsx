@@ -70,7 +70,7 @@ export default function FinalCTA() {
                   whileHover={{ y: -3 }}
                   className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-left transition-colors hover:border-white/20 hover:bg-white/[0.08]"
                 >
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/[0.05] text-base text-accent-cyan transition-colors group-hover:border-accent-cyan/40 group-hover:bg-accent-cyan/10">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/30 bg-black/40 text-base text-white transition-colors group-hover:border-accent-cyan/60 group-hover:bg-accent-cyan/20 group-hover:text-accent-cyan">
                     {m.icon}
                   </span>
                   <div className="min-w-0 flex-1">

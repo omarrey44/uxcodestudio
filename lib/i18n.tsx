@@ -125,8 +125,8 @@ const en: Translations = {
     desc:          "UXCODESTUDIO is a digital product studio crafting cinematic interfaces and high-performing systems for ambitious teams that refuse to ship anything average.",
     cta1:          "Start your project",
     cta2:          "View our work",
-    statsCount:    "40+ products shipped",
-    statsRating:   "Rated 4.9/5 by founders & design leads",
+    statsCount:    "Personal projects → real results",
+    statsRating:   "Built with senior-level craft & attention to detail",
   },
   services: {
     eyebrow:     "Services",
@@ -281,8 +281,8 @@ const es: Translations = {
     desc:          "UXCODESTUDIO es un estudio de producto digital que crea interfaces cinematográficas y sistemas de alto rendimiento para equipos ambiciosos que se niegan a lanzar algo mediocre.",
     cta1:          "Inicia tu proyecto",
     cta2:          "Ver nuestro trabajo",
-    statsCount:    "40+ productos lanzados",
-    statsRating:   "Valorado 4.9/5 por founders y líderes de diseño",
+    statsCount:    "Proyectos personales → resultados reales",
+    statsRating:   "Construido con nivel senior y atención al detalle",
   },
   services: {
     eyebrow:      "Servicios",

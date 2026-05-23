@@ -11,10 +11,13 @@ import { useLanguage } from "@/lib/i18n";
 
 const HeroScene = dynamic(() => import("./three/HeroScene"), { ssr: false });
 
+const EYE_COLORS = ["#4f6ef7", "#00d4ff", "#8b5cf6", "#f43f5e"];
+
 export default function Hero() {
   const rootRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
+  const [eyeColor, setEyeColor] = useState("#00d4ff");
 
   const { t } = useLanguage();
   const scrambledHero = useTextScramble(t.hero.desc, 1600);
@@ -148,12 +151,15 @@ export default function Hero() {
 
           <div className="hero-cta mt-14 flex items-center gap-6">
             <div className="flex -space-x-2">
-              {["#4f6ef7", "#00d4ff", "#8b5cf6", "#1f2937"].map((c, i) => (
-                <span
+              {EYE_COLORS.map((c, i) => (
+                <button
                   key={i}
-                  className="h-9 w-9 rounded-full border-2 border-background"
+                  onClick={() => setEyeColor(c)}
+                  className="h-9 w-9 rounded-full border-2 transition-all duration-300 cursor-pointer"
                   style={{
                     background: `radial-gradient(circle at 30% 30%, ${c}, #050508)`,
+                    borderColor: eyeColor === c ? c : "var(--background)",
+                    boxShadow: eyeColor === c ? `0 0 10px ${c}88` : "none",
                   }}
                 />
               ))}
@@ -169,7 +175,7 @@ export default function Hero() {
         <div className="hero-scene relative lg:col-span-6">
           <div className="relative h-[320px] sm:h-auto sm:aspect-[4/5] w-full">
             <div className="absolute inset-0 h-full w-full">
-              <HeroScene />
+              <HeroScene eyeColor={eyeColor} />
             </div>
 
             {/* Holographic floating cards */}

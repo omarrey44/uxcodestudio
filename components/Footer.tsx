@@ -4,6 +4,13 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useLanguage } from "@/lib/i18n";
 
+// Column order: Studio, Services, Resources — same in EN and ES
+const COL_HREFS: string[][] = [
+  ["#top", "#process", "#contact", "#contact"],          // Studio
+  ["#services", "#services", "#services", "#services"],  // Services
+  ["#work", "#pricing", "#faq", "#"],                    // Resources
+];
+
 export default function Footer() {
   const { t } = useLanguage();
   return (
@@ -51,13 +58,13 @@ export default function Footer() {
             </div>
           </div>
 
-          {t.footer.columns.map((c) => (
+          {t.footer.columns.map((c, ci) => (
             <div key={c.title}>
               <div className="mb-4 text-[11px] uppercase tracking-[0.3em] text-muted-dim">{c.title}</div>
               <ul className="space-y-2.5 text-sm">
-                {c.links.map((l) => (
+                {c.links.map((l, li) => (
                   <li key={l}>
-                    <a href="#" className="text-muted transition-colors hover:text-white">{l}</a>
+                    <a href={COL_HREFS[ci]?.[li] ?? "#"} className="text-muted transition-colors hover:text-white">{l}</a>
                   </li>
                 ))}
               </ul>

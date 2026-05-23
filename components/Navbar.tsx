@@ -28,14 +28,24 @@ export default function Navbar() {
     <div className={cn("flex items-center gap-1", className)}>
       <button
         onClick={() => setLang("en")}
-        className={cn("text-[11px] font-medium transition-colors", lang === "en" ? "text-white" : "text-muted hover:text-white")}
+        className={cn(
+          "text-[11px] font-semibold transition-all px-1.5 py-0.5 rounded",
+          lang === "en"
+            ? "text-white bg-white/10 ring-1 ring-white/20"
+            : "text-muted hover:text-white"
+        )}
       >
         EN
       </button>
       <span className="text-muted-dim text-[11px]">|</span>
       <button
         onClick={() => setLang("es")}
-        className={cn("text-[11px] font-medium transition-colors", lang === "es" ? "text-white" : "text-muted hover:text-white")}
+        className={cn(
+          "text-[11px] font-semibold transition-all px-1.5 py-0.5 rounded",
+          lang === "es"
+            ? "text-white bg-white/10 ring-1 ring-white/20"
+            : "text-muted hover:text-white"
+        )}
       >
         ES
       </button>
