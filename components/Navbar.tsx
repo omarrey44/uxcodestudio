@@ -56,8 +56,10 @@ export default function Navbar() {
             <Image src="/logo.png" width={200} height={60} alt="UXCODESTUDIO" priority className="w-[120px] h-auto" />
           </a>
           <div className={cn(
-            "flex items-center gap-2 rounded-2xl px-3 py-2 transition-all duration-500",
-            scrolled ? "glass-strong shadow-[0_8px_40px_-16px_rgba(79,110,247,0.5)]" : "border border-white/5 bg-white/[0.02]"
+            "flex items-center gap-2 rounded-2xl px-3 py-2 transition-all duration-500 backdrop-blur-md",
+            scrolled
+              ? "glass-strong shadow-[0_8px_40px_-16px_rgba(79,110,247,0.5)]"
+              : "border border-white/[0.08] bg-[#050508]/70"
           )}>
             <LangToggle />
             <div className="h-4 w-px bg-white/10" />
@@ -78,12 +80,14 @@ export default function Navbar() {
             <Image src="/logo.png" width={200} height={60} alt="UXCODESTUDIO" priority />
           </a>
           <div className={cn(
-            "flex items-center gap-4 rounded-2xl px-5 py-3 transition-all duration-500",
-            scrolled ? "glass-strong shadow-[0_10px_60px_-20px_rgba(79,110,247,0.5)]" : "border border-white/5 bg-white/[0.02]"
+            "flex items-center gap-4 rounded-2xl px-5 py-3 transition-all duration-500 backdrop-blur-md",
+            scrolled
+              ? "glass-strong shadow-[0_10px_60px_-20px_rgba(79,110,247,0.5)]"
+              : "border border-white/[0.08] bg-[#050508]/70"
           )}>
             <nav className="flex items-center gap-1">
               {t.nav.links.map((l) => (
-                <a key={l.href} href={l.href} className="group relative rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:text-white">
+                <a key={l.href} href={l.href} className="group relative rounded-lg px-3 py-2 text-sm text-white/70 transition-colors hover:text-white">
                   <span className="relative z-10">{l.label}</span>
                   <span className="absolute inset-0 -z-0 rounded-lg bg-white/0 transition-colors group-hover:bg-white/5" />
                 </a>
