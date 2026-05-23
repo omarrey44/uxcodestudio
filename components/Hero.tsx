@@ -225,13 +225,14 @@ function RotatingWord({ words }: { words: string[] }) {
 }
 
 const CODE_LINES = [
-  { text: "export default function Ship() {", color: "#c792ea" },
-  { text: "  const ui = useDesign({",         color: "#82aaff" },
-  { text: "    polish: 100,",                 color: "#f78c6c" },
-  { text: '    motion: "cinematic",',         color: "#c3e88d" },
-  { text: "  });",                            color: "#82aaff" },
-  { text: "  return <Beautiful {...ui} />;",  color: "#89ddff" },
-  { text: "}",                               color: "#c792ea" },
+  { text: "// UX-01 · ORBIT SYSTEM BOOT",        color: "#546e7a" },
+  { text: "const orbit = await UX.initialize({",  color: "#c792ea" },
+  { text: '  unit:    "UX-01",',                  color: "#f78c6c" },
+  { text: '  mode:    "cinematic",',              color: "#c3e88d" },
+  { text: "  polish:  100,",                      color: "#f78c6c" },
+  { text: "  status:  ONLINE,",                   color: "#82aaff" },
+  { text: "});",                                  color: "#c792ea" },
+  { text: "▌ Initializing UX-01…",               color: "#00d8ff" },
 ];
 
 function TypedCode() {

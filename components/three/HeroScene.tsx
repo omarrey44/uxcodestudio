@@ -7,44 +7,41 @@ import {
   useAnimations,
   Environment,
   Lightformer,
+  ContactShadows,
   Float,
   Html,
+  Text,
 } from "@react-three/drei";
 import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 
-const MODEL_URL = "/robot.glb";
+const MODEL_URL = "/orbit_robot.glb";
 
 function Loader() {
   return (
     <Html center>
-      <div style={{ color: "#7fe9ff", font: "500 14px system-ui", letterSpacing: ".08em" }}>
-        LOADING…
+      <div style={{ color: "#00d8ff", font: "500 13px 'SF Mono', monospace", letterSpacing: ".12em", opacity: 0.8 }}>
+        ORBIT INITIALIZING…
       </div>
     </Html>
   );
 }
 
-type RobotHeadProps = {
+type OrbitRobotProps = {
   position?: [number, number, number];
   scale?: number | [number, number, number];
 };
 
-function RobotHead(props: RobotHeadProps) {
+function OrbitRobot(props: OrbitRobotProps) {
   const group = useRef<THREE.Group>(null);
   const { scene, animations } = useGLTF(MODEL_URL);
   const { actions } = useAnimations(animations, group);
   const { pointer } = useThree();
+  const ledMats = useRef<THREE.MeshStandardMaterial[]>([]);
+  const [uxOn, setUxOn] = useState(false);
 
   const model = useMemo(() => scene.clone(true), [scene]);
-  const eyeRig = useMemo(() => model.getObjectByName("Eye_Rig") ?? null, [model]);
 
-  const baseRot = useRef(new THREE.Euler());
-  useEffect(() => {
-    if (eyeRig) baseRot.current.copy(eyeRig.rotation);
-  }, [eyeRig]);
-
-  // Play ALL baked clips (root float/breathing + eye blink)
   useEffect(() => {
     if (!actions) return;
     Object.values(actions).forEach((a) => {
@@ -53,99 +50,111 @@ function RobotHead(props: RobotHeadProps) {
   }, [actions]);
 
   useEffect(() => {
+    ledMats.current = [];
     model.traverse((o: THREE.Object3D) => {
       if (!(o as THREE.Mesh).isMesh) return;
       const mesh = o as THREE.Mesh;
       mesh.castShadow = true;
       mesh.receiveShadow = true;
+      const m = mesh.material as THREE.MeshStandardMaterial & {
+        clearcoat?: number;
+      };
+      if (!m) return;
 
-      // Visor: replace with unlit flat material — MeshBasicMaterial has zero reflections
-      const meshName = o.name.toLowerCase();
-      const matName = (Array.isArray(mesh.material) ? mesh.material[0] : mesh.material)?.name ?? "";
-      if (meshName.includes("visor") || matName.toLowerCase().includes("visor")) {
-        mesh.material = new THREE.MeshBasicMaterial({ color: new THREE.Color(0x0a0a0e) });
+      const name = (m.name ?? "").toLowerCase();
+
+      // GlossyBlack — dark titanium
+      if (name.includes("glossy") || name.includes("gloss")) {
+        m.color           = new THREE.Color(0x10121e);
+        m.metalness       = 0.90;
+        m.roughness       = 0.10;
+        m.envMapIntensity = 0.75;
+        m.needsUpdate     = true;
+      }
+
+      // VisorBlack — dark reflective glass, catches rim lights
+      if (name.includes("visor")) {
+        mesh.material = new THREE.MeshStandardMaterial({
+          color: new THREE.Color(0x0a0e1a),
+          metalness: 0.15,
+          roughness: 0.08,
+          envMapIntensity: 0.6,
+        });
         return;
       }
 
-      const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-      materials.forEach((mat) => {
-        const m = mat as THREE.MeshStandardMaterial & {
-          transmission?: number;
-          clearcoat?: number;
-          clearcoatRoughness?: number;
-        };
-        if (!m?.isMeshStandardMaterial) return;
-        const name = (m.name ?? "").toLowerCase();
+      // CyanLED — glowing eyes/rings
+      if (name.includes("cyan") || name.includes("led") || name.includes("eye")) {
+        m.emissive          = new THREE.Color(0x00d8ff);
+        m.emissiveIntensity = 10.0;
+        m.toneMapped        = false;
+        m.metalness         = 0.0;
+        m.roughness         = 0.0;
+        m.envMapIntensity   = 0.0;
+        m.needsUpdate       = true;
+        ledMats.current.push(m);
+      }
 
-        if (name.includes("brushedmetal")) {
-          // Dark satin titanium — controlled reflections, not chrome
-          m.envMapIntensity = 0.45;
-          m.roughness = Math.max(m.roughness ?? 0.4, 0.42);
-          m.metalness = Math.min(m.metalness ?? 0.72, 0.72);
-        } else if (name.includes("panel")) {
-          m.envMapIntensity = 0.3;
-          m.roughness = Math.max(m.roughness ?? 0.5, 0.50);
-        } else if (name.includes("eye")) {
-          // toneMapped=false is critical so bloom captures the cyan glow
-          m.emissive = new THREE.Color(0x00d8ff);
-          m.emissiveIntensity = 6.0;
-          m.toneMapped = false;
-          m.envMapIntensity = 0.0;
-        } else if (name.includes("holo")) {
-          m.emissiveIntensity = 0.0;
-          m.visible = false;
-        } else {
-          if (m.envMapIntensity == null) m.envMapIntensity = 0.5;
+      // Catch-all: any near-white non-LED material → force dark
+      if (!name.includes("cyan") && !name.includes("led") && !name.includes("eye")) {
+        const col = m.color as THREE.Color | undefined;
+        if (col && col.r > 0.7 && col.g > 0.7 && col.b > 0.7) {
+          m.color = new THREE.Color(0x05050f);
+          m.needsUpdate = true;
         }
-
-        // Catch-all: any remaining high-gloss non-eye material → force matte
-        if (!name.includes("eye") && (m.roughness ?? 1) < 0.25) {
-          m.roughness = 0.88;
-          m.metalness = 0.0;
-          m.envMapIntensity = 0.0;
-          (m as THREE.MeshStandardMaterial & { clearcoat?: number; transmission?: number }).clearcoat = 0;
-          (m as THREE.MeshStandardMaterial & { transmission?: number }).transmission = 0;
-        }
-
-        m.needsUpdate = true;
-      });
+      }
     });
   }, [model]);
 
-  useFrame((_: unknown, delta: number) => {
-    if (eyeRig) {
-      eyeRig.rotation.y = THREE.MathUtils.damp(
-        eyeRig.rotation.y,
-        baseRot.current.y + pointer.x * 0.35,
-        6,
-        delta
-      );
-      eyeRig.rotation.x = THREE.MathUtils.damp(
-        eyeRig.rotation.x,
-        baseRot.current.x - pointer.y * 0.22,
-        6,
-        delta
-      );
-    }
-    if (group.current) {
-      group.current.rotation.y = THREE.MathUtils.damp(
-        group.current.rotation.y,
-        pointer.x * 0.18,
-        4,
-        delta
-      );
-      group.current.rotation.x = THREE.MathUtils.damp(
-        group.current.rotation.x,
-        -pointer.y * 0.10,
-        4,
-        delta
-      );
-    }
+  useFrame(({ clock }: { clock: THREE.Clock }, delta: number) => {
+    if (!group.current) return;
+
+    // Parallax
+    group.current.rotation.y = THREE.MathUtils.damp(
+      group.current.rotation.y, pointer.x * 0.32, 4, delta
+    );
+    group.current.rotation.x = THREE.MathUtils.damp(
+      group.current.rotation.x, -pointer.y * 0.18, 4, delta
+    );
+
+    // Fake LED blink: fast dip every ~4s
+    const t = clock.getElapsedTime();
+    const blinkCycle = t % 4.0;
+    const isBlink = blinkCycle > 3.85;
+    const intensity = isBlink ? 0.0 : 10.0;
+    ledMats.current.forEach((m) => { m.emissiveIntensity = intensity; });
+
   });
 
   return (
     <group ref={group} {...props}>
       <primitive object={model} />
+
+      {/* Invisible click plane over visor area */}
+      <mesh
+        position={[0, 0.38, 0.72]}
+        onClick={(e) => { e.stopPropagation(); setUxOn((v) => !v); }}
+      >
+        <planeGeometry args={[0.65, 0.45]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      </mesh>
+
+      {/* UX text — toggles on visor click */}
+      <Text
+        position={[0, 0.38, 0.82]}
+        fontSize={0.26}
+        letterSpacing={0.16}
+        color="#00d8ff"
+        anchorX="center"
+        anchorY="middle"
+        fillOpacity={uxOn ? 0.55 : 0}
+        outlineColor="#00d8ff"
+        outlineOpacity={uxOn ? 0.15 : 0}
+        outlineWidth={0.008}
+        renderOrder={999}
+      >
+        UX
+      </Text>
     </group>
   );
 }
@@ -173,57 +182,58 @@ export default function HeroScene() {
         frameloop={frameloop}
         shadows
         dpr={[1, 1.5]}
-        camera={{ position: [0, 0.4, 5.2], fov: 36, near: 0.1, far: 50 }}
+        camera={{ position: [0, -0.20, 5.5], fov: 46, near: 0.1, far: 50 }}
         gl={{ antialias: true, powerPreference: "high-performance", alpha: true }}
       >
-        <ambientLight intensity={0.18} />
+        <ambientLight intensity={0.22} />
+
+        {/* Key light — define forma del casco */}
         <spotLight
-          position={[2.5, 4, 4]}
-          angle={0.6}
+          position={[2.5, 5.0, 4.0]}
+          angle={0.50}
           penumbra={1}
-          intensity={40}
-          color="#c8d8e8"
+          intensity={90}
+          color="#c8dce8"
           castShadow
           shadow-mapSize={[512, 512]}
         />
-        <pointLight position={[-3, 0.5, 2]} intensity={18} color="#23c9ff" />
-        <pointLight position={[3, 0.5, 2]} intensity={18} color="#23c9ff" />
+
+        {/* Fill light frontal suave — evita que el cuerpo sea puro negro */}
+        <pointLight position={[0, 1.5, 4.5]} intensity={30} color="#7ab8d8" />
+
+        {/* Rim lights cyan — silueta lateral del robot */}
+        <pointLight position={[-4.0, 1.0, 1.5]} intensity={40} color="#00c8ff" />
+        <pointLight position={[ 4.0, 1.0, 1.5]} intensity={40} color="#00c8ff" />
+
+        {/* Base LED glow — ilumina plataforma hacia arriba */}
+        <pointLight position={[0, -2.0, 1.8]} intensity={35} color="#00aaff" />
 
         <Suspense fallback={<Loader />}>
-          <Float speed={1.1} rotationIntensity={0.15} floatIntensity={0.4}>
-            <RobotHead position={[0, 0.1, 0]} scale={0.88} />
+          <Float speed={0.9} rotationIntensity={0.04} floatIntensity={0.30}>
+            <OrbitRobot position={[0, -1.1, 0]} scale={1.18} />
           </Float>
 
-          {/* Controlled environment — white top + cyan sides, no random color bleed */}
           <Environment resolution={256}>
-            <color attach="background" args={["#05070b"]} />
-            <Lightformer intensity={1.4} color="#d0dce8" position={[0, 3, 2]} scale={[5, 2, 1]} />
-            <Lightformer
-              intensity={1.2}
-              color="#2fd2ff"
-              position={[-4, 0, 2]}
-              rotation={[0, Math.PI / 2, 0]}
-              scale={[3, 4, 1]}
-            />
-            <Lightformer
-              intensity={1.2}
-              color="#2f9bff"
-              position={[4, 0, 2]}
-              rotation={[0, -Math.PI / 2, 0]}
-              scale={[3, 4, 1]}
-            />
+            <color attach="background" args={["#03050a"]} />
+            <Lightformer intensity={2.0} color="#b0c8d8" position={[0, 5, 1]} scale={[8, 2, 1]} />
+            <Lightformer intensity={2.2} color="#00d8ff" position={[-6, 0.5, 2]} rotation={[0, Math.PI / 2, 0]} scale={[3, 6, 1]} />
+            <Lightformer intensity={2.2} color="#0090ff" position={[6, 0.5, 2]} rotation={[0, -Math.PI / 2, 0]} scale={[3, 6, 1]} />
+            <Lightformer intensity={1.6} color="#00c8ff" position={[0, -4, 1.5]} rotation={[Math.PI / 2, 0, 0]} scale={[5, 3, 1]} />
           </Environment>
+
+          <ContactShadows
+            position={[0, -1.80, 0]}
+            opacity={0.60}
+            scale={8}
+            blur={3.5}
+            far={4.0}
+            color="#000810"
+          />
         </Suspense>
 
-
         <EffectComposer enableNormalPass={false}>
-          <Bloom
-            intensity={0.9}
-            luminanceThreshold={0.85}
-            luminanceSmoothing={0.15}
-            mipmapBlur
-          />
-          <Vignette eskil={false} offset={0.35} darkness={0.6} />
+          <Bloom intensity={1.2} luminanceThreshold={0.72} luminanceSmoothing={0.15} mipmapBlur />
+          <Vignette eskil={false} offset={0.20} darkness={0.92} />
         </EffectComposer>
       </Canvas>
     </div>
