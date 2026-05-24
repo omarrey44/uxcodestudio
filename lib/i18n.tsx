@@ -56,6 +56,7 @@ interface Translations {
     teamHeadline: string;
     teamHeadlineAccent: string;
     teamDesc: string;
+    teamPartners: string;
     features: string[];
   };
   work: {
@@ -91,6 +92,11 @@ interface Translations {
     cta1: string;
     cta2: string;
     features: string[];
+    formName: string;
+    formEmail: string;
+    formMessage: string;
+    formSubmit: string;
+    formSent: string;
     contactTitle: string;
     contactMethods: { icon: string; label: string; value: string; href: string; hint: string }[];
   };
@@ -173,6 +179,7 @@ const en: Translations = {
     teamHeadline:       "Senior team.",
     teamHeadlineAccent: "Zero handoffs.",
     teamDesc:           "You work directly with the designers and engineers shipping the pixels — no account managers, no juniors silently learning on your project.",
+    teamPartners:       "Real partners.",
     features: [
       "Embedded Slack channel from day 1",
       "Weekly demo + Loom updates",
@@ -239,6 +246,11 @@ const en: Translations = {
     cta1:          "Book a discovery call",
     cta2:          "Or browse the work",
     features:      ["Fixed quote in 24h", "NDA on request", "Remote-first · Worldwide"],
+    formName:      "Your name",
+    formEmail:     "Your email",
+    formMessage:   "Tell us about your project…",
+    formSubmit:    "Send message",
+    formSent:      "Message sent!",
     contactTitle:  "Or reach us directly",
     contactMethods: [
       { icon: "✉", label: "Send an email", value: "hello@uxcodestudio.com", href: "mailto:hello@uxcodestudio.com", hint: "We reply within 24h" },
@@ -329,6 +341,7 @@ const es: Translations = {
     teamHeadline:       "Equipo senior.",
     teamHeadlineAccent: "Sin intermediarios.",
     teamDesc:           "Trabajas directamente con los diseñadores e ingenieros que crean los pixels — sin account managers, sin juniors aprendiendo en silencio a tu costo.",
+    teamPartners:       "Socios reales.",
     features: [
       "Canal de Slack integrado desde el día 1",
       "Demo semanal + actualizaciones en Loom",
@@ -395,6 +408,11 @@ const es: Translations = {
     cta1:          "Reserva una llamada",
     cta2:          "O ve nuestro trabajo",
     features:      ["Cotización fija en 24h", "NDA bajo solicitud", "Remoto primero · Mundial"],
+    formName:      "Tu nombre",
+    formEmail:     "Tu email",
+    formMessage:   "Cuéntanos sobre tu proyecto…",
+    formSubmit:    "Enviar mensaje",
+    formSent:      "¡Mensaje enviado!",
     contactTitle:  "O contáctanos directamente",
     contactMethods: [
       { icon: "✉", label: "Envíanos un email", value: "hello@uxcodestudio.com", href: "mailto:hello@uxcodestudio.com", hint: "Respondemos en 24h" },

@@ -1,11 +1,24 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import MagneticButton from "./MagneticButton";
 import { useLanguage } from "@/lib/i18n";
 
 export default function FinalCTA() {
   const { t } = useLanguage();
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [sent, setSent] = useState(false);
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const { name, email, message } = form;
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
+    window.open(`mailto:hello@uxcodestudio.com?subject=Project inquiry from ${encodeURIComponent(name)}&body=${body}`);
+    setSent(true);
+    setTimeout(() => setSent(false), 4000);
+  }
+
   return (
     <section id="contact" className="section-deep relative overflow-hidden py-40 md:py-56">
       <div className="absolute inset-0 -z-10">
@@ -51,6 +64,42 @@ export default function FinalCTA() {
             <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs text-muted-dim">
               {t.cta.features.map((f) => <span key={f}>✦ {f}</span>)}
             </div>
+
+            {/* Contact form */}
+            <form onSubmit={handleSubmit} className="mt-10 mx-auto max-w-xl text-left space-y-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <input
+                  required
+                  type="text"
+                  placeholder={t.cta.formName}
+                  value={form.name}
+                  onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
+                  className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-muted-dim focus:border-accent-cyan/50 focus:outline-none transition-colors"
+                />
+                <input
+                  required
+                  type="email"
+                  placeholder={t.cta.formEmail}
+                  value={form.email}
+                  onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
+                  className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-muted-dim focus:border-accent-cyan/50 focus:outline-none transition-colors"
+                />
+              </div>
+              <textarea
+                required
+                rows={4}
+                placeholder={t.cta.formMessage}
+                value={form.message}
+                onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))}
+                className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-muted-dim focus:border-accent-cyan/50 focus:outline-none transition-colors resize-none"
+              />
+              <button
+                type="submit"
+                className="w-full rounded-xl bg-accent-cyan px-6 py-3 text-sm font-semibold text-black transition-all hover:bg-accent-cyan/90 active:scale-[0.98]"
+              >
+                {sent ? "✓ " + t.cta.formSent : t.cta.formSubmit}
+              </button>
+            </form>
 
             {/* Divider */}
             <div className="my-10 h-px w-full bg-white/10" />
