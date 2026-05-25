@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
 import { useLanguage } from "@/lib/i18n";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import React from "react";
 
 
@@ -264,6 +264,13 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
   const copy   = lang === "es" ? detail.es : detail;
   const labels = PANEL_LABELS[lang];
 
+  const lastTapRef = useRef<number>(0);
+  function handleDoubleTap() {
+    const now = Date.now();
+    if (now - lastTapRef.current < 300) onClose();
+    lastTapRef.current = now;
+  }
+
   const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.05 } } };
   const fadeUp  = { hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] as [number,number,number,number] } } };
 
@@ -283,6 +290,7 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
         className="relative w-full max-w-5xl overflow-hidden rounded-2xl md:rounded-3xl border border-white/[0.09]"
         style={{ background: "rgba(6,7,14,0.98)", backdropFilter: "blur(28px)", maxHeight: "92vh" }}
         onClick={(e) => e.stopPropagation()}
+        onTouchEnd={handleDoubleTap}
       >
         {/* Accent top line */}
         <div className="absolute inset-x-0 top-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${detail.accentColor}, transparent)` }} />

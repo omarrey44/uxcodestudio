@@ -250,14 +250,14 @@ function RotatingWord({ words }: { words: string[] }) {
 }
 
 const CODE_LINES = [
-  { text: "// UX-01 · ORBIT SYSTEM BOOT",        color: "#546e7a" },
-  { text: "const orbit = await UX.initialize({",  color: "#c792ea" },
+  { text: "// UX-01 · ROBOT BOOT SEQUENCE",       color: "#546e7a" },
+  { text: "await robot.powerOn({",                color: "#c792ea" },
   { text: '  unit:    "UX-01",',                  color: "#f78c6c" },
   { text: '  mode:    "cinematic",',              color: "#c3e88d" },
-  { text: "  polish:  100,",                      color: "#f78c6c" },
-  { text: "  status:  ONLINE,",                   color: "#82aaff" },
+  { text: "  sensors: true,",                     color: "#f78c6c" },
+  { text: "  visor:   ACTIVE,",                   color: "#82aaff" },
   { text: "});",                                  color: "#c792ea" },
-  { text: "▌ Initializing UX-01…",               color: "#00d8ff" },
+  { text: "▸ UX-01 robot online",                color: "#00d8ff" },
 ];
 
 function TypedCode() {
@@ -336,7 +336,34 @@ function FloatingDashboard({ eyeColor, uxOn, setUxOn }: {
           </div>
           <span className="text-[10px] tracking-widest text-muted-dim">App.tsx</span>
         </div>
-        <TypedCode />
+        <AnimatePresence mode="wait">
+          {uxOn && (
+            <motion.div
+              key="code-on"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <TypedCode />
+            </motion.div>
+          )}
+          {!uxOn && (
+            <motion.div
+              key="code-off"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+            >
+              <pre className="font-mono text-[11px] leading-[1.75]">
+                <div><span style={{ color: "#546e7a" }}>// UX-01 · POWERED OFF</span></div>
+                <div><span style={{ color: "#c792ea" }}>robot</span><span style={{ color: "#546e7a" }}>.shutdown()</span></div>
+                <div><span style={{ color: "#ef5350" }}>▸ system offline</span><span className="animate-pulse" style={{ color: "#ef5350" }}>▌</span></div>
+              </pre>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );
