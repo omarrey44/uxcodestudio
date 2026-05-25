@@ -73,13 +73,16 @@ export default function Process() {
         <div className="grid grid-cols-1 gap-20 lg:grid-cols-[1fr_2.2fr] lg:gap-16">
 
           {/* ── Left column ─────────────────────────────────────────────────── */}
-          <div className="flex flex-col justify-between">
+          <motion.div
+            className="flex flex-col justify-between"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-60px" }}
+            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }}
+          >
             <div>
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.55 }}
+                variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.55 } } }}
                 className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.28em] text-white/70"
               >
                 <span className="h-1 w-1 rounded-full bg-accent-violet" />
@@ -87,10 +90,7 @@ export default function Process() {
               </motion.div>
 
               <motion.h2
-                initial={{ clipPath: "inset(100% 0 0% 0)" }}
-                whileInView={{ clipPath: "inset(0% 0 0% 0)" }}
-                viewport={{ once: true }}
-                transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
+                variants={{ hidden: { clipPath: "inset(100% 0 0% 0)" }, visible: { clipPath: "inset(0% 0 0% 0)", transition: { duration: 1.0, ease: [0.22, 1, 0.36, 1] } } }}
                 className="font-display font-bold tracking-tighter text-white"
                 style={{ fontSize: "clamp(2.2rem, 3vw, 3rem)", lineHeight: "1.05" }}
               >
@@ -102,21 +102,14 @@ export default function Process() {
               </motion.h2>
 
               <motion.p
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.18 }}
+                variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7 } } }}
                 className="mt-5 text-sm leading-relaxed text-white"
               >
                 {t.process.sub}
               </motion.p>
 
-              {/* Feature list — no pill boxes */}
               <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.28 }}
+                variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7 } } }}
                 className="mt-10 space-y-6"
               >
                 {t.process.pills.map((label, i) => (
@@ -133,10 +126,7 @@ export default function Process() {
 
             {/* Bottom card — glassmorphism */}
             <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ type: "spring", stiffness: 280, damping: 26, delay: 0.35 }}
+              variants={{ hidden: { opacity: 0, y: 18 }, visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 280, damping: 26 } } }}
               className="mt-12 overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.025] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.07)] backdrop-blur-sm"
             >
               <div className="flex items-start gap-3.5">
@@ -162,17 +152,20 @@ export default function Process() {
                 ))}
               </div>
             </motion.div>
-          </div>
+          </motion.div>
 
           {/* ── Right column — vertical timeline ─────────────────────────── */}
-          <div className="space-y-0">
+          <motion.div
+            className="space-y-0"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-40px" }}
+            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
+          >
             {t.process.steps.map((s, i) => (
               <motion.div
                 key={s.n}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-30px" }}
-                transition={{ duration: 0.65, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } } }}
                 className="relative flex gap-5"
               >
                 {/* Timeline spine */}
@@ -235,7 +228,7 @@ export default function Process() {
                 </div>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
 
         </div>
       </div>

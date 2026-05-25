@@ -123,17 +123,20 @@ export default function FinalCTA() {
             <div className="my-10 h-px w-full bg-white/10" />
 
             {/* Contact methods — integrated */}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {t.cta.contactMethods.map((m, i) => (
+            <motion.div
+              className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-40px" }}
+              variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07, delayChildren: 0.3 } } }}
+            >
+              {t.cta.contactMethods.map((m) => (
                 <motion.a
                   key={m.label}
                   href={m.href}
                   target={m.href.startsWith("http") ? "_blank" : undefined}
                   rel={m.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.7, delay: 0.5 + i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                  variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
                   whileHover={{ y: -3 }}
                   className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-left transition-colors hover:border-white/20 hover:bg-white/[0.08]"
                 >
@@ -151,10 +154,7 @@ export default function FinalCTA() {
 
               {/* Video call card — Zoom + Teams */}
               <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.5 + 3 * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
                 className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4"
               >
                 <div className="flex items-center gap-3">
@@ -193,7 +193,7 @@ export default function FinalCTA() {
                   </a>
                 </div>
               </motion.div>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
       </div>
