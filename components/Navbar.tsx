@@ -61,7 +61,7 @@ export default function Navbar() {
         className="fixed inset-x-0 top-0 z-50"
       >
         {/* ── MOBILE ─────────────────────────────────────────── */}
-        <div className="flex md:hidden items-center justify-between px-5 pt-4 pb-3">
+        <div className="flex md:hidden items-center justify-between px-5 pt-5 pb-3">
           <a href="#top">
             <Image src="/logo.png" width={200} height={60} alt="UXCODESTUDIO" priority className="w-[120px] h-auto" />
           </a>
@@ -86,7 +86,7 @@ export default function Navbar() {
 
         {/* ── DESKTOP ────────────────────────────────────────── */}
         <div className="hidden md:flex justify-center px-4 pt-4">
-          <a href="#top" className="absolute left-6 top-4 flex items-center">
+          <a href="#top" className="absolute left-6 top-6 flex items-center">
             <Image src="/logo.png" width={200} height={60} alt="UXCODESTUDIO" priority />
           </a>
           <div className={cn(
