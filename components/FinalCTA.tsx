@@ -56,7 +56,7 @@ export default function FinalCTA() {
               <span className="absolute inset-0 animate-ping rounded-full bg-accent-cyan opacity-60" />
               <span className="relative h-2 w-2 rounded-full bg-accent-cyan" style={{ boxShadow: "0 0 6px rgba(0,212,255,0.9)" }} />
             </span>
-            <span style={{ background: "linear-gradient(90deg, #a5f3fc, #67e8f9, #c4b5fd)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+            <span style={{ background: "linear-gradient(90deg, #a5f3fc, #67e8f9, #c4b5fd)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent", color: "transparent", display: "inline-block" }}>
               Contact
             </span>
           </div>
