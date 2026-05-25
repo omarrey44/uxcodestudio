@@ -127,9 +127,9 @@ const en: Translations = {
     links: [
       { label: "Services", href: "#services" },
       { label: "Process", href: "#process" },
-      { label: "Work",     href: "#work"     },
       { label: "Pricing",  href: "#pricing"  },
       { label: "FAQ",      href: "#faq"      },
+      { label: "Contact",  href: "#contact"  },
     ],
   },
   hero: {
@@ -312,9 +312,9 @@ const es: Translations = {
     links: [
       { label: "Servicios", href: "#services" },
       { label: "Proceso",   href: "#process"  },
-      { label: "Trabajo",   href: "#work"     },
       { label: "Precios",   href: "#pricing"  },
       { label: "FAQ",       href: "#faq"      },
+      { label: "Contacto",  href: "#contact"  },
     ],
   },
   hero: {

@@ -9,7 +9,6 @@ import {
   Lightformer,
   Float,
   Html,
-  Text,
 } from "@react-three/drei";
 import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
@@ -122,11 +121,17 @@ function OrbitRobot({ ledColor = "#00d8ff", uxOn = false, ...props }: OrbitRobot
       group.current.rotation.x, -pointer.y * 0.18, 4, delta
     );
 
-    // Fake LED blink: fast dip every ~4s
+    // LED blink — slow idle or excited double-pulse when uxOn
     const t = clock.getElapsedTime();
-    const blinkCycle = t % 4.0;
-    const isBlink = blinkCycle > 3.85;
-    const intensity = isBlink ? 0.0 : 10.0;
+    let intensity = 10.0;
+    if (uxOn) {
+      // Double-pulse: blink at 0.0s and 0.15s within every 0.9s cycle
+      const cycle = t % 0.9;
+      intensity = (cycle < 0.06 || (cycle > 0.15 && cycle < 0.21)) ? 0.0 : 10.0;
+    } else {
+      const blinkCycle = t % 4.0;
+      intensity = blinkCycle > 3.85 ? 0.0 : 10.0;
+    }
     ledMats.current.forEach((m) => { m.emissiveIntensity = intensity; });
 
   });
@@ -136,21 +141,6 @@ function OrbitRobot({ ledColor = "#00d8ff", uxOn = false, ...props }: OrbitRobot
       <primitive object={model} />
 
       {/* UX text — toggles via switch in HeroScene wrapper */}
-      <Text
-        position={[0, 0.28, 0.82]}
-        fontSize={0.11}
-        letterSpacing={0.06}
-        color={ledColor}
-        anchorX="center"
-        anchorY="middle"
-        fillOpacity={uxOn ? 0.80 : 0}
-        outlineColor={ledColor}
-        outlineOpacity={uxOn ? 0.22 : 0}
-        outlineWidth={0.005}
-        renderOrder={999}
-      >
-        {`^_^`}
-      </Text>
     </group>
   );
 }

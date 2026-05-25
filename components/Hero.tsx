@@ -289,6 +289,38 @@ export default function Hero() {
               <HeroScene eyeColor={eyeColor} uxOn={uxOn} />
             </div>
 
+            {/* Targeting ring — visible when uxOn */}
+            {uxOn && (
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                <div
+                  className="absolute rounded-full"
+                  style={{
+                    width: "58%", aspectRatio: "1",
+                    border: `1.5px solid ${eyeColor}`,
+                    opacity: 0.35,
+                    animation: "spin 8s linear infinite",
+                    boxShadow: `0 0 18px 2px ${eyeColor}44`,
+                  }}
+                />
+                <div
+                  className="absolute rounded-full"
+                  style={{
+                    width: "72%", aspectRatio: "1",
+                    border: `1px dashed ${eyeColor}`,
+                    opacity: 0.18,
+                    animation: "spin 14s linear infinite reverse",
+                  }}
+                />
+                {/* Corner brackets */}
+                {[["top-[12%] left-[18%]",""], ["top-[12%] right-[18%]","scale-x-[-1]"], ["bottom-[12%] left-[18%]","scale-y-[-1]"], ["bottom-[12%] right-[18%]","scale-[-1]"]].map(([pos, scale], i) => (
+                  <svg key={i} viewBox="0 0 24 24" fill="none" stroke={eyeColor} strokeWidth="1.5"
+                    className={`absolute w-6 h-6 ${pos} ${scale}`} style={{ opacity: 0.55 }}>
+                    <path d="M0 8 L0 0 L8 0" />
+                  </svg>
+                ))}
+              </div>
+            )}
+
             {/* Holographic floating cards */}
             <FloatingDashboard eyeColor={eyeColor} uxOn={uxOn} setUxOn={setUxOn} />
           </div>
