@@ -74,12 +74,21 @@ function HeroShaderBg() {
       scene.add(mesh);
 
       let frameId: number;
+      let active = true;
       const animate = () => {
-        material.uniforms.iTime.value += 0.016;
-        renderer.render(scene, camera);
+        if (active) {
+          material.uniforms.iTime.value += 0.016;
+          renderer.render(scene, camera);
+        }
         frameId = requestAnimationFrame(animate);
       };
       animate();
+
+      const obs = new IntersectionObserver(
+        ([e]) => { active = e.isIntersecting; },
+        { rootMargin: "200px" }
+      );
+      obs.observe(container);
 
       const onResize = () => {
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -90,6 +99,7 @@ function HeroShaderBg() {
       // Store cleanup on container element
       (container as HTMLDivElement & { _cleanup?: () => void })._cleanup = () => {
         cancelAnimationFrame(frameId);
+        obs.disconnect();
         window.removeEventListener("resize", onResize);
         if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
         material.dispose();

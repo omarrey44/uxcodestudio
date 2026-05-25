@@ -22,16 +22,18 @@ export default function FAQ() {
           accent={t.faq.accent}
         />
 
-        <div className="mx-auto mt-16 max-w-3xl space-y-3">
+        <motion.div
+          className="mx-auto mt-16 max-w-3xl space-y-3"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+        >
           {t.faq.items.map((f, i) => {
             const isOpen = open === i;
             return (
-              <motion.div
+              <div
                 key={f.q}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ delay: i * 0.05, duration: 0.6 }}
                 className={`overflow-hidden rounded-2xl border transition-colors ${
                   isOpen ? "border-accent-cyan/40 bg-white/[0.04]" : "border-white/10 bg-white/[0.02]"
                 }`}
@@ -61,10 +63,10 @@ export default function FAQ() {
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </motion.div>
+              </div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
