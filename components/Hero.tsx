@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -209,10 +210,7 @@ export default function Hero() {
     >
       {/* Backgrounds */}
       <div className="absolute inset-0 -z-10">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/Hero1.png')" }}
-        />
+        <Image src="/Hero1.png" alt="" fill priority className="object-cover object-center" />
         <div className="absolute inset-0" style={{ background: "rgba(5,5,8,0.30)" }} />
         {isDesktop && <HeroShaderBg />}
       </div>
