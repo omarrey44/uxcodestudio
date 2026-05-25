@@ -127,6 +127,11 @@ export default function Hero() {
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const [eyeColor] = useState("#ffffff");
   const [uxOn, setUxOn] = useState(true);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    setIsDesktop(window.innerWidth >= 768);
+  }, []);
 
   const { t } = useLanguage();
   const scrambledHero = useTextScramble(t.hero.desc, 1600);
@@ -209,7 +214,7 @@ export default function Hero() {
           style={{ backgroundImage: "url('/Hero1.png')" }}
         />
         <div className="absolute inset-0" style={{ background: "rgba(5,5,8,0.30)" }} />
-        <HeroShaderBg />
+        {isDesktop && <HeroShaderBg />}
       </div>
 
       <div ref={contentRef} className="container-x relative grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-8">
@@ -230,7 +235,7 @@ export default function Hero() {
 
           <h1
             ref={headlineRef}
-            className="hero-headline font-hero font-black uppercase text-center md:text-left"
+            className="hero-headline font-hero font-black uppercase text-left"
             style={{ fontSize: "clamp(2.2rem, 5.6vw, 6rem)", lineHeight: "0.93", letterSpacing: "-0.01em" }}
           >
             <span className="block [clip-path:inset(0_-9999px)]">
@@ -240,7 +245,7 @@ export default function Hero() {
               <span className="word inline-block" style={{ color: "#60a5fa" }}>{t.hero.headlinePart2}</span>
             </span>
             <span className="block [clip-path:inset(0_-9999px)]">
-              <span className="word block text-center md:text-left">
+              <span className="word block text-left">
                 <RotatingWord words={t.hero.rotating} />
               </span>
             </span>
@@ -290,7 +295,7 @@ export default function Hero() {
       >
         <span>Scroll</span>
         <span className="relative h-10 w-px overflow-hidden bg-white/10">
-          <span className="absolute inset-x-0 top-0 h-3 animate-[float_2.2s_ease-in-out_infinite] bg-gradient-to-b from-accent-cyan to-transparent" />
+          <span className="absolute inset-x-0 top-0 h-3 animate-[float_2.2s_ease-in-out_infinite] bg-gradient-to-b from-white to-transparent" />
         </span>
       </motion.div>
     </section>
