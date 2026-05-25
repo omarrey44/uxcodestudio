@@ -121,13 +121,11 @@ function OrbitRobot({ ledColor = "#00d8ff", uxOn = false, ...props }: OrbitRobot
       group.current.rotation.x, -pointer.y * 0.18, 4, delta
     );
 
-    // LED blink — slow idle or excited double-pulse when uxOn
+    // uxOn = eyes off (robot powered down); !uxOn = normal slow blink
     const t = clock.getElapsedTime();
-    let intensity = 10.0;
+    let intensity: number;
     if (uxOn) {
-      // Double-pulse: blink at 0.0s and 0.15s within every 0.9s cycle
-      const cycle = t % 0.9;
-      intensity = (cycle < 0.06 || (cycle > 0.15 && cycle < 0.21)) ? 0.0 : 10.0;
+      intensity = 0.0;
     } else {
       const blinkCycle = t % 4.0;
       intensity = blinkCycle > 3.85 ? 0.0 : 10.0;

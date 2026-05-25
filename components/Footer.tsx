@@ -66,15 +66,10 @@ export default function Footer() {
           transition={{ duration: 1 }}
           className="select-none overflow-hidden pb-12"
         >
-          <div className="flex animate-marquee gap-12 will-change-transform" style={{ animationDuration: "18s" }}>
-            {Array.from({ length: 6 }).map((_, i) => (
-              <span
-                key={i}
-                className="shrink-0 font-display text-[18vw] font-bold leading-none tracking-tighter text-muted-dim md:text-[140px]"
-              >
-                UXCODESTUDIO <span className="text-accent-cyan/40">·</span>
-              </span>
-            ))}
+          <div className="flex justify-center">
+            <span className="font-display text-[12vw] font-bold leading-none tracking-tighter text-muted-dim md:text-[100px]">
+              UXCODESTUDIO
+            </span>
           </div>
         </motion.div>
 
