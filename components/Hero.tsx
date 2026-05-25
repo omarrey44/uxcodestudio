@@ -13,94 +13,103 @@ const HeroScene = dynamic(() => import("./three/HeroScene"), { ssr: false });
 
 const EYE_COLORS = ["#4f6ef7", "#00d4ff", "#8b5cf6", "#f43f5e"];
 
-function HeroComets() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+function HeroShaderBg() {
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const container = containerRef.current;
+    if (!container) return;
 
-    interface Comet {
-      x: number; y: number;
-      vx: number; vy: number;
-      len: number; alpha: number;
-      size: number; isStatic: boolean;
-      twinkle: number;
-    }
+    // Dynamic import THREE to avoid SSR issues (component already client-only)
+    import("three").then((THREE) => {
+      const scene = new THREE.Scene();
+      const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+      container.appendChild(renderer.domElement);
 
-    let w = 0, h = 0;
-    let comets: Comet[] = [];
-    let raf = 0;
-
-    const resize = () => {
-      w = canvas.width = window.innerWidth;
-      h = canvas.height = window.innerHeight;
-    };
-
-    const spawn = (): Comet => {
-      const isStatic = Math.random() < 0.55;
-      const angle = isStatic ? 0 : (Math.PI / 4) + (Math.random() - 0.5) * 0.6;
-      const speed = isStatic ? 0 : 0.4 + Math.random() * 1.2;
-      return {
-        x: Math.random() * w,
-        y: Math.random() * h,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        len: isStatic ? 0 : 12 + Math.random() * 40,
-        alpha: 0.15 + Math.random() * 0.55,
-        size: isStatic ? 0.6 + Math.random() * 0.8 : 0.8 + Math.random() * 1.0,
-        isStatic,
-        twinkle: Math.random() * Math.PI * 2,
-      };
-    };
-
-    const init = () => {
-      resize();
-      comets = Array.from({ length: 70 }, spawn);
-    };
-
-    const render = (time: number) => {
-      ctx.clearRect(0, 0, w, h);
-      comets.forEach((c, i) => {
-        const tw = 0.5 + 0.5 * Math.sin(time * 0.0006 + c.twinkle);
-        const a = c.alpha * tw;
-
-        if (c.isStatic) {
-          ctx.globalAlpha = a * 0.8;
-          ctx.fillStyle = "#ffffff";
-          ctx.beginPath();
-          ctx.arc(c.x, c.y, c.size * 0.5, 0, Math.PI * 2);
-          ctx.fill();
-        } else {
-          ctx.globalAlpha = a;
-          const grad = ctx.createLinearGradient(c.x - c.vx * c.len, c.y - c.vy * c.len, c.x, c.y);
-          grad.addColorStop(0, "rgba(255,255,255,0)");
-          grad.addColorStop(1, `rgba(180,220,255,${a})`);
-          ctx.strokeStyle = grad;
-          ctx.lineWidth = c.size;
-          ctx.beginPath();
-          ctx.moveTo(c.x - c.vx * c.len, c.y - c.vy * c.len);
-          ctx.lineTo(c.x, c.y);
-          ctx.stroke();
-
-          c.x += c.vx;
-          c.y += c.vy;
-          if (c.x > w + 60 || c.y > h + 60) comets[i] = spawn();
-        }
+      const material = new THREE.ShaderMaterial({
+        transparent: true,
+        uniforms: {
+          iTime: { value: 0 },
+          iResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+        },
+        vertexShader: `void main() { gl_Position = vec4(position, 1.0); }`,
+        fragmentShader: `
+          uniform float iTime;
+          uniform vec2 iResolution;
+          #define NUM_OCTAVES 3
+          float rand(vec2 n) { return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453); }
+          float noise(vec2 p) {
+            vec2 ip = floor(p); vec2 u = fract(p);
+            u = u*u*(3.0-2.0*u);
+            return pow(mix(mix(rand(ip),rand(ip+vec2(1,0)),u.x),mix(rand(ip+vec2(0,1)),rand(ip+vec2(1,1)),u.x),u.y),2.0);
+          }
+          float fbm(vec2 x) {
+            float v=0.; float a=0.3; vec2 shift=vec2(100);
+            mat2 rot=mat2(cos(0.5),sin(0.5),-sin(0.5),cos(0.5));
+            for(int i=0;i<NUM_OCTAVES;++i){v+=a*noise(x);x=rot*x*2.+shift;a*=0.4;}
+            return v;
+          }
+          void main() {
+            vec2 shake=vec2(sin(iTime*1.2)*0.005,cos(iTime*2.1)*0.005);
+            vec2 p=((gl_FragCoord.xy+shake*iResolution.xy)-iResolution.xy*0.5)/iResolution.y*mat2(6,-4,4,6);
+            vec2 v; vec4 o=vec4(0);
+            float f=2.+fbm(p+vec2(iTime*5.,0.))*0.5;
+            for(float i=0.;i<35.;i++){
+              v=p+cos(i*i+(iTime+p.x*0.08)*0.025+i*vec2(13,11))*3.5+vec2(sin(iTime*3.+i)*0.003,cos(iTime*3.5-i)*0.003);
+              float tailNoise=fbm(v+vec2(iTime*0.5,i))*0.3*(1.-(i/35.));
+              vec4 col=vec4(0.1+0.3*sin(i*0.2+iTime*0.4),0.3+0.5*cos(i*0.3+iTime*0.5),0.7+0.3*sin(i*0.4+iTime*0.3),1.);
+              float thin=smoothstep(0.,1.,i/35.)*0.6;
+              o+=col*exp(sin(i*i+iTime*0.8))/length(max(v,vec2(v.x*f*0.015,v.y*1.5)))*(1.+tailNoise*0.8)*thin;
+            }
+            o=tanh(pow(o/100.,vec4(1.6)))*1.5;
+            gl_FragColor=vec4(o.rgb, o.a * 0.72);
+          }
+        `,
       });
-      ctx.globalAlpha = 1;
-      raf = requestAnimationFrame(render);
-    };
 
-    init();
-    window.addEventListener("resize", init);
-    raf = requestAnimationFrame(render);
-    return () => { window.removeEventListener("resize", init); cancelAnimationFrame(raf); };
+      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+      scene.add(mesh);
+
+      let frameId: number;
+      const animate = () => {
+        material.uniforms.iTime.value += 0.016;
+        renderer.render(scene, camera);
+        frameId = requestAnimationFrame(animate);
+      };
+      animate();
+
+      const onResize = () => {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        material.uniforms.iResolution.value.set(window.innerWidth, window.innerHeight);
+      };
+      window.addEventListener("resize", onResize);
+
+      // Store cleanup on container element
+      (container as HTMLDivElement & { _cleanup?: () => void })._cleanup = () => {
+        cancelAnimationFrame(frameId);
+        window.removeEventListener("resize", onResize);
+        if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
+        material.dispose();
+        renderer.dispose();
+      };
+    });
+
+    return () => {
+      const c = containerRef.current as (HTMLDivElement & { _cleanup?: () => void }) | null;
+      c?._cleanup?.();
+    };
   }, []);
 
-  return <canvas ref={canvasRef} aria-hidden style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none", opacity: 0.6 }} />;
+  return (
+    <div
+      ref={containerRef}
+      aria-hidden
+      style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+    />
+  );
 }
 
 export default function Hero() {
@@ -192,7 +201,7 @@ export default function Hero() {
           style={{ backgroundImage: "url('/Hero1.png')" }}
         />
         <div className="absolute inset-0" style={{ background: "rgba(5,5,8,0.30)" }} />
-        <HeroComets />
+        <HeroShaderBg />
       </div>
 
       <div ref={contentRef} className="container-x relative grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-8">
