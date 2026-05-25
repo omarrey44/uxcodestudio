@@ -131,7 +131,12 @@ export default function Hero() {
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
-    setIsDesktop(window.innerWidth >= 768);
+    const highEnd =
+      window.innerWidth >= 768 &&
+      (navigator as Navigator & { deviceMemory?: number }).deviceMemory !== undefined
+        ? ((navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8) >= 4
+        : window.innerWidth >= 768 && (navigator.hardwareConcurrency ?? 4) >= 4;
+    setIsDesktop(highEnd);
   }, []);
 
   const { t } = useLanguage();

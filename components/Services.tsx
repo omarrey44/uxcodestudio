@@ -487,9 +487,8 @@ function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, g
       viewport={{ once: true, margin: "-20px" }}
       transition={{ duration: 0.65, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
       animate={{
-        opacity: isDimmed ? 0.4 : 1,
+        opacity: isDimmed ? 0.38 : 1,
         scale: isDimmed ? 0.985 : 1,
-        filter: isDimmed ? "saturate(0.5)" : "saturate(1)",
       }}
       className={`group relative flex flex-col overflow-hidden rounded-2xl border bg-[#09090f] transition-colors duration-300 cursor-pointer
         ${isActive ? "border-white/[0.22]" : "border-white/[0.08] hover:border-white/[0.15]"}`}
