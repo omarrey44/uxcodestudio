@@ -52,10 +52,16 @@ export default function Process() {
             <div>
               <motion.div
                 variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.55 } } }}
-                className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.28em] text-white/70"
+                className="mb-7 inline-flex items-center gap-3 rounded-full border border-accent-violet/30 bg-gradient-to-r from-accent-violet/10 to-accent-blue/10 px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.2em]"
+                style={{ boxShadow: "0 0 20px rgba(139,92,246,0.12)" }}
               >
-                <span className="h-1 w-1 rounded-full bg-accent-violet" />
-                Our Process
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inset-0 animate-ping rounded-full bg-accent-violet opacity-60" />
+                  <span className="relative h-2 w-2 rounded-full bg-accent-violet" style={{ boxShadow: "0 0 6px rgba(139,92,246,0.9)" }} />
+                </span>
+                <span style={{ background: "linear-gradient(90deg, #c4b5fd, #a78bfa, #67e8f9)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+                  Our Process
+                </span>
               </motion.div>
 
               <motion.h2

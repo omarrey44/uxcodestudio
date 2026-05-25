@@ -676,10 +676,16 @@ export function SectionHeader({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-20px" }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-white"
+        className="mb-6 inline-flex items-center gap-3 rounded-full border border-accent-cyan/25 bg-gradient-to-r from-accent-cyan/10 to-accent-blue/10 px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.22em]"
+        style={{ boxShadow: "0 0 24px rgba(0,212,255,0.12)" }}
       >
-        <span className="h-1 w-1 rounded-full bg-accent-cyan"/>
-        {eyebrow}
+        <span className="relative flex h-2 w-2">
+          <span className="absolute inset-0 animate-ping rounded-full bg-accent-cyan opacity-60" />
+          <span className="relative h-2 w-2 rounded-full bg-accent-cyan" style={{ boxShadow: "0 0 6px rgba(0,212,255,0.9)" }} />
+        </span>
+        <span style={{ background: "linear-gradient(90deg, #a5f3fc, #67e8f9, #c4b5fd)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>
+          {eyebrow}
+        </span>
       </motion.div>
 
       <motion.h2
