@@ -33,45 +33,6 @@ const SERVICE_HERO_IMAGES = [
   "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=900&q=80&fit=crop&auto=format",
 ];
 
-/* ── Service example images (3 per service shown in gallery) ─────────────────── */
-const SERVICE_EXAMPLES: { src: string; caption: string; captionEs: string }[][] = [
-  // 0 Marketing
-  [
-    { src: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=440&q=75&fit=crop&auto=format", caption: "Premium landing page", captionEs: "Landing premium" },
-    { src: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=440&q=75&fit=crop&auto=format", caption: "Product showcase", captionEs: "Showcase de producto" },
-    { src: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=440&q=75&fit=crop&auto=format", caption: "Brand website", captionEs: "Sitio de marca" },
-  ],
-  // 1 Growth
-  [
-    { src: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=440&q=75&fit=crop&auto=format", caption: "Conversion dashboard", captionEs: "Dashboard de conversión" },
-    { src: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=440&q=75&fit=crop&auto=format", caption: "Analytics overview", captionEs: "Panel de analytics" },
-    { src: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=440&q=75&fit=crop&auto=format", caption: "Growth metrics", captionEs: "Métricas de crecimiento" },
-  ],
-  // 2 Web Apps
-  [
-    { src: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=440&q=75&fit=crop&auto=format", caption: "Admin dashboard", captionEs: "Panel de administración" },
-    { src: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=440&q=75&fit=crop&auto=format", caption: "Dev environment", captionEs: "Entorno de desarrollo" },
-    { src: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=440&q=75&fit=crop&auto=format", caption: "Web application", captionEs: "Aplicación web" },
-  ],
-  // 3 SaaS
-  [
-    { src: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=440&q=75&fit=crop&auto=format", caption: "SaaS platform", captionEs: "Plataforma SaaS" },
-    { src: "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=440&q=75&fit=crop&auto=format", caption: "Team workspace", captionEs: "Espacio de equipo" },
-    { src: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=440&q=75&fit=crop&auto=format", caption: "Usage analytics", captionEs: "Analytics de uso" },
-  ],
-  // 4 Brand
-  [
-    { src: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=440&q=75&fit=crop&auto=format", caption: "Brand identity", captionEs: "Identidad de marca" },
-    { src: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=440&q=75&fit=crop&auto=format", caption: "Visual system", captionEs: "Sistema visual" },
-    { src: "https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?w=440&q=75&fit=crop&auto=format", caption: "Brand guidelines", captionEs: "Manual de marca" },
-  ],
-  // 5 Mobile
-  [
-    { src: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=440&q=75&fit=crop&auto=format", caption: "iOS app", captionEs: "App iOS" },
-    { src: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=440&q=75&fit=crop&auto=format", caption: "App analytics", captionEs: "Analytics de app" },
-    { src: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=440&q=75&fit=crop&auto=format", caption: "Mobile UX", captionEs: "UX móvil" },
-  ],
-];
 
 /* ── Card visual configs ────────────────────────────────────────────────────── */
 const VISUALS = [
@@ -261,28 +222,6 @@ function ServicePanelHero({ idx, detail }: { idx: number; detail: ServiceDetail 
 }
 
 /* ── Examples gallery ──────────────────────────────────────────────────────── */
-function ExamplesGallery({ idx, lang }: { idx: number; lang: "en" | "es" }) {
-  const examples = SERVICE_EXAMPLES[idx];
-  return (
-    <div className="grid grid-cols-3 gap-2">
-      {examples.map((ex) => (
-        <div key={ex.src} className="relative aspect-[4/3] overflow-hidden rounded-lg border border-white/[0.07] group">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={ex.src}
-            alt={lang === "es" ? ex.captionEs : ex.caption}
-            className="h-full w-full object-cover opacity-55 transition-opacity duration-300 group-hover:opacity-80"
-            loading="lazy"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-          <div className="absolute bottom-1.5 left-2 text-[9px] font-medium text-white leading-none">
-            {lang === "es" ? ex.captionEs : ex.caption}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 
 
@@ -337,12 +276,13 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.96, y: 16 }}
       transition={{ type: "spring", stiffness: 340, damping: 32 }}
-      onClick={(e) => e.stopPropagation()}
+      onClick={onClose}
     >
-      {/* Modal card */}
+      {/* Modal card — stop propagation so clicks inside don't close */}
       <div
         className="relative w-full max-w-5xl overflow-hidden rounded-2xl md:rounded-3xl border border-white/[0.09]"
         style={{ background: "rgba(6,7,14,0.98)", backdropFilter: "blur(28px)", maxHeight: "92vh" }}
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Accent top line */}
         <div className="absolute inset-x-0 top-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${detail.accentColor}, transparent)` }} />
@@ -374,21 +314,15 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
           </div>
 
           {/* ── Right: scrollable content ──────────────────────────────────── */}
-          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-5 md:p-6">
-            <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-5">
+          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-6 md:p-8">
+            <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-6">
 
-              <motion.p variants={fadeUp} className="text-sm leading-relaxed text-white">
+              <motion.p variants={fadeUp} className="text-base leading-relaxed text-white">
                 {copy.extendedDesc}
               </motion.p>
 
-              {/* Examples gallery */}
-              <motion.div variants={fadeUp}>
-                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-2">{labels.workExamples}</div>
-                <ExamplesGallery idx={idx} lang={lang} />
-              </motion.div>
-
               {/* Included + Impact */}
-              <motion.div variants={fadeUp} className="grid grid-cols-2 gap-4">
+              <motion.div variants={fadeUp} className="grid grid-cols-2 gap-5">
                 <div>
                   <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-2">{labels.included}</div>
                   <div className="space-y-1.5">
