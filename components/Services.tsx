@@ -211,11 +211,11 @@ function ServicePanelHero({ idx, detail }: { idx: number; detail: ServiceDetail 
       <img
         src={SERVICE_HERO_IMAGES[idx]}
         alt={detail.eyebrow}
-        className="h-full w-full object-cover opacity-80"
+        className="h-full w-full object-cover opacity-100"
         loading="lazy"
       />
       <div className="absolute inset-0" style={{ background: `linear-gradient(155deg, rgba(${detail.accentRgb},0.55) 0%, transparent 60%)` }} />
-      <div className="absolute inset-0" style={{ background: "rgba(6,7,14,0.25)" }} />
+      <div className="absolute inset-0" style={{ background: "rgba(6,7,14,0.10)" }} />
       <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[#06070e] to-transparent" />
     </div>
   );
