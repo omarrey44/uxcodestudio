@@ -46,7 +46,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${syne.variable} ${barlow.variable}`}>
+    <html lang="en" translate="no" className={`${inter.variable} ${syne.variable} ${barlow.variable}`}>
+      <head>
+        <meta name="google" content="notranslate" />
+      </head>
       <body className="bg-background text-white antialiased noise">
         {/* Runs synchronously before React hydrates — prevents browser scroll restoration fighting Lenis */}
         <script dangerouslySetInnerHTML={{ __html: "if('scrollRestoration'in history){history.scrollRestoration='manual';}window.scrollTo(0,0);" }} />
