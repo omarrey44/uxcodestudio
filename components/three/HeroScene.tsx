@@ -10,7 +10,6 @@ import {
   Float,
   Html,
 } from "@react-three/drei";
-import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 
 const MODEL_URL = "/orbit_robot.glb";
@@ -209,10 +208,6 @@ export default function HeroScene({ eyeColor = "#00d4ff", uxOn = false }: { eyeC
 
         </Suspense>
 
-        <EffectComposer enableNormalPass={false}>
-          <Bloom intensity={1.2} luminanceThreshold={0.72} luminanceSmoothing={0.15} mipmapBlur />
-          <Vignette eskil={false} offset={0.20} darkness={0.92} />
-        </EffectComposer>
       </Canvas>
     </div>
   );
