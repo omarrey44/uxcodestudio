@@ -177,7 +177,7 @@ export default function HeroScene({ eyeColor = "#00d4ff", uxOn = false }: { eyeC
       <Canvas
         frameloop={frameloop}
         dpr={[1, 1.5]}
-        camera={{ position: [0, -0.20, 5.5], fov: 46, near: 0.1, far: 50 }}
+        camera={{ position: [0, 0.10, 3.8], fov: 50, near: 0.1, far: 50 }}
         gl={{ antialias: true, powerPreference: "high-performance", alpha: true }}
       >
         <ambientLight intensity={0.22} />
@@ -203,7 +203,7 @@ export default function HeroScene({ eyeColor = "#00d4ff", uxOn = false }: { eyeC
 
         <Suspense fallback={<Loader />}>
           <Float speed={0.9} rotationIntensity={0.04} floatIntensity={0.30}>
-            <OrbitRobot position={[0, -1.1, 0]} scale={1.18} ledColor={eyeColor} uxOn={uxOn} />
+            <OrbitRobot position={[0, -0.65, 0]} scale={1.55} ledColor={eyeColor} uxOn={uxOn} />
           </Float>
 
           <Environment resolution={256}>

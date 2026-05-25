@@ -1,138 +1,46 @@
 /**
  * OrbitHero.jsx
  * ---------------------------------------------------------------------------
- * v1.0 — Adaptado del RobotHeadHero al modelo ORBIT v7
+ * Hero 3D — Robot ORBIT  (referencia standalone, sincronizado con HeroScene.tsx)
  *
- * DIFERENCIAS vs RobotHeadHero:
- *  • MODEL_URL → "/orbit_robot.glb"  (exporta desde Blender: File → Export → glTF 2.0)
- *  • Materiales ORBIT: "GlossyBlack", "CyanLED", "VisorBlack"
- *    (ya no hay BrushedMetal / Holo_Base / Visor_Frame)
- *  • Sin Eye_Rig — los ojos son geometría estática, no hay armature
- *  • Parallax solo en group (cabeza sigue al cursor), sin eye tracking
- *  • Cámara más alejada (z=5.5) y centrada (y=-0.2) — el ORBIT es
- *    un robot completo (base + cuello + cabeza), más alto que la cabeza sola
- *  • FOV 44→46 para encuadrar el cuerpo completo
- *  • ContactShadows bajada a y=-1.80 (la base del ORBIT está más abajo)
- *  • Float: rotationIntensity 0.06→0.04 — el cuerpo completo se ve
- *    extraño con mucho movimiento, sutil es más elegante
- *  • Bloom threshold 0.78→0.72: los LEDs cyan del ORBIT son muy brillantes
- *  • Lightformer inferior intensificado para el glow del anillo LED base
+ * EXPORTAR DESDE BLENDER:
+ *   File → Export → glTF 2.0 (.glb)
+ *   - Include → Selected Objects: OFF (exporta todo)
+ *   - Geometry → Apply Modifiers: ON
+ *   - Animation → ✓ (para que los clips NLA se incluyan)
+ *   - Materials: Export
+ *   Guardar como "orbit_robot.glb" en /public del proyecto Next.js
  *
- * CÓMO EXPORTAR DESDE BLENDER:
- *   1. Ejecuta orbit_robot_v7.py en Blender
- *   2. File → Export → glTF 2.0 (.glb)
- *   3. Settings: Include → Selected Objects: OFF (exporta todo)
- *                Geometry → Apply Modifiers: ON
- *                Materials: Export
- *   4. Guarda como "orbit_robot.glb" en /public de tu proyecto React
+ * MATERIALES EN EL GLB (el nombre en Blender debe contener estas cadenas):
+ *   "glossy" / "gloss"  → casco, orejas, cuello, base  (titanio oscuro metálico)
+ *   "visor"             → visor frontal (negro casi puro, misma metalness que glossy)
+ *   "cyan" / "led" / "eye" → ojos rectangulares + anillo LED (emisión cyan)
+ *   cualquier otro material con color claro → se fuerza a oscuro automáticamente
  *
- * DEPENDENCIAS
+ * DEPENDENCIAS:
  *   npm i three @react-three/fiber @react-three/drei @react-three/postprocessing
+ *
+ * USO (en un proyecto React / Next.js con "use client"):
+ *   import HeroScene from "@/components/three/HeroScene";
+ *   <HeroScene eyeColor="#00d4ff" uxOn={false} />
  * ---------------------------------------------------------------------------
  */
 
-import React, { Suspense, useRef, useMemo, useEffect } from "react";
+import React, { Suspense, useRef, useMemo, useEffect, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   useGLTF,
   useAnimations,
   Environment,
   Lightformer,
-  ContactShadows,
   Float,
   Html,
+  Text,
 } from "@react-three/drei";
 import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 
-const MODEL_URL = "/ORBIT_final.glb";
-
-/* ─────────────────────────────────────────────────────────────────────────── */
-/* Modelo ORBIT                                                                */
-/* ─────────────────────────────────────────────────────────────────────────── */
-function OrbitRobot(props) {
-  const group = useRef();
-  const { scene, animations } = useGLTF(MODEL_URL);
-  const { actions } = useAnimations(animations, group);
-  const { pointer } = useThree();
-
-  // Clonar escena para permitir múltiples instancias
-  const model = useMemo(() => scene.clone(true), [scene]);
-
-  // Reproducir animaciones si las hay (el modelo base no las tiene,
-  // pero quedan listas si añades animaciones en Blender)
-  useEffect(() => {
-    if (!actions) return;
-    Object.values(actions).forEach((a) => {
-      if (a) a.reset().setLoop(THREE.LoopRepeat, Infinity).play();
-    });
-  }, [actions]);
-
-  // ── Overrides de materiales para el modelo ORBIT ─────────────────────────
-  useEffect(() => {
-    model.traverse((o) => {
-      if (!o.isMesh) return;
-      o.castShadow    = true;
-      o.receiveShadow = true;
-      const m = o.material;
-      if (!m) return;
-
-      // ── GLOSSY BLACK: casco, orejas, cuello, base ──────────────────────
-      // Titanio oscuro muy reflectante — casi espejo, con toque azul-noche
-      if (m.name === "GlossyBlack") {
-        m.color            = new THREE.Color(0x05050f);
-        m.metalness        = 0.95;
-        m.roughness        = 0.07;
-        m.envMapIntensity  = 0.55;   // Refleja el environment cyan sutilmente
-        m.needsUpdate      = true;
-      }
-
-      // ── VISOR BLACK: panel frontal de la cabeza ─────────────────────────
-      // Espejo negro profundo — refleja el entorno sin punto blanco
-      if (m.name === "VisorBlack") {
-        m.color            = new THREE.Color(0x010105);
-        m.metalness        = 0.0;
-        m.roughness        = 0.01;   // Casi espejo
-        m.envMapIntensity  = 0.35;
-        m.clearcoat        = 0.0;    // Elimina punto blanco de clearcoat
-        m.needsUpdate      = true;
-      }
-
-      // ── CYAN LED: ojos + anillo base + anillos orejas ──────────────────
-      // Emisión cyan intensa — toneMapped:false para que Bloom los agarre
-      if (m.name === "CyanLED") {
-        m.emissive          = new THREE.Color(0x00d8ff);
-        m.emissiveIntensity = 7.0;    // Alto → glow fuerte en post-processing
-        m.toneMapped        = false;  // Bloom los captura con máxima fuerza
-        m.metalness         = 0.0;
-        m.roughness         = 0.0;
-        m.envMapIntensity   = 0.0;
-        m.needsUpdate       = true;
-      }
-    });
-  }, [model]);
-
-  // ── Parallax al cursor (sin eye tracking — ORBIT no tiene Eye_Rig) ───────
-  useFrame((_state, delta) => {
-    if (!group.current) return;
-    const targetY =  pointer.x * 0.08;   // Yaw suave
-    const targetX = -pointer.y * 0.05;   // Pitch suave
-    group.current.rotation.y = THREE.MathUtils.damp(
-      group.current.rotation.y, targetY, 4, delta
-    );
-    group.current.rotation.x = THREE.MathUtils.damp(
-      group.current.rotation.x, targetX, 4, delta
-    );
-  });
-
-  return (
-    <group ref={group} {...props}>
-      <primitive object={model} />
-    </group>
-  );
-}
-
-useGLTF.preload(MODEL_URL);
+const MODEL_URL = "/orbit_robot.glb";
 
 /* ─────────────────────────────────────────────────────────────────────────── */
 /* Loader                                                                      */
@@ -155,179 +63,208 @@ function Loader() {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────── */
+/* Modelo                                                                      */
+/* ─────────────────────────────────────────────────────────────────────────── */
+function OrbitRobot({ ledColor = "#00d8ff", uxOn = false, ...props }) {
+  const group = useRef();
+  const { scene, animations } = useGLTF(MODEL_URL);
+  const { actions } = useAnimations(animations, group);
+  const { pointer } = useThree();
+  const ledMats = useRef([]);
+
+  const model = useMemo(() => scene.clone(true), [scene]);
+
+  // Reproducir todos los clips de animación del GLB (blink, hover, etc.)
+  useEffect(() => {
+    if (!actions) return;
+    Object.values(actions).forEach((a) => {
+      if (a) a.reset().setLoop(THREE.LoopRepeat, Infinity).play();
+    });
+  }, [actions]);
+
+  // Asignar materiales
+  useEffect(() => {
+    ledMats.current = [];
+    model.traverse((o) => {
+      if (!o.isMesh) return;
+      const m = o.material;
+      if (!m) return;
+      const name = (m.name ?? "").toLowerCase();
+
+      // Titanio oscuro — casco, orejas, cuello, base
+      if (name.includes("glossy") || name.includes("gloss")) {
+        m.color           = new THREE.Color(0x10121e);
+        m.metalness       = 0.85;
+        m.roughness       = 0.28;
+        m.envMapIntensity = 0.40;
+        m.needsUpdate     = true;
+      }
+
+      // Visor frontal — negro casi puro, mismo estilo que glossy
+      if (name.includes("visor")) {
+        m.color           = new THREE.Color(0x020305);
+        m.metalness       = 0.85;
+        m.roughness       = 0.28;
+        m.envMapIntensity = 0.40;
+        m.needsUpdate     = true;
+      }
+
+      // CyanLED — ojos + anillo LED (alta emisión para Bloom)
+      if (name.includes("cyan") || name.includes("led") || name.includes("eye")) {
+        m.emissive          = new THREE.Color(0x00d8ff);
+        m.emissiveIntensity = 10.0;
+        m.toneMapped        = false;
+        m.metalness         = 0.0;
+        m.roughness         = 0.0;
+        m.envMapIntensity   = 0.0;
+        m.needsUpdate       = true;
+        ledMats.current.push(m);
+      }
+
+      // Fuerza oscuro cualquier material claro que no sea LED
+      if (!name.includes("cyan") && !name.includes("led") && !name.includes("eye")) {
+        const col = m.color;
+        if (col && col.r > 0.7 && col.g > 0.7 && col.b > 0.7) {
+          m.color = new THREE.Color(0x05050f);
+          m.needsUpdate = true;
+        }
+      }
+    });
+  }, [model]);
+
+  // Actualizar color LED cuando cambia ledColor
+  useEffect(() => {
+    const col = new THREE.Color(ledColor);
+    ledMats.current.forEach((m) => {
+      m.emissive = col;
+      m.needsUpdate = true;
+    });
+  }, [ledColor]);
+
+  useFrame((state, delta) => {
+    if (!group.current) return;
+
+    // Parallax suave al cursor
+    group.current.rotation.y = THREE.MathUtils.damp(
+      group.current.rotation.y,
+      pointer.x * 0.32,
+      4,
+      delta
+    );
+    group.current.rotation.x = THREE.MathUtils.damp(
+      group.current.rotation.x,
+      -pointer.y * 0.18,
+      4,
+      delta
+    );
+
+    // Blink LED: apagón rápido cada ~4 s
+    const t = state.clock.getElapsedTime();
+    const blinkCycle = t % 4.0;
+    const isBlink = blinkCycle > 3.85;
+    ledMats.current.forEach((m) => {
+      m.emissiveIntensity = isBlink ? 0.0 : 10.0;
+    });
+  });
+
+  return (
+    <group ref={group} {...props}>
+      <primitive object={model} />
+
+      {/* Texto UX en el visor — se muestra cuando uxOn=true */}
+      <Text
+        position={[0, 0.38, 0.82]}
+        fontSize={0.26}
+        letterSpacing={0.16}
+        color={ledColor}
+        anchorX="center"
+        anchorY="middle"
+        fillOpacity={uxOn ? 0.55 : 0}
+        outlineColor={ledColor}
+        outlineOpacity={uxOn ? 0.15 : 0}
+        outlineWidth={0.008}
+        renderOrder={999}
+      >
+        UX
+      </Text>
+    </group>
+  );
+}
+
+useGLTF.preload(MODEL_URL);
+
+/* ─────────────────────────────────────────────────────────────────────────── */
 /* Hero                                                                        */
 /* ─────────────────────────────────────────────────────────────────────────── */
-export default function OrbitHero() {
-  return (
-    <div
-      style={{
-        position: "relative",
-        width: "100%",
-        height: "100vh",
-        // Fondo azul-noche profundo, más oscuro en la base para el glow LED
-        background:
-          "radial-gradient(110% 80% at 50% 20%, #080d14 0%, #040709 55%, #020304 100%)",
-      }}
-    >
-      <Canvas
-        shadows
-        dpr={[1, 2]}
-        gl={{ antialias: true, powerPreference: "high-performance" }}
-        camera={{
-          // Más alejada que el hero anterior — el ORBIT es cuerpo completo
-          // y=-0.20 para centrar verticalmente (la base baja hasta z≈0 en Blender)
-          position: [0, -0.20, 5.5],
-          fov: 46,
-          near: 0.1,
-          far: 50,
-        }}
-      >
-        {/* ── Iluminación principal ──────────────────────────────────────────
-            SpotLight desde arriba-derecha: revela la superficie del casco.
-            Point lights cyan laterales: rim glow en los bordes del casco.
-            Point light inferior: ilumina el anillo LED de la base hacia arriba. */}
-        <ambientLight intensity={0.10} />
+export default function OrbitHero({ eyeColor = "#00d4ff", uxOn = false }) {
+  const wrapRef = useRef();
+  const [frameloop, setFrameloop] = useState("always");
 
-        {/* Key light — diagonal superior derecha */}
+  // Pausa el render loop cuando el canvas sale del viewport (ahorro de GPU)
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => setFrameloop(e.isIntersecting ? "always" : "never"),
+      { rootMargin: "200px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <div ref={wrapRef} style={{ width: "100%", height: "100%" }}>
+      <Canvas
+        frameloop={frameloop}
+        dpr={[1, 1.5]}
+        camera={{ position: [0, -0.20, 5.5], fov: 46, near: 0.1, far: 50 }}
+        gl={{ antialias: true, powerPreference: "high-performance", alpha: true }}
+      >
+        <ambientLight intensity={0.22} />
+
+        {/* Key light — define forma del casco */}
         <spotLight
           position={[2.5, 5.0, 4.0]}
           angle={0.50}
           penumbra={1}
-          intensity={40}
-          color="#b8ccd8"
-          castShadow
-          shadow-mapSize={[1024, 1024]}
+          intensity={90}
+          color="#c8dce8"
         />
 
-        {/* Rim lights cyan — perfilan las orejas y los bordes del casco */}
-        <pointLight position={[-3.5, 0.8, 2.0]} intensity={18} color="#00c8ff" />
-        <pointLight position={[ 3.5, 0.8, 2.0]} intensity={18} color="#00c8ff" />
+        {/* Fill frontal suave */}
+        <pointLight position={[0, 1.5, 4.5]} intensity={30} color="#7ab8d8" />
 
-        {/* Luz inferior — hace que el anillo LED de la base glow hacia arriba */}
-        <pointLight position={[0, -2.2, 1.8]} intensity={14} color="#00aaff" />
+        {/* Rim lights cyan — silueta lateral */}
+        <pointLight position={[-4.0, 1.0, 1.5]} intensity={22} color="#00c8ff" />
+        <pointLight position={[ 4.0, 1.0, 1.5]} intensity={22} color="#00c8ff" />
+
+        {/* LED base glow */}
+        <pointLight position={[0, -2.0, 1.8]} intensity={35} color="#00aaff" />
 
         <Suspense fallback={<Loader />}>
-          {/*
-            Float ajustado para cuerpo completo:
-              - rotationIntensity 0.04 (muy bajo) → el robot no se bambolea
-              - floatIntensity 0.30 → levitación suave
-              - speed 0.9 → ligeramente más lento, más solemne
-          */}
           <Float speed={0.9} rotationIntensity={0.04} floatIntensity={0.30}>
-            {/*
-              El modelo ORBIT en Blender tiene su base en z=0 y la cabeza
-              en z≈2.2. En Three.js el eje Y es vertical, así que el GLB
-              exportado puede necesitar rotación -90° en X o ajuste de posición.
-              Prueba position={[0, -1.1, 0]} para centrar verticalmente.
-            */}
-            <OrbitRobot position={[0, -1.1, 0]} scale={0.95} />
+            <OrbitRobot
+              position={[0, -1.1, 0]}
+              scale={1.18}
+              ledColor={eyeColor}
+              uxOn={uxOn}
+            />
           </Float>
 
-          {/* ── Environment IBL ─────────────────────────────────────────────
-              4 Lightformers: techo suave + rims cyan laterales + base LED.
-              Intensidades moderadas — el GlossyBlack no debe verse plateado. */}
           <Environment resolution={256}>
             <color attach="background" args={["#03050a"]} />
-
-            {/* Luz de techo — ilumina la parte superior del casco */}
-            <Lightformer
-              intensity={1.2}
-              color="#b0c8d8"
-              position={[0, 5, 1]}
-              scale={[8, 2, 1]}
-            />
-
-            {/* Rim izquierda — perfila el borde izquierdo del casco y oreja */}
-            <Lightformer
-              intensity={1.1}
-              color="#00d8ff"
-              position={[-6, 0.5, 2]}
-              rotation={[0, Math.PI / 2, 0]}
-              scale={[3, 6, 1]}
-            />
-
-            {/* Rim derecha — simétrico */}
-            <Lightformer
-              intensity={1.1}
-              color="#0090ff"
-              position={[6, 0.5, 2]}
-              rotation={[0, -Math.PI / 2, 0]}
-              scale={[3, 6, 1]}
-            />
-
-            {/* Luz de base — el anillo LED emite y se refleja en el suelo */}
-            <Lightformer
-              intensity={0.8}
-              color="#00c8ff"
-              position={[0, -4, 1.5]}
-              rotation={[Math.PI / 2, 0, 0]}
-              scale={[5, 3, 1]}
-            />
+            <Lightformer intensity={2.0} color="#b0c8d8" position={[0, 5, 1]} scale={[8, 2, 1]} />
+            <Lightformer intensity={2.2} color="#00d8ff" position={[-6, 0.5, 2]} rotation={[0, Math.PI / 2, 0]} scale={[3, 6, 1]} />
+            <Lightformer intensity={2.2} color="#0090ff" position={[6, 0.5, 2]} rotation={[0, -Math.PI / 2, 0]} scale={[3, 6, 1]} />
+            <Lightformer intensity={1.6} color="#00c8ff" position={[0, -4, 1.5]} rotation={[Math.PI / 2, 0, 0]} scale={[5, 3, 1]} />
           </Environment>
         </Suspense>
 
-        {/*
-          ContactShadows alineada con la base del ORBIT (y=-1.80).
-          La base del robot llega hasta y≈-1.80 con position={[0,-1.1,0]}.
-        */}
-        <ContactShadows
-          position={[0, -1.80, 0]}
-          opacity={0.60}
-          scale={8}
-          blur={3.5}
-          far={4.0}
-          color="#000810"
-        />
-
-        {/* ── Post-processing ──────────────────────────────────────────────
-            Bloom threshold 0.72 → los LEDs cyan (emissiveIntensity=7, toneMapped=false)
-            generan glow fuerte sin quemar el casco negro.
-            Vignette 0.92 → enfoca el robot en el centro oscuro. */}
-        <EffectComposer disableNormalPass>
-          <Bloom
-            intensity={1.2}
-            luminanceThreshold={0.72}
-            luminanceSmoothing={0.15}
-            mipmapBlur
-          />
+        <EffectComposer enableNormalPass={false}>
+          <Bloom intensity={1.2} luminanceThreshold={0.72} luminanceSmoothing={0.15} mipmapBlur />
           <Vignette eskil={false} offset={0.20} darkness={0.92} />
         </EffectComposer>
       </Canvas>
-
-      {/* ── Copy HTML encima del canvas ──────────────────────────────────── */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          paddingLeft: "8vw",
-          pointerEvents: "none",
-        }}
-      >
-        <h1
-          style={{
-            color: "#eaf6ff",
-            font: "700 clamp(32px, 6vw, 72px)/1.04 system-ui, sans-serif",
-            letterSpacing: "-0.02em",
-            margin: 0,
-            maxWidth: "16ch",
-          }}
-        >
-          Software, reimagined by intelligence.
-        </h1>
-        <p
-          style={{
-            color: "#5a8090",
-            font: "400 clamp(15px, 1.6vw, 20px)/1.55 system-ui, sans-serif",
-            marginTop: "1.2rem",
-            maxWidth: "42ch",
-          }}
-        >
-          We design and ship premium digital products for ambitious teams.
-        </p>
-      </div>
     </div>
   );
 }
