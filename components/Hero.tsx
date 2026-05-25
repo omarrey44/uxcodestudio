@@ -224,7 +224,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.8 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-muted backdrop-blur"
+            className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-muted backdrop-blur mx-auto md:mx-0 block w-fit"
           >
             <span className="relative flex h-2 w-2">
               <span className="absolute inset-0 animate-ping rounded-full bg-accent-cyan opacity-75" />
@@ -255,7 +255,7 @@ export default function Hero() {
             {scrambledHero}
           </p>
 
-          <div className="hero-cta mt-10 flex flex-wrap items-center gap-4">
+          <div className="hero-cta mt-10 flex flex-wrap items-center gap-4 justify-center md:justify-start">
             <MagneticButton href="#contact" variant="primary">
               {t.hero.cta1} <span aria-hidden>→</span>
             </MagneticButton>
@@ -264,7 +264,7 @@ export default function Hero() {
             </MagneticButton>
           </div>
 
-          <div className="hero-cta mt-14 flex items-center gap-6">
+          <div className="hero-cta mt-14 flex items-center gap-6 justify-center md:justify-start">
             <div>
               <div className="font-display text-lg text-white">{t.hero.statsCount}</div>
               <div className="text-xs text-muted-soft">{t.hero.statsRating}</div>
@@ -319,7 +319,7 @@ function RotatingWord({ words }: { words: string[] }) {
       <AnimatePresence mode="popLayout">
         <motion.span
           key={words[index]}
-          className="absolute left-0 text-left whitespace-nowrap text-gradient-accent"
+          className="absolute inset-x-0 text-center md:text-left whitespace-nowrap text-gradient-accent"
           initial={{ y: "110%", opacity: 0 }}
           animate={{ y: "0%", opacity: 1 }}
           exit={{ y: "-110%", opacity: 0 }}

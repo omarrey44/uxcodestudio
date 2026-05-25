@@ -67,7 +67,7 @@ export default function Footer() {
           className="select-none overflow-hidden pb-12"
         >
           <div className="flex justify-center">
-            <span className="font-display text-[12vw] font-bold leading-none tracking-tighter text-muted-dim md:text-[100px]">
+            <span className="font-display text-[7.5vw] font-bold leading-none tracking-tighter text-muted-dim md:text-[100px]">
               UXCODESTUDIO
             </span>
           </div>
