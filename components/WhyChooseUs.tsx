@@ -11,9 +11,9 @@ export default function WhyChooseUs() {
   return (
     <section className="section-alt section-separator relative overflow-hidden py-24 md:py-32">
       <div className="absolute inset-0">
-        <div className="absolute left-1/2 top-1/2 h-[750px] w-[750px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-cyan/[0.13] blur-[120px]" />
-        <div className="absolute -right-24 top-1/4 h-[450px] w-[450px] rounded-full bg-accent-violet/[0.09] blur-[100px]" />
-        <div className="absolute -left-16 bottom-1/4 h-[350px] w-[400px] rounded-full bg-accent-blue/[0.08] blur-3xl" />
+        <div className="absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-cyan/[0.15] blur-[60px]" />
+        <div className="absolute -right-24 top-1/4 h-[300px] w-[300px] rounded-full bg-accent-violet/[0.11] blur-[55px]" />
+        <div className="absolute -left-16 bottom-1/4 h-[260px] w-[280px] rounded-full bg-accent-blue/[0.10] blur-[50px]" />
       </div>
 
       <div className="container-x relative z-10">

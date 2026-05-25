@@ -12,8 +12,8 @@ export default function FAQ() {
   return (
     <section id="faq" className="section-deep section-separator relative py-20 md:py-28">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -bottom-24 left-1/2 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-accent-cyan/[0.1] blur-[120px]" />
-        <div className="absolute -top-10 right-1/4 h-[350px] w-[400px] rounded-full bg-accent-violet/[0.07] blur-[100px]" />
+        <div className="absolute -bottom-24 left-1/2 h-[400px] w-[600px] -translate-x-1/2 rounded-full bg-accent-cyan/[0.12] blur-[60px]" />
+        <div className="absolute -top-10 right-1/4 h-[280px] w-[320px] rounded-full bg-accent-violet/[0.09] blur-[50px]" />
       </div>
       <div className="container-x relative z-10">
         <SectionHeader

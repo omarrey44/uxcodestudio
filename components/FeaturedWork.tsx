@@ -94,8 +94,8 @@ export default function FeaturedWork() {
           className="absolute inset-0 grid-bg opacity-[0.25]"
           style={{ maskImage: "radial-gradient(ellipse 90% 80% at 50% 50%, black 25%, transparent 100%)" }}
         />
-        <div className="absolute -right-24 top-1/3 h-[600px] w-[500px] rounded-full bg-accent-cyan/[0.09] blur-[120px]" />
-        <div className="absolute -left-16 bottom-1/4 h-[500px] w-[500px] rounded-full bg-accent-blue/[0.09] blur-[100px]" />
+        <div className="absolute -right-24 top-1/3 h-[380px] w-[350px] rounded-full bg-accent-cyan/[0.11] blur-[60px]" />
+        <div className="absolute -left-16 bottom-1/4 h-[350px] w-[350px] rounded-full bg-accent-blue/[0.11] blur-[50px]" />
       </div>
 
       <div className="flex h-full flex-col justify-center">
