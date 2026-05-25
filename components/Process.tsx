@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useLanguage } from "@/lib/i18n";
 
 /* ── Icons ──────────────────────────────────────────────────────────────────── */
@@ -60,7 +59,6 @@ const STEP_MOCKS = [
 
 export default function Process() {
   const { t } = useLanguage();
-  const [activeStep, setActiveStep] = useState<number>(0);
 
   return (
     <section id="process" className="section-deep section-separator relative py-24 md:py-32">
@@ -166,118 +164,78 @@ export default function Process() {
             </motion.div>
           </div>
 
-          {/* ── Right column — accordion ─────────────────────────────────────── */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ type: "spring", stiffness: 260, damping: 28, delay: 0.1 }}
-            className="rounded-2xl border border-white/[0.08] bg-white/[0.02] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-sm overflow-hidden"
-          >
-            {t.process.steps.map((s, i) => {
-              const isOpen = activeStep === i;
-              return (
-                <div key={s.n} className="border-b border-white/[0.06] last:border-0">
-
-                  {/* Row trigger */}
-                  <button
-                    className="group flex w-full items-center gap-3 px-5 py-4 text-left transition-colors duration-200 hover:bg-white/[0.02]"
-                    onClick={() => setActiveStep(isOpen ? -1 : i)}
-                  >
-                    {/* Step number */}
-                    <span className="w-8 shrink-0 font-display text-base font-bold text-white/20 tabular-nums">
-                      {s.n}
-                    </span>
-
-                    {/* Tag dot */}
-                    <span className={`h-1.5 w-1.5 shrink-0 rounded-full transition-colors duration-300 ${isOpen ? "bg-accent-cyan" : "bg-white/20"}`} />
-
-                    {/* Tag label */}
-                    <span className={`w-24 shrink-0 text-[10px] font-medium uppercase tracking-[0.26em] transition-colors duration-300 ${isOpen ? "text-accent-cyan" : "text-white/30"}`}>
-                      {s.tag}
-                    </span>
-
-                    {/* Step icon */}
-                    <span className={`shrink-0 transition-colors duration-300 ${isOpen ? "text-white/50" : "text-white/20"}`}>
-                      {STEP_ICONS[i]}
-                    </span>
-
-                    {/* Title */}
-                    <span className={`flex-1 font-display text-base font-semibold tracking-tight transition-colors duration-300 ${isOpen ? "text-white" : "text-white/60"}`}>
-                      {s.title}
-                    </span>
-
-                    {/* Toggle */}
-                    <motion.span
-                      animate={{ rotate: isOpen ? 45 : 0 }}
-                      transition={{ type: "spring", stiffness: 340, damping: 24 }}
-                      className={`shrink-0 text-xl font-light leading-none transition-colors duration-300 ${isOpen ? "text-accent-cyan" : "text-white/20"}`}
-                    >
-                      +
-                    </motion.span>
-                  </button>
-
-                  {/* Expandable content */}
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        key="content"
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ type: "spring", stiffness: 300, damping: 32, opacity: { duration: 0.2 } }}
-                        className="overflow-hidden"
-                      >
-                        <div className="px-5 pb-6 pt-1">
-                          {/* Top accent */}
-                          <div className="mb-4 h-px bg-gradient-to-r from-accent-cyan/30 via-accent-violet/20 to-transparent" />
-
-                          {/* Description */}
-                          <p className="mb-5 max-w-[58ch] text-sm leading-relaxed text-white/55">{s.body}</p>
-
-                          {/* Content grid: left (metrics + output) | right (visual) */}
-                          <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_42%]">
-
-                            {/* Left: metrics + output */}
-                            <div className="flex flex-col justify-between gap-5">
-
-                              {/* Metrics — inline divide, no boxes */}
-                              <div className="flex items-start divide-x divide-white/[0.06]">
-                                {s.metrics.map((m) => (
-                                  <div key={m.label} className="px-4 first:pl-0 last:pr-0">
-                                    <div className="text-sm font-bold tracking-tight text-white">{m.value}</div>
-                                    <div className="mt-0.5 whitespace-nowrap text-[9px] text-white/30">{m.label}</div>
-                                  </div>
-                                ))}
-                              </div>
-
-                              {/* Output — left border accent, no container */}
-                              <div className="border-l-2 border-accent-cyan/20 pl-4">
-                                <div className="mb-2 text-[9px] font-semibold uppercase tracking-[0.32em] text-white/25">Output</div>
-                                <div className="space-y-1.5">
-                                  {s.output.map((o) => (
-                                    <div key={o} className="flex items-center gap-2">
-                                      <span className="h-px w-3 shrink-0 bg-accent-cyan/35" />
-                                      <span className="text-[12px] leading-snug text-white/45">{o}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Right: visual mock */}
-                            <div className="relative aspect-[16/9] overflow-hidden rounded-xl border border-white/[0.06] bg-[#070710]">
-                              {STEP_MOCKS[i]}
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+          {/* ── Right column — vertical timeline ─────────────────────────── */}
+          <div className="space-y-0">
+            {t.process.steps.map((s, i) => (
+              <motion.div
+                key={s.n}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-30px" }}
+                transition={{ duration: 0.65, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                className="relative flex gap-5"
+              >
+                {/* Timeline spine */}
+                <div className="flex flex-col items-center">
+                  {/* Step bubble */}
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-accent-cyan/30 bg-accent-cyan/[0.07] text-[11px] font-bold tabular-nums text-accent-cyan">
+                    {s.n}
+                  </div>
+                  {/* Connecting line */}
+                  {i < t.process.steps.length - 1 && (
+                    <div className="mt-2 w-px flex-1 bg-gradient-to-b from-accent-cyan/25 via-white/[0.05] to-transparent" style={{ minHeight: "2rem" }} />
+                  )}
                 </div>
-              );
-            })}
-          </motion.div>
+
+                {/* Content */}
+                <div className={`flex-1 ${i < t.process.steps.length - 1 ? "pb-10" : "pb-0"}`}>
+                  {/* Header */}
+                  <div className="mb-3 flex items-center gap-2.5">
+                    <span className="text-[10px] font-medium uppercase tracking-[0.26em] text-accent-cyan/70">{s.tag}</span>
+                    <span className="text-white/25">{STEP_ICONS[i]}</span>
+                    <h3 className="font-display text-[17px] font-bold tracking-tight text-white">{s.title}</h3>
+                  </div>
+
+                  {/* Body + image grid */}
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_40%]">
+
+                    {/* Text side */}
+                    <div>
+                      <p className="text-sm leading-relaxed text-white/50">{s.body}</p>
+
+                      {/* Metrics inline */}
+                      <div className="mt-4 flex items-start divide-x divide-white/[0.06]">
+                        {s.metrics.map((m) => (
+                          <div key={m.label} className="px-4 first:pl-0 last:pr-0">
+                            <div className="text-sm font-bold tracking-tight text-white">{m.value}</div>
+                            <div className="mt-0.5 whitespace-nowrap text-[9px] text-white/30">{m.label}</div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Output */}
+                      <div className="mt-4 border-l-2 border-accent-cyan/20 pl-3.5">
+                        <div className="mb-1.5 text-[9px] font-semibold uppercase tracking-[0.32em] text-white/25">Output</div>
+                        <div className="space-y-1.5">
+                          {s.output.map((o) => (
+                            <div key={o} className="flex items-center gap-2">
+                              <span className="h-px w-3 shrink-0 bg-accent-cyan/35" />
+                              <span className="text-[12px] leading-snug text-white/45">{o}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Image */}
+                    <div className="relative aspect-[16/9] overflow-hidden rounded-xl border border-white/[0.06] bg-[#070710]">
+                      {STEP_MOCKS[i]}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
 
         </div>
       </div>
