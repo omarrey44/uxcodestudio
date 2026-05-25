@@ -108,6 +108,13 @@ function OrbitRobot({ ledColor = "#00d8ff", uxOn = false, ...props }: OrbitRobot
     });
   }, [ledColor]);
 
+  // Set base glow once when uxOn turns off — no per-frame write needed
+  useEffect(() => {
+    if (!uxOn) {
+      ledMats.current.forEach((m) => { m.emissiveIntensity = 2.5; });
+    }
+  }, [uxOn]);
+
   const elapsedRef = useRef(0);
   useFrame((_, delta) => {
     if (!group.current) return;
@@ -120,19 +127,15 @@ function OrbitRobot({ ledColor = "#00d8ff", uxOn = false, ...props }: OrbitRobot
       group.current.rotation.x = THREE.MathUtils.damp(
         group.current.rotation.x, -pointer.y * 0.18, 4, delta
       );
+      // Blink only when robot is ON
+      const blinkCycle = elapsedRef.current % 4.0;
+      const intensity = blinkCycle > 3.85 ? 0.0 : 10.0;
+      ledMats.current.forEach((m) => { m.emissiveIntensity = intensity; });
     } else {
       group.current.rotation.y = THREE.MathUtils.damp(group.current.rotation.y, 0, 3, delta);
       group.current.rotation.x = THREE.MathUtils.damp(group.current.rotation.x, 0, 3, delta);
+      // No per-frame write — base glow set once by the effect above
     }
-
-    let intensity: number;
-    if (uxOn) {
-      const blinkCycle = elapsedRef.current % 4.0;
-      intensity = blinkCycle > 3.85 ? 0.0 : 10.0;
-    } else {
-      intensity = 0.0;
-    }
-    ledMats.current.forEach((m) => { m.emissiveIntensity = intensity; });
   });
 
   return (
