@@ -113,22 +113,27 @@ function OrbitRobot({ ledColor = "#00d8ff", uxOn = false, ...props }: OrbitRobot
     const clock = state.clock;
     if (!group.current) return;
 
-    // Parallax
-    group.current.rotation.y = THREE.MathUtils.damp(
-      group.current.rotation.y, pointer.x * 0.32, 4, delta
-    );
-    group.current.rotation.x = THREE.MathUtils.damp(
-      group.current.rotation.x, -pointer.y * 0.18, 4, delta
-    );
+    // Parallax — only when robot is ON
+    if (uxOn) {
+      group.current.rotation.y = THREE.MathUtils.damp(
+        group.current.rotation.y, pointer.x * 0.32, 4, delta
+      );
+      group.current.rotation.x = THREE.MathUtils.damp(
+        group.current.rotation.x, -pointer.y * 0.18, 4, delta
+      );
+    } else {
+      group.current.rotation.y = THREE.MathUtils.damp(group.current.rotation.y, 0, 3, delta);
+      group.current.rotation.x = THREE.MathUtils.damp(group.current.rotation.x, 0, 3, delta);
+    }
 
-    // uxOn = eyes off (robot powered down); !uxOn = normal slow blink
+    // uxOn=true → normal slow blink; uxOn=false → eyes off
     const t = clock.getElapsedTime();
     let intensity: number;
     if (uxOn) {
-      intensity = 0.0;
-    } else {
       const blinkCycle = t % 4.0;
       intensity = blinkCycle > 3.85 ? 0.0 : 10.0;
+    } else {
+      intensity = 0.0;
     }
     ledMats.current.forEach((m) => { m.emissiveIntensity = intensity; });
 
