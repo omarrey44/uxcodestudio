@@ -35,8 +35,8 @@ function HeroComets() {
     let raf = 0;
 
     const resize = () => {
-      w = canvas.width = canvas.offsetWidth;
-      h = canvas.height = canvas.offsetHeight;
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
     };
 
     const spawn = (): Comet => {
@@ -100,7 +100,7 @@ function HeroComets() {
     return () => { window.removeEventListener("resize", init); cancelAnimationFrame(raf); };
   }, []);
 
-  return <canvas ref={canvasRef} aria-hidden className="absolute inset-0 h-full w-full" style={{ pointerEvents: "none", opacity: 0.45 }} />;
+  return <canvas ref={canvasRef} aria-hidden style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none", opacity: 0.6 }} />;
 }
 
 export default function Hero() {
