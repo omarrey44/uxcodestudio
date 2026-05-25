@@ -102,7 +102,7 @@ export default function Process() {
 
               <motion.p
                 variants={{ hidden: { y: 12 }, visible: { y: 0, transition: { duration: 0.7 } } }}
-                className="mt-5 text-sm leading-relaxed text-white/80"
+                className="mt-5 text-sm leading-relaxed text-white"
               >
                 {t.process.sub}
               </motion.p>
@@ -113,10 +113,10 @@ export default function Process() {
               >
                 {t.process.pills.map((label, i) => (
                   <div key={i} className="flex items-start gap-3.5">
-                    <div className="mt-0.5 shrink-0 text-white/50">{PILL_ICONS[i]}</div>
+                    <div className="mt-0.5 shrink-0 text-white">{PILL_ICONS[i]}</div>
                     <div>
                       <div className="text-sm font-semibold tracking-tight text-white">{label}</div>
-                      <div className="mt-0.5 text-xs leading-relaxed text-white/65">{t.process.pillDescs[i]}</div>
+                      <div className="mt-0.5 text-xs leading-relaxed text-white">{t.process.pillDescs[i]}</div>
                     </div>
                   </div>
                 ))}
@@ -135,13 +135,13 @@ export default function Process() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold tracking-tight text-white">{t.process.sidebarTagline}</p>
-                  <p className="mt-0.5 text-xs text-white/60">{t.process.sidebarSub}</p>
+                  <p className="mt-0.5 text-xs text-white">{t.process.sidebarSub}</p>
                 </div>
               </div>
               <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2">
                 {t.process.transparencyItems.map((item, i) => (
-                  <span key={item} className="flex items-center gap-1.5 text-[11px] text-white/70">
-                    {i > 0 && <span className="text-white/30">·</span>}
+                  <span key={item} className="flex items-center gap-1.5 text-[11px] text-white">
+                    {i > 0 && <span className="text-white">·</span>}
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3 text-accent-cyan/70">
                       <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
                     </svg>
@@ -191,17 +191,17 @@ export default function Process() {
                   <SpotlightStepCard className="flex-1 pt-1">
                     <div className="mb-3 flex items-center gap-2.5">
                       <span className="text-[10px] font-medium uppercase tracking-[0.26em] text-accent-cyan/70">{s.tag}</span>
-                      <span className="text-white/40">{STEP_ICONS[i]}</span>
+                      <span className="text-white">{STEP_ICONS[i]}</span>
                       <h3 className="font-display text-[17px] font-bold tracking-tight text-white">{s.title}</h3>
                     </div>
 
-                    <p className="text-sm leading-relaxed text-white/80">{s.body}</p>
+                    <p className="text-sm leading-relaxed text-white">{s.body}</p>
 
                     <div className="mt-4 flex items-start divide-x divide-white/[0.06]">
                       {s.metrics.map((m) => (
                         <div key={m.label} className="px-4 first:pl-0 last:pr-0">
                           <div className="text-sm font-bold tracking-tight text-accent-cyan">{m.value}</div>
-                          <div className="mt-0.5 whitespace-nowrap text-[9px] text-white/55">{m.label}</div>
+                          <div className="mt-0.5 whitespace-nowrap text-[9px] text-white">{m.label}</div>
                         </div>
                       ))}
                     </div>
@@ -220,7 +220,7 @@ export default function Process() {
                               transition={{ duration: 0.4, ease: "easeOut", delay: oi * 0.08 }}
                               style={{ originX: "left" }}
                             />
-                            <span className="text-[12px] leading-snug text-white/85">{o}</span>
+                            <span className="text-[12px] leading-snug text-white">{o}</span>
                           </div>
                         ))}
                       </div>
