@@ -9,6 +9,7 @@ export default function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const trailRefs = useRef<HTMLDivElement[]>([]);
   const pos = useRef({ x: -100, y: -100 });
+  const cursorPos = useRef({ x: -100, y: -100 });
   const trailPositions = useRef(
     Array.from({ length: TRAIL_COUNT }, () => ({ x: -100, y: -100 }))
   );
@@ -49,24 +50,21 @@ export default function CustomCursor() {
     const animate = () => {
       const { x, y } = pos.current;
 
-      // Main cursor
-      const cx = parseFloat(cursor.style.left || "0") || x;
-      const cy = parseFloat(cursor.style.top || "0") || y;
+      // Main cursor — use transform to avoid layout thrash
+      const cx = cursorPos.current.x;
+      const cy = cursorPos.current.y;
       const nx = lerp(cx, x, LERP);
       const ny = lerp(cy, y, LERP);
-      cursor.style.left = `${nx}px`;
-      cursor.style.top = `${ny}px`;
+      cursorPos.current = { x: nx, y: ny };
+      cursor.style.transform = `translate(${nx}px, ${ny}px)`;
 
-      // Trail dots — each follows the previous with increasing lag
+      // Trail dots
       trailPositions.current.forEach((tp, i) => {
         const prev = i === 0 ? { x: nx, y: ny } : trailPositions.current[i - 1];
         tp.x = lerp(tp.x, prev.x, LERP * (1 - i * 0.15));
         tp.y = lerp(tp.y, prev.y, LERP * (1 - i * 0.15));
         const el = trailRefs.current[i];
-        if (el) {
-          el.style.left = `${tp.x}px`;
-          el.style.top = `${tp.y}px`;
-        }
+        if (el) el.style.transform = `translate(${tp.x}px, ${tp.y}px)`;
       });
 
       rafId = requestAnimationFrame(animate);
@@ -147,7 +145,7 @@ export default function CustomCursor() {
           zIndex: 9999,
           opacity: 0,
           transition: "width 0.2s, height 0.2s, margin 0.2s, background-color 0.2s, mix-blend-mode 0s",
-          willChange: "left, top",
+          willChange: "transform",
         }}
       />
       {/* Trail dots */}
@@ -169,7 +167,7 @@ export default function CustomCursor() {
             opacity: 0,
             pointerEvents: "none",
             zIndex: 9998,
-            willChange: "left, top",
+            willChange: "transform",
             transition: `opacity 0.3s ${i * TRAIL_DELAY_MS}ms`,
           }}
         />

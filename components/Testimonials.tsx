@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useLanguage } from "@/lib/i18n";
 import { ReviewStars } from "@/components/ui/animated-cards-stack";
 
@@ -88,6 +88,8 @@ const LOGOS = [
 
 export default function Testimonials() {
   const { t, lang } = useLanguage();
+  const sectionRef = useRef<HTMLElement>(null);
+  const visible = useInView(sectionRef, { margin: "200px" });
   const [order, setOrder] = useState([0, 1, 2, 3]);
   const [busy, setBusy] = useState(false);
 
@@ -109,7 +111,7 @@ export default function Testimonials() {
   const q = (item: typeof TESTIMONIALS[0]) => lang === "es" ? item.quoteEs : item.quote;
 
   return (
-    <section className="section-separator relative overflow-hidden py-24 md:py-32">
+    <section ref={sectionRef} className="section-separator relative overflow-hidden py-24 md:py-32">
 
       {/* ── Atmospheric background ──────────────────────────────────────────── */}
       <div className="pointer-events-none absolute inset-0">
@@ -122,7 +124,7 @@ export default function Testimonials() {
 
         {/* Aurora blob — top left, violet, ultra slow drift */}
         <motion.div
-          animate={{ x: [0, 40, -20, 0], y: [0, -30, 18, 0] }}
+          animate={visible ? { x: [0, 40, -20, 0], y: [0, -30, 18, 0] } : {}}
           transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
           className="absolute -top-24 -left-16 h-[560px] w-[680px] rounded-full"
           style={{ background: "radial-gradient(ellipse at center, rgba(99,102,241,0.10) 0%, transparent 68%)", filter: "blur(55px)" }}
@@ -130,7 +132,7 @@ export default function Testimonials() {
 
         {/* Aurora blob — bottom right, cyan, slow */}
         <motion.div
-          animate={{ x: [0, -50, 28, 0], y: [0, 35, -20, 0] }}
+          animate={visible ? { x: [0, -50, 28, 0], y: [0, 35, -20, 0] } : {}}
           transition={{ duration: 34, repeat: Infinity, ease: "easeInOut" }}
           className="absolute -bottom-20 -right-20 h-[500px] w-[620px] rounded-full"
           style={{ background: "radial-gradient(ellipse at center, rgba(6,182,212,0.08) 0%, transparent 70%)", filter: "blur(55px)" }}

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef, useState, useCallback } from "react";
 import React from "react";
 import { SectionHeader } from "./Services";
@@ -137,7 +137,7 @@ type Plan = {
   highlight: boolean;
 };
 
-function PricingCard({ plan, index, badge }: { plan: Plan; index: number; badge: string }) {
+function PricingCard({ plan, index, badge, sectionVisible }: { plan: Plan; index: number; badge: string; sectionVisible: boolean }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [spot, setSpot] = useState({ x: 0, y: 0, on: false });
 
@@ -157,7 +157,7 @@ function PricingCard({ plan, index, badge }: { plan: Plan; index: number; badge:
       whileInView={{ y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       whileHover={{ y: isCenter ? -8 : -5, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }}
-      animate={isCenter ? { y: [0, -6, 0] } : {}}
+      animate={isCenter && sectionVisible ? { y: [0, -6, 0] } : {}}
       transition={isCenter
         ? { duration: 0.9, delay: index * 0.13, ease: [0.22, 1, 0.36, 1], y: { duration: 4.5, repeat: Infinity, ease: "easeInOut", repeatType: "loop" } }
         : { duration: 0.9, delay: index * 0.13, ease: [0.22, 1, 0.36, 1] }
@@ -216,7 +216,7 @@ function PricingCard({ plan, index, badge }: { plan: Plan; index: number; badge:
         />
 
         {/* Border beam — featured only */}
-        {isCenter && <BorderBeam />}
+        {isCenter && sectionVisible && <BorderBeam />}
 
         {/* Top edge highlight */}
         <div
@@ -341,10 +341,13 @@ function PricingCard({ plan, index, badge }: { plan: Plan; index: number; badge:
 /* ── Pricing section ────────────────────────────────────────────────────────── */
 export default function Pricing() {
   const { t } = useLanguage();
+  const sectionRef = useRef<HTMLElement>(null);
+  const sectionVisible = useInView(sectionRef, { margin: "200px" });
 
   return (
     <section
       id="pricing"
+      ref={sectionRef}
       className="section-separator relative py-32 md:py-44 overflow-hidden"
     >
       {/* Dark site-palette background */}
@@ -380,6 +383,7 @@ export default function Pricing() {
               plan={p}
               index={i}
               badge={t.pricing.badge}
+              sectionVisible={sectionVisible}
             />
           ))}
         </div>
