@@ -11,7 +11,6 @@ import { useLanguage } from "@/lib/i18n";
 
 const HeroScene = dynamic(() => import("./three/HeroScene"), { ssr: false });
 
-const EYE_COLORS = ["#4f6ef7", "#00d4ff", "#8b5cf6", "#f43f5e"];
 
 function HeroShaderBg() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -126,7 +125,7 @@ export default function Hero() {
   const rootRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
-  const [eyeColor, setEyeColor] = useState("#00d4ff");
+  const [eyeColor] = useState("#ffffff");
   const [uxOn, setUxOn] = useState(false);
 
   const { t } = useLanguage();
@@ -261,20 +260,6 @@ export default function Hero() {
           </div>
 
           <div className="hero-cta mt-14 flex items-center gap-6">
-            <div className="flex -space-x-2">
-              {EYE_COLORS.map((c, i) => (
-                <button
-                  key={i}
-                  onClick={() => setEyeColor(c)}
-                  className="h-9 w-9 rounded-full border-2 transition-all duration-300 cursor-pointer"
-                  style={{
-                    background: `radial-gradient(circle at 30% 30%, ${c}, #050508)`,
-                    borderColor: eyeColor === c ? c : "var(--background)",
-                    boxShadow: eyeColor === c ? `0 0 10px ${c}88` : "none",
-                  }}
-                />
-              ))}
-            </div>
             <div>
               <div className="font-display text-lg text-white">{t.hero.statsCount}</div>
               <div className="text-xs text-muted-soft">{t.hero.statsRating}</div>
