@@ -211,12 +211,12 @@ function ServicePanelHero({ idx, detail }: { idx: number; detail: ServiceDetail 
       <img
         src={SERVICE_HERO_IMAGES[idx]}
         alt={detail.eyebrow}
-        className="h-full w-full object-cover opacity-65"
+        className="h-full w-full object-cover opacity-80"
         loading="lazy"
       />
-      <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, rgba(${detail.accentRgb},0.4) 0%, transparent 55%)` }} />
-      <div className="absolute inset-0" style={{ background: "rgba(6,7,14,0.38)" }} />
-      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#060712] to-transparent" />
+      <div className="absolute inset-0" style={{ background: `linear-gradient(155deg, rgba(${detail.accentRgb},0.55) 0%, transparent 60%)` }} />
+      <div className="absolute inset-0" style={{ background: "rgba(6,7,14,0.25)" }} />
+      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[#06070e] to-transparent" />
     </div>
   );
 }
@@ -287,13 +287,16 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
     >
       {/* Modal card — stop propagation so clicks inside don't close */}
       <div
-        className="relative w-full max-w-5xl overflow-hidden rounded-2xl md:rounded-3xl border border-white/[0.09]"
-        style={{ background: "rgba(6,7,14,0.98)", backdropFilter: "blur(28px)", maxHeight: "92vh" }}
+        className="relative w-full max-w-5xl overflow-hidden rounded-2xl md:rounded-3xl border"
+        style={{ background: "rgba(6,7,18,0.97)", backdropFilter: "blur(32px)", maxHeight: "92vh", borderColor: detail.accentColor + "30" }}
         onClick={(e) => e.stopPropagation()}
         onTouchEnd={handleDoubleTap}
       >
+        {/* Accent ambient glow — top */}
+        <div className="pointer-events-none absolute -top-32 left-1/2 h-64 w-[70%] -translate-x-1/2 rounded-full"
+          style={{ background: `radial-gradient(ellipse at center, ${detail.accentColor}28 0%, transparent 70%)`, filter: "blur(24px)" }} />
         {/* Accent top line */}
-        <div className="absolute inset-x-0 top-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${detail.accentColor}, transparent)` }} />
+        <div className="absolute inset-x-0 top-0 h-[1.5px]" style={{ background: `linear-gradient(90deg, transparent 5%, ${detail.accentColor}cc 40%, ${detail.accentColor} 50%, ${detail.accentColor}cc 60%, transparent 95%)` }} />
 
         {/* Two-column layout: image left | content right */}
         <div className="flex flex-col lg:flex-row" style={{ maxHeight: "92vh" }}>
@@ -323,35 +326,46 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
           </div>
 
           {/* ── Right: scrollable content ──────────────────────────────────── */}
-          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-6 md:p-8">
+          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-6 md:p-8"
+            style={{ background: `linear-gradient(160deg, rgba(${detail.accentRgb},0.04) 0%, transparent 40%)` }}>
             <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-6">
 
-              <motion.p variants={fadeUp} className="text-base leading-relaxed text-white">
+              <motion.p variants={fadeUp} className="text-base leading-relaxed text-white/90">
                 {copy.extendedDesc}
               </motion.p>
 
+              {/* Divider */}
+              <div className="h-px w-full" style={{ background: `linear-gradient(90deg, ${detail.accentColor}50, transparent)` }} />
+
               {/* Included + Impact */}
-              <motion.div variants={fadeUp} className="grid grid-cols-2 gap-5">
+              <motion.div variants={fadeUp} className="grid grid-cols-2 gap-6">
                 <div>
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-2">{labels.included}</div>
-                  <div className="space-y-1.5">
+                  <div className="mb-3 flex items-center gap-2">
+                    <span className="h-1 w-4 rounded-full" style={{ background: detail.accentColor }} />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: detail.accentColor }}>{labels.included}</span>
+                  </div>
+                  <div className="space-y-2">
                     {copy.includes.map((item) => (
-                      <div key={item} className="flex items-start gap-1.5">
+                      <div key={item} className="flex items-start gap-2">
                         <span className="flex-none mt-0.5"><CheckIcon color={detail.accentColor}/></span>
-                        <span className="text-[12px] text-white leading-tight">{item}</span>
+                        <span className="text-[13px] text-white/85 leading-tight">{item}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <div>
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-2">{labels.impact}</div>
-                    <div className="grid grid-cols-1 gap-1.5">
+                    <div className="mb-3 flex items-center gap-2">
+                      <span className="h-1 w-4 rounded-full" style={{ background: detail.accentColor }} />
+                      <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: detail.accentColor }}>{labels.impact}</span>
+                    </div>
+                    <div className="grid grid-cols-1 gap-2">
                       {copy.metrics.map((m) => (
-                        <div key={m.label} className="rounded-lg border border-white/[0.07] bg-white/[0.03] px-2.5 py-1.5 flex items-center gap-2">
-                          <span className="text-sm font-bold leading-none" style={{ color: detail.accentColor }}>{m.value}</span>
-                          <span className="text-[10px] text-white">{m.label}</span>
+                        <div key={m.label} className="rounded-xl border px-3 py-2.5 flex items-center gap-3"
+                          style={{ borderColor: detail.accentColor + "30", background: detail.accentColor + "0d" }}>
+                          <span className="text-base font-black leading-none tabular-nums" style={{ color: detail.accentColor }}>{m.value}</span>
+                          <span className="text-[11px] font-medium text-white/70">{m.label}</span>
                         </div>
                       ))}
                     </div>
@@ -359,12 +373,15 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
 
                   {copy.features && (
                     <div>
-                      <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-2">{labels.features}</div>
-                      <div className="space-y-1">
+                      <div className="mb-2 flex items-center gap-2">
+                        <span className="h-1 w-4 rounded-full" style={{ background: detail.accentColor }} />
+                        <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: detail.accentColor }}>{labels.features}</span>
+                      </div>
+                      <div className="space-y-1.5">
                         {copy.features.map((f) => (
-                          <div key={f} className="flex items-center gap-1.5">
-                            <span className="h-1.5 w-1.5 rounded-full flex-none" style={{ background: detail.accentColor }}/>
-                            <span className="text-[11px] text-white">{f}</span>
+                          <div key={f} className="flex items-center gap-2">
+                            <span className="h-1.5 w-1.5 rounded-full flex-none" style={{ background: detail.accentColor, boxShadow: `0 0 5px ${detail.accentColor}` }}/>
+                            <span className="text-[12px] text-white/80">{f}</span>
                           </div>
                         ))}
                       </div>
@@ -372,12 +389,15 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
                   )}
                   {copy.deliverables && (
                     <div>
-                      <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-2">{labels.deliver}</div>
-                      <div className="space-y-1">
+                      <div className="mb-2 flex items-center gap-2">
+                        <span className="h-1 w-4 rounded-full" style={{ background: detail.accentColor }} />
+                        <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: detail.accentColor }}>{labels.deliver}</span>
+                      </div>
+                      <div className="space-y-1.5">
                         {copy.deliverables.map((d) => (
-                          <div key={d} className="flex items-center gap-1.5">
+                          <div key={d} className="flex items-center gap-2">
                             <CheckIcon color={detail.accentColor}/>
-                            <span className="text-[11px] text-white">{d}</span>
+                            <span className="text-[12px] text-white/80">{d}</span>
                           </div>
                         ))}
                       </div>
@@ -385,10 +405,14 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
                   )}
                   {copy.attributes && (
                     <div>
-                      <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-2">{labels.aesthetic}</div>
+                      <div className="mb-2 flex items-center gap-2">
+                        <span className="h-1 w-4 rounded-full" style={{ background: detail.accentColor }} />
+                        <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: detail.accentColor }}>{labels.aesthetic}</span>
+                      </div>
                       <div className="flex flex-wrap gap-1.5">
                         {copy.attributes.map((a) => (
-                          <span key={a} className="text-[11px] text-white border border-white/[0.08] rounded-full px-2 py-0.5">{a}</span>
+                          <span key={a} className="text-[11px] text-white/80 border rounded-full px-2.5 py-0.5"
+                            style={{ borderColor: detail.accentColor + "35", background: detail.accentColor + "0d" }}>{a}</span>
                         ))}
                       </div>
                     </div>
@@ -396,16 +420,23 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
                 </div>
               </motion.div>
 
+              {/* Divider */}
+              <div className="h-px w-full" style={{ background: `linear-gradient(90deg, ${detail.accentColor}40, transparent)` }} />
+
               {/* Process flow */}
               {copy.process && (
                 <motion.div variants={fadeUp}>
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-2">{labels.arch}</div>
-                  <div className="flex flex-wrap items-center gap-1">
+                  <div className="mb-3 flex items-center gap-2">
+                    <span className="h-1 w-4 rounded-full" style={{ background: detail.accentColor }} />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: detail.accentColor }}>{labels.arch}</span>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-1.5">
                     {copy.process.map((step, i) => (
-                      <div key={step} className="flex items-center gap-1">
-                        <div className="rounded-lg border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-[11px] text-white">{step}</div>
+                      <div key={step} className="flex items-center gap-1.5">
+                        <div className="rounded-lg border px-3 py-1.5 text-[11px] font-medium text-white"
+                          style={{ borderColor: detail.accentColor + "35", background: detail.accentColor + "0d" }}>{step}</div>
                         {i < copy.process!.length - 1 && (
-                          <svg viewBox="0 0 16 16" fill="none" width="14" height="14" className="flex-none opacity-30">
+                          <svg viewBox="0 0 16 16" fill="none" width="14" height="14" className="flex-none opacity-50">
                             <path d="M3 8h10M9 4l4 4-4 4" stroke={detail.accentColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                           </svg>
                         )}
@@ -418,12 +449,15 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
               {/* Tech stack + Ideal for */}
               <motion.div variants={fadeUp} className="grid grid-cols-2 gap-4">
                 <div>
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-2">{labels.stack}</div>
+                  <div className="mb-3 flex items-center gap-2">
+                    <span className="h-1 w-4 rounded-full" style={{ background: detail.accentColor }} />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: detail.accentColor }}>{labels.stack}</span>
+                  </div>
                   <div className="flex flex-wrap gap-1.5">
                     {tags.map((tag) => (
                       <span key={tag}
-                        className="inline-flex items-center gap-1 rounded-full border border-white/[0.09] bg-white/[0.04] px-2 py-0.5 text-[10px] font-medium text-white">
-                        {TAG_ICONS[tag] && <span className="opacity-70">{TAG_ICONS[tag]}</span>}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.12] bg-white/[0.05] px-2.5 py-1 text-[11px] font-medium text-white">
+                        {TAG_ICONS[tag] && <span className="opacity-80">{TAG_ICONS[tag]}</span>}
                         {tag}
                       </span>
                     ))}
@@ -431,11 +465,14 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
                 </div>
                 {copy.idealFor && (
                   <div>
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-2">{labels.idealFor}</div>
+                    <div className="mb-3 flex items-center gap-2">
+                      <span className="h-1 w-4 rounded-full" style={{ background: detail.accentColor }} />
+                      <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: detail.accentColor }}>{labels.idealFor}</span>
+                    </div>
                     <div className="flex flex-wrap gap-1.5">
                       {copy.idealFor.map((item) => (
-                        <span key={item} className="rounded-full px-2 py-0.5 text-[10px] border"
-                          style={{ color: detail.accentColor, borderColor: detail.accentColor + "44", background: detail.accentColor + "11" }}>
+                        <span key={item} className="rounded-full px-2.5 py-1 text-[11px] font-medium border"
+                          style={{ color: detail.accentColor, borderColor: detail.accentColor + "50", background: detail.accentColor + "15" }}>
                           {item}
                         </span>
                       ))}
@@ -445,19 +482,22 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
               </motion.div>
 
               {/* CTA */}
-              <motion.div variants={fadeUp} className="pb-1">
+              <motion.div variants={fadeUp} className="pb-1 pt-2">
                 <button
                   type="button"
-                  className="group relative w-full overflow-hidden rounded-xl px-5 py-3 text-sm font-semibold text-white transition-all duration-300"
-                  style={{ background: `linear-gradient(135deg,${detail.accentColor}cc,${detail.accentColor})` }}
+                  className="group relative w-full overflow-hidden rounded-xl px-5 py-3.5 text-sm font-bold text-white transition-all duration-300"
+                  style={{
+                    background: `linear-gradient(135deg, rgba(${detail.accentRgb},0.85), rgba(${detail.accentRgb},1))`,
+                    boxShadow: `0 0 24px ${detail.accentColor}40, 0 4px 16px rgba(0,0,0,0.4)`,
+                  }}
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
                     {copy.cta}
-                    <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1">
+                    <svg viewBox="0 0 16 16" fill="none" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1">
                       <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </span>
-                  <div className="absolute inset-0 bg-white/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"/>
+                  <div className="absolute inset-0 bg-white/15 opacity-0 transition-opacity duration-300 group-hover:opacity-100"/>
                 </button>
               </motion.div>
 
