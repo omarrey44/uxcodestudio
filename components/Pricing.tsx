@@ -365,7 +365,7 @@ export default function Pricing() {
           backgroundSize: "36px 36px",
         }} />
 
-      <div className="container-x">
+      <div className="container-x relative z-10">
         <SectionHeader
           eyebrow={t.pricing.eyebrow}
           title={t.pricing.title}
