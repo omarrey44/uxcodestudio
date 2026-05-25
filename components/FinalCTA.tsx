@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { motion, useMotionValue, useTransform, type Variants, type TargetAndTransition } from "framer-motion";
+import { motion, useMotionValue, useTransform, useInView, type Variants, type TargetAndTransition } from "framer-motion";
 import MagneticButton from "./MagneticButton";
 import { useLanguage } from "@/lib/i18n";
 
 function ShimmerSpotlightCard({
-  children, className = "", shimmerDelay = 0, href, target, rel, variants, whileHover,
+  children, className = "", shimmerDelay = 0, href, target, rel, variants, whileHover, visible = true,
 }: {
-  children: React.ReactNode; className?: string; shimmerDelay?: number;
+  children: React.ReactNode; className?: string; shimmerDelay?: number; visible?: boolean;
   href?: string; target?: string; rel?: string; variants?: Variants; whileHover?: TargetAndTransition;
 }) {
   const cardRef = useRef<HTMLElement>(null);
@@ -36,7 +36,7 @@ function ShimmerSpotlightCard({
       <motion.div
         className="pointer-events-none absolute top-0 bottom-0 w-16 -skew-x-12"
         style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.055), transparent)" }}
-        animate={{ x: [-64, 500] }}
+        animate={visible ? { x: [-64, 500] } : { x: -64 }}
         transition={{ duration: 3, repeat: Infinity, ease: "linear", delay: shimmerDelay, repeatDelay: 2 }}
       />
       {children}
@@ -60,6 +60,8 @@ function ShimmerSpotlightCard({
 
 export default function FinalCTA() {
   const { t } = useLanguage();
+  const sectionRef = useRef<HTMLElement>(null);
+  const sectionVisible = useInView(sectionRef, { margin: "300px" });
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
@@ -87,7 +89,7 @@ export default function FinalCTA() {
   }
 
   return (
-    <section id="contact" className="section-deep relative overflow-hidden py-40 md:py-56">
+    <section id="contact" ref={sectionRef} className="section-deep relative overflow-hidden py-40 md:py-56">
       <div className="absolute inset-0 -z-10">
         <div className="aurora-layer opacity-90" />
         <div className="absolute inset-0 grid-bg opacity-30 [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]" />
@@ -227,6 +229,7 @@ export default function FinalCTA() {
                   variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
                   whileHover={{ y: -3 }}
                   shimmerDelay={i * 0.6}
+                  visible={sectionVisible}
                   className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-left transition-colors hover:border-white/20 hover:bg-white/[0.08]"
                 >
                   <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/30 bg-black/40 text-base text-white transition-colors group-hover:border-accent-cyan/60 group-hover:bg-accent-cyan/20 group-hover:text-accent-cyan">
@@ -245,6 +248,7 @@ export default function FinalCTA() {
               <ShimmerSpotlightCard
                 variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
                 shimmerDelay={1.8}
+                visible={sectionVisible}
                 className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4"
               >
                 <div className="flex items-center gap-3">

@@ -66,7 +66,7 @@ export default function Navbar() {
             <Image src="/logo.png" width={200} height={60} alt="UXCODESTUDIO" priority className="w-[120px] h-auto" />
           </a>
           <div className={cn(
-            "flex items-center gap-2 rounded-2xl px-3 py-2 transition-all duration-500 backdrop-blur-md",
+            "flex items-center gap-2 rounded-2xl px-3 py-2 transition-all duration-500 backdrop-blur-sm",
             scrolled
               ? "glass-strong shadow-[0_8px_40px_-16px_rgba(79,110,247,0.5)]"
               : "border border-white/[0.08] bg-[#050508]/70"
@@ -90,7 +90,7 @@ export default function Navbar() {
             <Image src="/logo.png" width={200} height={60} alt="UXCODESTUDIO" priority />
           </a>
           <div className={cn(
-            "flex items-center gap-4 rounded-2xl px-5 py-3 transition-all duration-500 backdrop-blur-md",
+            "flex items-center gap-4 rounded-2xl px-5 py-3 transition-all duration-500 backdrop-blur-sm",
             scrolled
               ? "glass-strong shadow-[0_10px_60px_-20px_rgba(79,110,247,0.5)]"
               : "border border-white/[0.08] bg-[#050508]/70"
