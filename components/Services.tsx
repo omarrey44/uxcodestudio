@@ -277,7 +277,7 @@ function ExamplesGallery({ idx, lang }: { idx: number; lang: "en" | "es" }) {
             loading="lazy"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-          <div className="absolute bottom-1.5 left-2 text-[9px] font-medium text-white/70 leading-none">
+          <div className="absolute bottom-1.5 left-2 text-[9px] font-medium text-white leading-none">
             {lang === "es" ? ex.captionEs : ex.caption}
           </div>
         </div>
@@ -379,7 +379,7 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
           <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-5 md:p-6">
             <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-5">
 
-              <motion.p variants={fadeUp} className="text-sm leading-relaxed text-white/80">
+              <motion.p variants={fadeUp} className="text-sm leading-relaxed text-white">
                 {copy.extendedDesc}
               </motion.p>
 
@@ -397,7 +397,7 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
                     {copy.includes.map((item) => (
                       <div key={item} className="flex items-start gap-1.5">
                         <span className="flex-none mt-0.5"><CheckIcon color={detail.accentColor}/></span>
-                        <span className="text-[12px] text-white/70 leading-tight">{item}</span>
+                        <span className="text-[12px] text-white leading-tight">{item}</span>
                       </div>
                     ))}
                   </div>
@@ -410,7 +410,7 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
                       {copy.metrics.map((m) => (
                         <div key={m.label} className="rounded-lg border border-white/[0.07] bg-white/[0.03] px-2.5 py-1.5 flex items-center gap-2">
                           <span className="text-sm font-bold leading-none" style={{ color: detail.accentColor }}>{m.value}</span>
-                          <span className="text-[10px] text-white/60">{m.label}</span>
+                          <span className="text-[10px] text-white">{m.label}</span>
                         </div>
                       ))}
                     </div>
@@ -423,7 +423,7 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
                         {copy.features.map((f) => (
                           <div key={f} className="flex items-center gap-1.5">
                             <span className="h-1.5 w-1.5 rounded-full flex-none" style={{ background: detail.accentColor }}/>
-                            <span className="text-[11px] text-white/70">{f}</span>
+                            <span className="text-[11px] text-white">{f}</span>
                           </div>
                         ))}
                       </div>
@@ -436,7 +436,7 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
                         {copy.deliverables.map((d) => (
                           <div key={d} className="flex items-center gap-1.5">
                             <CheckIcon color={detail.accentColor}/>
-                            <span className="text-[11px] text-white/70">{d}</span>
+                            <span className="text-[11px] text-white">{d}</span>
                           </div>
                         ))}
                       </div>
@@ -447,7 +447,7 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
                       <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-2">{labels.aesthetic}</div>
                       <div className="flex flex-wrap gap-1.5">
                         {copy.attributes.map((a) => (
-                          <span key={a} className="text-[11px] text-white/70 border border-white/[0.08] rounded-full px-2 py-0.5">{a}</span>
+                          <span key={a} className="text-[11px] text-white border border-white/[0.08] rounded-full px-2 py-0.5">{a}</span>
                         ))}
                       </div>
                     </div>
@@ -462,7 +462,7 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
                   <div className="flex flex-wrap items-center gap-1">
                     {copy.process.map((step, i) => (
                       <div key={step} className="flex items-center gap-1">
-                        <div className="rounded-lg border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-[11px] text-white/70">{step}</div>
+                        <div className="rounded-lg border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-[11px] text-white">{step}</div>
                         {i < copy.process!.length - 1 && (
                           <svg viewBox="0 0 16 16" fill="none" width="14" height="14" className="flex-none opacity-30">
                             <path d="M3 8h10M9 4l4 4-4 4" stroke={detail.accentColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -481,7 +481,7 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
                   <div className="flex flex-wrap gap-1.5">
                     {tags.map((tag) => (
                       <span key={tag}
-                        className="inline-flex items-center gap-1 rounded-full border border-white/[0.09] bg-white/[0.04] px-2 py-0.5 text-[10px] font-medium text-white/70">
+                        className="inline-flex items-center gap-1 rounded-full border border-white/[0.09] bg-white/[0.04] px-2 py-0.5 text-[10px] font-medium text-white">
                         {TAG_ICONS[tag] && <span className="opacity-70">{TAG_ICONS[tag]}</span>}
                         {tag}
                       </span>

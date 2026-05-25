@@ -203,7 +203,7 @@ export default function HeroScene({ eyeColor = "#00d4ff", uxOn = false }: { eyeC
 
         <Suspense fallback={<Loader />}>
           <Float speed={0.9} rotationIntensity={0.04} floatIntensity={0.30}>
-            <OrbitRobot position={[0, -0.85, 0]} scale={1.75} ledColor={eyeColor} uxOn={uxOn} />
+            <OrbitRobot position={[0, -1.15, 0]} scale={1.75} ledColor={eyeColor} uxOn={uxOn} />
           </Float>
 
           <Environment resolution={256}>

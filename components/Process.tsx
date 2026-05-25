@@ -106,7 +106,7 @@ export default function Process() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: 0.18 }}
-                className="mt-5 text-sm leading-relaxed text-white/50"
+                className="mt-5 text-sm leading-relaxed text-white"
               >
                 {t.process.sub}
               </motion.p>
@@ -124,7 +124,7 @@ export default function Process() {
                     <div className="mt-0.5 shrink-0 text-white/30">{PILL_ICONS[i]}</div>
                     <div>
                       <div className="text-sm font-semibold tracking-tight text-white">{label}</div>
-                      <div className="mt-0.5 text-xs leading-relaxed text-white/40">{t.process.pillDescs[i]}</div>
+                      <div className="mt-0.5 text-xs leading-relaxed text-white">{t.process.pillDescs[i]}</div>
                     </div>
                   </div>
                 ))}
@@ -201,7 +201,7 @@ export default function Process() {
 
                     {/* Text side */}
                     <div>
-                      <p className="text-sm leading-relaxed text-white/50">{s.body}</p>
+                      <p className="text-sm leading-relaxed text-white">{s.body}</p>
 
                       {/* Metrics inline */}
                       <div className="mt-4 flex items-start divide-x divide-white/[0.06]">
@@ -220,7 +220,7 @@ export default function Process() {
                           {s.output.map((o) => (
                             <div key={o} className="flex items-center gap-2">
                               <span className="h-px w-3 shrink-0 bg-accent-cyan/35" />
-                              <span className="text-[12px] leading-snug text-white/45">{o}</span>
+                              <span className="text-[12px] leading-snug text-white">{o}</span>
                             </div>
                           ))}
                         </div>
