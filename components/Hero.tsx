@@ -235,7 +235,7 @@ export default function Hero() {
 
           <h1
             ref={headlineRef}
-            className="hero-headline font-hero font-black uppercase text-left"
+            className="hero-headline font-hero font-black uppercase text-center md:text-left"
             style={{ fontSize: "clamp(2.2rem, 5.6vw, 6rem)", lineHeight: "0.93", letterSpacing: "-0.01em" }}
           >
             <span className="block [clip-path:inset(0_-9999px)]">
@@ -245,13 +245,13 @@ export default function Hero() {
               <span className="word inline-block" style={{ color: "#60a5fa" }}>{t.hero.headlinePart2}</span>
             </span>
             <span className="block [clip-path:inset(0_-9999px)]">
-              <span className="word block text-left">
+              <span className="word block text-center md:text-left">
                 <RotatingWord words={t.hero.rotating} />
               </span>
             </span>
           </h1>
 
-          <p className="hero-sub mt-8 min-h-[5rem] max-w-xl text-balance text-base text-muted-soft md:text-lg">
+          <p className="hero-sub mt-8 min-h-[5rem] max-w-xl text-balance text-base text-muted-soft md:text-lg text-center md:text-left">
             {scrambledHero}
           </p>
 
