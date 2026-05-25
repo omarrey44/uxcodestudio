@@ -42,6 +42,22 @@ export default function FinalCTA() {
 
       <div className="container-x relative">
         <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-16 text-center"
+        >
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-white/70">
+            <span className="h-1 w-1 rounded-full bg-accent-cyan" />
+            Contact
+          </div>
+          <h2 className="font-display text-h2 font-bold text-white">
+            {`Let's `}<span className="text-gradient-accent">Build</span>
+          </h2>
+        </motion.div>
+
+        <motion.div
           initial={{ opacity: 0, y: 60, scale: 0.96 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: "-80px" }}

@@ -1,9 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useSpring } from "framer-motion";
 import { useLanguage } from "@/lib/i18n";
-
-/* ── Icons ──────────────────────────────────────────────────────────────────── */
 
 const STEP_ICONS = [
   <svg key="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>,
@@ -19,46 +18,16 @@ const PILL_ICONS = [
   <svg key="zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>,
 ];
 
-/* ── Step images ────────────────────────────────────────────────────────────── */
-
-const STEP_IMAGES = [
-  // 01 Discover — user research / sticky notes workshop
-  "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&q=80&fit=crop&auto=format",
-  // 02 Define — strategy whiteboard / wireframing
-  "https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?w=800&q=80&fit=crop&auto=format",
-  // 03 Design — UI design / Figma on screen
-  "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=800&q=80&fit=crop&auto=format",
-  // 04 Build — code editor / development
-  "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&q=80&fit=crop&auto=format",
-  // 05 Launch — analytics dashboard / growth data
-  "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80&fit=crop&auto=format",
-];
-
-function StepImage({ src, alt }: { src: string; alt: string }) {
-  return (
-    <div className="absolute inset-0">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt={alt} className="h-full w-full object-cover opacity-75" loading="lazy" />
-      {/* Dark overlay to match site's dark aesthetic */}
-      <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(7,7,16,0.55) 0%, rgba(7,7,16,0.2) 50%, rgba(7,7,16,0.65) 100%)" }} />
-      {/* Bottom fade */}
-      <div className="absolute inset-x-0 bottom-0 h-1/3" style={{ background: "linear-gradient(to top, rgba(7,7,16,0.8), transparent)" }} />
-    </div>
-  );
-}
-
-const STEP_MOCKS = [
-  <StepImage key={0} src={STEP_IMAGES[0]} alt="User research and discovery" />,
-  <StepImage key={1} src={STEP_IMAGES[1]} alt="Strategy and wireframing" />,
-  <StepImage key={2} src={STEP_IMAGES[2]} alt="UI design and prototyping" />,
-  <StepImage key={3} src={STEP_IMAGES[3]} alt="Development and engineering" />,
-  <StepImage key={4} src={STEP_IMAGES[4]} alt="Launch and analytics" />,
-];
-
-/* ── Component ──────────────────────────────────────────────────────────────── */
-
 export default function Process() {
   const { t } = useLanguage();
+  const stepsRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: stepsRef,
+    offset: ["start 0.85", "end 0.3"],
+  });
+
+  const lineScaleY = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 });
 
   return (
     <section id="process" className="section-deep section-separator relative py-24 md:py-32">
@@ -72,7 +41,7 @@ export default function Process() {
       <div className="container-x">
         <div className="grid grid-cols-1 gap-20 lg:grid-cols-[1fr_2.2fr] lg:gap-16">
 
-          {/* ── Left column ─────────────────────────────────────────────────── */}
+          {/* LEFT */}
           <motion.div
             className="flex flex-col justify-between"
             initial="hidden"
@@ -91,8 +60,7 @@ export default function Process() {
 
               <motion.h2
                 variants={{ hidden: { clipPath: "inset(100% 0 0% 0)" }, visible: { clipPath: "inset(0% 0 0% 0)", transition: { duration: 1.0, ease: [0.22, 1, 0.36, 1] } } }}
-                className="font-display font-bold tracking-tighter text-white"
-                style={{ fontSize: "clamp(2.2rem, 3vw, 3rem)", lineHeight: "1.05" }}
+                className="font-display font-bold tracking-tighter text-white text-h2"
               >
                 {t.process.headlinePart1}{" "}
                 <em className="display-em">{t.process.headlineEmphasis}</em>{" "}
@@ -103,7 +71,7 @@ export default function Process() {
 
               <motion.p
                 variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7 } } }}
-                className="mt-5 text-sm leading-relaxed text-white"
+                className="mt-5 text-sm leading-relaxed text-white/70"
               >
                 {t.process.sub}
               </motion.p>
@@ -117,14 +85,13 @@ export default function Process() {
                     <div className="mt-0.5 shrink-0 text-white/30">{PILL_ICONS[i]}</div>
                     <div>
                       <div className="text-sm font-semibold tracking-tight text-white">{label}</div>
-                      <div className="mt-0.5 text-xs leading-relaxed text-white">{t.process.pillDescs[i]}</div>
+                      <div className="mt-0.5 text-xs leading-relaxed text-white/50">{t.process.pillDescs[i]}</div>
                     </div>
                   </div>
                 ))}
               </motion.div>
             </div>
 
-            {/* Bottom card — glassmorphism */}
             <motion.div
               variants={{ hidden: { opacity: 0, y: 18 }, visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 280, damping: 26 } } }}
               className="mt-12 overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.025] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.07)] backdrop-blur-sm"
@@ -154,81 +121,69 @@ export default function Process() {
             </motion.div>
           </motion.div>
 
-          {/* ── Right column — vertical timeline ─────────────────────────── */}
-          <motion.div
-            className="space-y-0"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-40px" }}
-            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
-          >
-            {t.process.steps.map((s, i) => (
-              <motion.div
-                key={s.n}
-                variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } } }}
-                className="relative flex gap-5"
-              >
-                {/* Timeline spine */}
-                <div className="flex flex-col items-center">
+          {/* RIGHT — scroll-fill timeline */}
+          <div ref={stepsRef} className="relative">
+            {/* Background rail */}
+            <div className="absolute left-[17px] top-5 bottom-5 w-px bg-white/[0.06]" />
+            {/* Animated fill */}
+            <motion.div
+              className="absolute left-[17px] top-5 bottom-5 w-px origin-top bg-gradient-to-b from-accent-cyan via-accent-blue to-accent-cyan/20"
+              style={{ scaleY: lineScaleY }}
+            />
+
+            <motion.div
+              className="space-y-0"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-40px" }}
+              variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
+            >
+              {t.process.steps.map((s, i) => (
+                <motion.div
+                  key={s.n}
+                  variants={{ hidden: { opacity: 0, x: 16 }, visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+                  className={`relative flex gap-5 ${i < t.process.steps.length - 1 ? "pb-12" : "pb-0"}`}
+                >
                   {/* Step bubble */}
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-accent-cyan/30 bg-accent-cyan/[0.07] text-[11px] font-bold tabular-nums text-accent-cyan">
+                  <div className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-accent-cyan/30 bg-[#050508] text-[11px] font-bold tabular-nums text-accent-cyan">
                     {s.n}
                   </div>
-                  {/* Connecting line */}
-                  {i < t.process.steps.length - 1 && (
-                    <div className="mt-2 w-px flex-1 bg-gradient-to-b from-accent-cyan/25 via-white/[0.05] to-transparent" style={{ minHeight: "2rem" }} />
-                  )}
-                </div>
 
-                {/* Content */}
-                <div className={`flex-1 ${i < t.process.steps.length - 1 ? "pb-10" : "pb-0"}`}>
-                  {/* Header */}
-                  <div className="mb-3 flex items-center gap-2.5">
-                    <span className="text-[10px] font-medium uppercase tracking-[0.26em] text-accent-cyan/70">{s.tag}</span>
-                    <span className="text-white/25">{STEP_ICONS[i]}</span>
-                    <h3 className="font-display text-[17px] font-bold tracking-tight text-white">{s.title}</h3>
-                  </div>
+                  {/* Content */}
+                  <div className="flex-1 pt-1">
+                    <div className="mb-3 flex items-center gap-2.5">
+                      <span className="text-[10px] font-medium uppercase tracking-[0.26em] text-accent-cyan/70">{s.tag}</span>
+                      <span className="text-white/25">{STEP_ICONS[i]}</span>
+                      <h3 className="font-display text-[17px] font-bold tracking-tight text-white">{s.title}</h3>
+                    </div>
 
-                  {/* Body + image grid */}
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_40%]">
+                    <p className="text-sm leading-relaxed text-white/60">{s.body}</p>
 
-                    {/* Text side */}
-                    <div>
-                      <p className="text-sm leading-relaxed text-white">{s.body}</p>
+                    <div className="mt-4 flex items-start divide-x divide-white/[0.06]">
+                      {s.metrics.map((m) => (
+                        <div key={m.label} className="px-4 first:pl-0 last:pr-0">
+                          <div className="text-sm font-bold tracking-tight text-white">{m.value}</div>
+                          <div className="mt-0.5 whitespace-nowrap text-[9px] text-white/30">{m.label}</div>
+                        </div>
+                      ))}
+                    </div>
 
-                      {/* Metrics inline */}
-                      <div className="mt-4 flex items-start divide-x divide-white/[0.06]">
-                        {s.metrics.map((m) => (
-                          <div key={m.label} className="px-4 first:pl-0 last:pr-0">
-                            <div className="text-sm font-bold tracking-tight text-white">{m.value}</div>
-                            <div className="mt-0.5 whitespace-nowrap text-[9px] text-white/30">{m.label}</div>
+                    <div className="mt-4 border-l-2 border-accent-cyan/20 pl-3.5">
+                      <div className="mb-1.5 text-[9px] font-semibold uppercase tracking-[0.32em] text-white/25">Output</div>
+                      <div className="space-y-1.5">
+                        {s.output.map((o) => (
+                          <div key={o} className="flex items-center gap-2">
+                            <span className="h-px w-3 shrink-0 bg-accent-cyan/35" />
+                            <span className="text-[12px] leading-snug text-white/70">{o}</span>
                           </div>
                         ))}
                       </div>
-
-                      {/* Output */}
-                      <div className="mt-4 border-l-2 border-accent-cyan/20 pl-3.5">
-                        <div className="mb-1.5 text-[9px] font-semibold uppercase tracking-[0.32em] text-white/25">Output</div>
-                        <div className="space-y-1.5">
-                          {s.output.map((o) => (
-                            <div key={o} className="flex items-center gap-2">
-                              <span className="h-px w-3 shrink-0 bg-accent-cyan/35" />
-                              <span className="text-[12px] leading-snug text-white">{o}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Image */}
-                    <div className="relative aspect-[16/9] overflow-hidden rounded-xl border border-white/[0.06] bg-[#070710]">
-                      {STEP_MOCKS[i]}
                     </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
 
         </div>
       </div>

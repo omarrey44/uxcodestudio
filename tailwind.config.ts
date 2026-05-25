@@ -67,7 +67,7 @@ const config: Config = {
       },
       fontSize: {
         display: ["clamp(3rem, 6vw, 5.5rem)", { lineHeight: "0.95", letterSpacing: "-0.02em", fontWeight: "800" }],
-        h2: ["clamp(2rem, 4vw, 3.5rem)", { lineHeight: "1.05", letterSpacing: "-0.015em" }],
+        h2: ["clamp(2.8rem, 5.5vw, 5rem)", { lineHeight: "1.0", letterSpacing: "-0.02em" }],
         h3: ["clamp(1.25rem, 2vw, 1.75rem)", { lineHeight: "1.1" }],
       },
     },
