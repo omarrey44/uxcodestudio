@@ -60,5 +60,10 @@ export default function MagneticButton({
     </motion.div>
   );
 
-  return href ? <a href={href}>{inner}</a> : inner;
+  if (href) return <a href={href}>{inner}</a>;
+  return (
+    <div role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onClick?.(); }}>
+      {inner}
+    </div>
+  );
 }

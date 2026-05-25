@@ -125,7 +125,7 @@ export default function Testimonials() {
           animate={{ x: [0, 40, -20, 0], y: [0, -30, 18, 0] }}
           transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
           className="absolute -top-24 -left-16 h-[560px] w-[680px] rounded-full"
-          style={{ background: "radial-gradient(ellipse at center, rgba(99,102,241,0.10) 0%, transparent 68%)", filter: "blur(90px)", willChange: "transform" }}
+          style={{ background: "radial-gradient(ellipse at center, rgba(99,102,241,0.10) 0%, transparent 68%)", filter: "blur(55px)" }}
         />
 
         {/* Aurora blob — bottom right, cyan, slow */}
@@ -133,7 +133,7 @@ export default function Testimonials() {
           animate={{ x: [0, -50, 28, 0], y: [0, 35, -20, 0] }}
           transition={{ duration: 34, repeat: Infinity, ease: "easeInOut" }}
           className="absolute -bottom-20 -right-20 h-[500px] w-[620px] rounded-full"
-          style={{ background: "radial-gradient(ellipse at center, rgba(6,182,212,0.08) 0%, transparent 70%)", filter: "blur(90px)", willChange: "transform" }}
+          style={{ background: "radial-gradient(ellipse at center, rgba(6,182,212,0.08) 0%, transparent 70%)", filter: "blur(55px)" }}
         />
 
         {/* Center ambient — barely visible, ties both sides */}
@@ -141,7 +141,7 @@ export default function Testimonials() {
           animate={{ scale: [1, 1.08, 1], opacity: [0.4, 0.7, 0.4] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[600px] rounded-full"
-          style={{ background: "radial-gradient(ellipse at center, rgba(79,70,229,0.06) 0%, transparent 70%)", filter: "blur(80px)", willChange: "transform" }}
+          style={{ background: "radial-gradient(ellipse at center, rgba(79,70,229,0.06) 0%, transparent 70%)", filter: "blur(50px)" }}
         />
 
         {/* Subtle dot grid */}

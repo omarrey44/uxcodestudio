@@ -315,6 +315,7 @@ function FloatingDashboard({ eyeColor, uxOn, setUxOn }: {
               {uxOn ? "ONLINE" : "OFFLINE"}
             </span>
             <button
+              aria-label={uxOn ? "Power off robot" : "Power on robot"}
               onClick={() => setUxOn((v) => !v)}
               style={{
                 display: "flex", alignItems: "center",

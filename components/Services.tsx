@@ -312,6 +312,7 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
             {/* Close button */}
             <button
               type="button"
+              aria-label="Close"
               onClick={onClose}
               className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.15] bg-black/50 text-white transition-colors hover:bg-white/[0.12]"
             >
@@ -498,6 +499,9 @@ function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, g
         opacity: isDimmed ? 0.38 : 1,
         scale: isDimmed ? 0.985 : 1,
       }}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onClick(); }}
       className={`group relative flex flex-col overflow-hidden rounded-2xl border bg-[#09090f] transition-colors duration-300 cursor-pointer
         ${isActive ? "border-white/[0.22]" : "border-white/[0.08] hover:border-white/[0.15]"}`}
       style={isActive ? { boxShadow: `0 0 0 1px ${detail.accentColor}44, 0 8px 32px ${detail.accentColor}22` } : {}}

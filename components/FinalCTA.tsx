@@ -1,9 +1,62 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef } from "react";
+import { motion, useMotionValue, useTransform, type Variants, type TargetAndTransition } from "framer-motion";
 import MagneticButton from "./MagneticButton";
 import { useLanguage } from "@/lib/i18n";
+
+function ShimmerSpotlightCard({
+  children, className = "", shimmerDelay = 0, href, target, rel, variants, whileHover,
+}: {
+  children: React.ReactNode; className?: string; shimmerDelay?: number;
+  href?: string; target?: string; rel?: string; variants?: Variants; whileHover?: TargetAndTransition;
+}) {
+  const cardRef = useRef<HTMLElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const spotlightOpacity = useMotionValue(0);
+  const spotlightBg = useTransform(
+    [mouseX, mouseY],
+    ([x, y]: number[]) =>
+      `radial-gradient(160px circle at ${x}px ${y}px, rgba(0,212,255,0.22), transparent 70%)`
+  );
+  const handlers = {
+    onMouseMove: (e: React.MouseEvent) => {
+      const rect = cardRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      mouseX.set(e.clientX - rect.left);
+      mouseY.set(e.clientY - rect.top);
+    },
+    onMouseEnter: () => spotlightOpacity.set(1),
+    onMouseLeave: () => spotlightOpacity.set(0),
+  };
+  const inner = (
+    <>
+      <motion.div className="pointer-events-none absolute -inset-px rounded-2xl" style={{ background: spotlightBg, opacity: spotlightOpacity }} />
+      <motion.div
+        className="pointer-events-none absolute top-0 bottom-0 w-16 -skew-x-12"
+        style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.055), transparent)" }}
+        animate={{ x: [-64, 500] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "linear", delay: shimmerDelay, repeatDelay: 2 }}
+      />
+      {children}
+    </>
+  );
+  if (href) {
+    return (
+      <motion.a ref={cardRef as React.Ref<HTMLAnchorElement>} href={href} target={target} rel={rel}
+        className={`relative overflow-hidden ${className}`} variants={variants} whileHover={whileHover} {...handlers}>
+        {inner}
+      </motion.a>
+    );
+  }
+  return (
+    <motion.div ref={cardRef as React.Ref<HTMLDivElement>}
+      className={`relative overflow-hidden ${className}`} variants={variants} whileHover={whileHover} {...handlers}>
+      {inner}
+    </motion.div>
+  );
+}
 
 export default function FinalCTA() {
   const { t } = useLanguage();
@@ -104,26 +157,39 @@ export default function FinalCTA() {
             {/* Contact form */}
             <form onSubmit={handleSubmit} className="mt-10 mx-auto max-w-xl text-left space-y-3">
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <input
-                  required
-                  type="text"
-                  placeholder={t.cta.formName}
-                  value={form.name}
-                  onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
-                  className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-muted-dim focus:border-accent-cyan/50 focus:outline-none transition-colors"
-                />
-                <input
-                  required
-                  type="email"
-                  placeholder={t.cta.formEmail}
-                  value={form.email}
-                  onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
-                  className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-muted-dim focus:border-accent-cyan/50 focus:outline-none transition-colors"
-                />
+                <div>
+                  <label htmlFor="contact-name" className="sr-only">{t.cta.formName}</label>
+                  <input
+                    id="contact-name"
+                    required
+                    type="text"
+                    autoComplete="name"
+                    placeholder={t.cta.formName}
+                    value={form.name}
+                    onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
+                    className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-muted-dim focus:border-accent-cyan/50 focus:outline-none transition-colors"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="contact-email" className="sr-only">{t.cta.formEmail}</label>
+                  <input
+                    id="contact-email"
+                    required
+                    type="email"
+                    autoComplete="email"
+                    placeholder={t.cta.formEmail}
+                    value={form.email}
+                    onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
+                    className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-muted-dim focus:border-accent-cyan/50 focus:outline-none transition-colors"
+                  />
+                </div>
               </div>
+              <label htmlFor="contact-message" className="sr-only">{t.cta.formMessage}</label>
               <textarea
+                id="contact-message"
                 required
                 rows={4}
+                autoComplete="off"
                 placeholder={t.cta.formMessage}
                 value={form.message}
                 onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))}
@@ -152,14 +218,15 @@ export default function FinalCTA() {
               viewport={{ once: true, margin: "-40px" }}
               variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07, delayChildren: 0.3 } } }}
             >
-              {t.cta.contactMethods.map((m) => (
-                <motion.a
+              {t.cta.contactMethods.map((m, i) => (
+                <ShimmerSpotlightCard
                   key={m.label}
                   href={m.href}
                   target={m.href.startsWith("http") ? "_blank" : undefined}
                   rel={m.href.startsWith("http") ? "noopener noreferrer" : undefined}
                   variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
                   whileHover={{ y: -3 }}
+                  shimmerDelay={i * 0.6}
                   className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-left transition-colors hover:border-white/20 hover:bg-white/[0.08]"
                 >
                   <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/30 bg-black/40 text-base text-white transition-colors group-hover:border-accent-cyan/60 group-hover:bg-accent-cyan/20 group-hover:text-accent-cyan">
@@ -171,12 +238,13 @@ export default function FinalCTA() {
                     <div className="text-[10px] text-muted-dim">{m.hint}</div>
                   </div>
                   <span className="shrink-0 text-muted-dim transition-transform group-hover:translate-x-1 group-hover:text-accent-cyan">→</span>
-                </motion.a>
+                </ShimmerSpotlightCard>
               ))}
 
               {/* Video call card — Zoom + Teams */}
-              <motion.div
+              <ShimmerSpotlightCard
                 variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+                shimmerDelay={1.8}
                 className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4"
               >
                 <div className="flex items-center gap-3">
@@ -214,7 +282,7 @@ export default function FinalCTA() {
                     Teams
                   </a>
                 </div>
-              </motion.div>
+              </ShimmerSpotlightCard>
             </motion.div>
           </div>
         </motion.div>

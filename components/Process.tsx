@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { motion, useScroll, useSpring, useMotionValue, useTransform } from "framer-motion";
 import { useLanguage } from "@/lib/i18n";
 
 const STEP_ICONS = [
@@ -17,6 +17,33 @@ const PILL_ICONS = [
   <svg key="users" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
   <svg key="zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>,
 ];
+
+function SpotlightStepCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const spotlightOpacity = useMotionValue(0);
+  const spotlightBg = useTransform(
+    [mouseX, mouseY],
+    ([x, y]: number[]) => `radial-gradient(160px circle at ${x}px ${y}px, rgba(139,92,246,0.18), transparent 70%)`
+  );
+  return (
+    <div ref={ref} className={`relative ${className}`}
+      onMouseMove={(e) => {
+        const rect = ref.current?.getBoundingClientRect();
+        if (!rect) return;
+        mouseX.set(e.clientX - rect.left);
+        mouseY.set(e.clientY - rect.top);
+      }}
+      onMouseEnter={() => spotlightOpacity.set(1)}
+      onMouseLeave={() => spotlightOpacity.set(0)}
+    >
+      <motion.div className="pointer-events-none absolute -inset-2 rounded-2xl"
+        style={{ background: spotlightBg, opacity: spotlightOpacity }} />
+      {children}
+    </div>
+  );
+}
 
 export default function Process() {
   const { t } = useLanguage();
@@ -133,7 +160,11 @@ export default function Process() {
             <motion.div
               className="absolute left-[21px] top-6 bottom-6 w-[2px] rounded-full origin-top bg-gradient-to-b from-accent-cyan via-accent-blue to-accent-violet"
               style={{ scaleY: lineScaleY, boxShadow: "0 0 8px rgba(0,212,255,0.6), 0 0 20px rgba(0,144,255,0.3)" }}
-            />
+            >
+              {/* A — traveling glow dot at fill tip */}
+              <div className="absolute bottom-0 left-1/2 h-3 w-3 translate-y-1/2 -translate-x-1/2 rounded-full bg-accent-cyan"
+                style={{ boxShadow: "0 0 8px 3px rgba(0,212,255,0.9), 0 0 20px 6px rgba(0,212,255,0.45)" }} />
+            </motion.div>
 
             <motion.div
               className="space-y-0"
@@ -156,8 +187,8 @@ export default function Process() {
                     {s.n}
                   </div>
 
-                  {/* Content */}
-                  <div className="flex-1 pt-1">
+                  {/* B — spotlight hover wrapper */}
+                  <SpotlightStepCard className="flex-1 pt-1">
                     <div className="mb-3 flex items-center gap-2.5">
                       <span className="text-[10px] font-medium uppercase tracking-[0.26em] text-accent-cyan/70">{s.tag}</span>
                       <span className="text-white/25">{STEP_ICONS[i]}</span>
@@ -178,15 +209,23 @@ export default function Process() {
                     <div className="mt-4 border-l-2 border-accent-cyan/20 pl-3.5">
                       <div className="mb-1.5 text-[9px] font-semibold uppercase tracking-[0.32em] text-white/25">Output</div>
                       <div className="space-y-1.5">
-                        {s.output.map((o) => (
+                        {s.output.map((o, oi) => (
                           <div key={o} className="flex items-center gap-2">
-                            <span className="h-px w-3 shrink-0 bg-accent-cyan/35" />
+                            {/* C — output line draw */}
+                            <motion.span
+                              className="h-px w-3 shrink-0 bg-accent-cyan/35"
+                              initial={{ scaleX: 0 }}
+                              whileInView={{ scaleX: 1 }}
+                              viewport={{ once: true, margin: "-20px" }}
+                              transition={{ duration: 0.4, ease: "easeOut", delay: oi * 0.08 }}
+                              style={{ originX: "left" }}
+                            />
                             <span className="text-[12px] leading-snug text-white/70">{o}</span>
                           </div>
                         ))}
                       </div>
                     </div>
-                  </div>
+                  </SpotlightStepCard>
                 </motion.div>
               ))}
             </motion.div>
