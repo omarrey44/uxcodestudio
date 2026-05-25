@@ -1,7 +1,6 @@
 "use client";
 
 import { Suspense, useRef, useMemo, useEffect, useState } from "react";
-import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   useGLTF,
@@ -109,11 +108,11 @@ function OrbitRobot({ ledColor = "#00d8ff", uxOn = false, ...props }: OrbitRobot
     });
   }, [ledColor]);
 
-  useFrame((state, delta) => {
-    const clock = state.clock;
+  const elapsedRef = useRef(0);
+  useFrame((_, delta) => {
     if (!group.current) return;
+    elapsedRef.current += delta;
 
-    // Parallax — only when robot is ON
     if (uxOn) {
       group.current.rotation.y = THREE.MathUtils.damp(
         group.current.rotation.y, pointer.x * 0.32, 4, delta
@@ -126,17 +125,14 @@ function OrbitRobot({ ledColor = "#00d8ff", uxOn = false, ...props }: OrbitRobot
       group.current.rotation.x = THREE.MathUtils.damp(group.current.rotation.x, 0, 3, delta);
     }
 
-    // uxOn=true → normal slow blink; uxOn=false → eyes off
-    const t = clock.getElapsedTime();
     let intensity: number;
     if (uxOn) {
-      const blinkCycle = t % 4.0;
+      const blinkCycle = elapsedRef.current % 4.0;
       intensity = blinkCycle > 3.85 ? 0.0 : 10.0;
     } else {
       intensity = 0.0;
     }
     ledMats.current.forEach((m) => { m.emissiveIntensity = intensity; });
-
   });
 
   return (
@@ -209,9 +205,6 @@ export default function HeroScene({ eyeColor = "#00d4ff", uxOn = false }: { eyeC
 
         </Suspense>
 
-        <EffectComposer enableNormalPass={false}>
-          <Bloom intensity={1.0} luminanceThreshold={0.75} luminanceSmoothing={0.2} />
-        </EffectComposer>
 
       </Canvas>
     </div>

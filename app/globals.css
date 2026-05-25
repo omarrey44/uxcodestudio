@@ -166,15 +166,14 @@ html.lenis body {
     z-index: 0;
   }
 
-  /* Skip GPU paint on off-screen sections — huge scroll perf win */
-  #services,
-  #work,
+  /* Skip GPU paint on far off-screen sections.
+     `auto N` = browser caches actual size after first render → no layout shift */
   #process,
   #pricing,
   #faq,
   #contact {
     content-visibility: auto;
-    contain-intrinsic-size: 0 800px;
+    contain-intrinsic-size: auto 1200px;
   }
 
   .section-separator {

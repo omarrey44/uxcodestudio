@@ -36,16 +36,19 @@ export default function CustomCursor() {
       trailRefs.current.forEach((t) => { if (t) t.style.opacity = "0"; });
     };
 
-    const bindZones = () => {
-      document.querySelectorAll("[data-custom-cursor-zone]").forEach((zone) => {
-        zone.addEventListener("mouseenter", showCursor);
-        zone.addEventListener("mouseleave", hideCursor);
-      });
+    // Event delegation — no MutationObserver, no querySelectorAll sweeps
+    const onDocMouseOver = (e: MouseEvent) => {
+      const zone = (e.target as Element).closest("[data-custom-cursor-zone]");
+      if (zone) showCursor();
     };
-
-    bindZones();
-    const zoneObserver = new MutationObserver(bindZones);
-    zoneObserver.observe(document.body, { childList: true, subtree: true });
+    const onDocMouseOut = (e: MouseEvent) => {
+      const from = e.target as Element;
+      const to = e.relatedTarget as Element | null;
+      const zone = from.closest("[data-custom-cursor-zone]");
+      if (zone && !zone.contains(to)) hideCursor();
+    };
+    document.addEventListener("mouseover", onDocMouseOver);
+    document.addEventListener("mouseout", onDocMouseOut);
 
     const animate = () => {
       const { x, y } = pos.current;
@@ -94,31 +97,27 @@ export default function CustomCursor() {
       cursor.style.borderColor = "#4f6ef7";
     };
 
-    const bindHoverables = () => {
-      document.querySelectorAll("[data-cursor-hover]").forEach((el) => {
-        el.addEventListener("mouseenter", onMouseEnterHoverable);
-        el.addEventListener("mouseleave", onMouseLeaveHoverable);
-      });
+    // Event delegation for hover-enlargement — no MutationObserver
+    const onDocMouseEnterHoverable = (e: MouseEvent) => {
+      if ((e.target as Element).closest("[data-cursor-hover]")) onMouseEnterHoverable();
     };
-
-    bindHoverables();
-    const observer = new MutationObserver(bindHoverables);
-    observer.observe(document.body, { childList: true, subtree: true });
+    const onDocMouseLeaveHoverable = (e: MouseEvent) => {
+      const from = e.target as Element;
+      const to = e.relatedTarget as Element | null;
+      const zone = from.closest("[data-cursor-hover]");
+      if (zone && !zone.contains(to)) onMouseLeaveHoverable();
+    };
+    document.addEventListener("mouseover", onDocMouseEnterHoverable);
+    document.addEventListener("mouseout", onDocMouseLeaveHoverable);
 
     document.addEventListener("mousemove", onMouseMove);
     rafId = requestAnimationFrame(animate);
 
     return () => {
-      observer.disconnect();
-      zoneObserver.disconnect();
-      document.querySelectorAll("[data-cursor-hover]").forEach((el) => {
-        el.removeEventListener("mouseenter", onMouseEnterHoverable);
-        el.removeEventListener("mouseleave", onMouseLeaveHoverable);
-      });
-      document.querySelectorAll("[data-custom-cursor-zone]").forEach((zone) => {
-        zone.removeEventListener("mouseenter", showCursor);
-        zone.removeEventListener("mouseleave", hideCursor);
-      });
+      document.removeEventListener("mouseover", onDocMouseOver);
+      document.removeEventListener("mouseout", onDocMouseOut);
+      document.removeEventListener("mouseover", onDocMouseEnterHoverable);
+      document.removeEventListener("mouseout", onDocMouseLeaveHoverable);
       document.removeEventListener("mousemove", onMouseMove);
       cancelAnimationFrame(rafId);
     };
