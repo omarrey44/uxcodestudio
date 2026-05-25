@@ -138,18 +138,18 @@ function OrbitRobot({ ledColor = "#00d8ff", uxOn = false, ...props }: OrbitRobot
       {/* UX text — toggles via switch in HeroScene wrapper */}
       <Text
         position={[0, 0.38, 0.82]}
-        fontSize={0.26}
-        letterSpacing={0.16}
+        fontSize={0.20}
+        letterSpacing={0.08}
         color={ledColor}
         anchorX="center"
         anchorY="middle"
-        fillOpacity={uxOn ? 0.55 : 0}
+        fillOpacity={uxOn ? 0.65 : 0}
         outlineColor={ledColor}
-        outlineOpacity={uxOn ? 0.15 : 0}
-        outlineWidth={0.008}
+        outlineOpacity={uxOn ? 0.18 : 0}
+        outlineWidth={0.006}
         renderOrder={999}
       >
-        UX
+        {`^‿^`}
       </Text>
     </group>
   );

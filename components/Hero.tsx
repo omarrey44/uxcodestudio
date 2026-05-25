@@ -112,6 +112,7 @@ export default function Hero() {
 
   const { t } = useLanguage();
   const scrambledHero = useTextScramble(t.hero.desc, 1600);
+  const activeColor = uxOn ? "#ffb700" : eyeColor;
 
   useEffect(() => {
     // SSR-safe — runs only on client
@@ -267,11 +268,11 @@ export default function Hero() {
         <div className="hero-scene relative lg:col-span-6">
           <div className="relative h-[480px] sm:h-auto sm:aspect-[4/5] w-full">
             <div className="absolute inset-0 h-full w-full">
-              <HeroScene eyeColor={eyeColor} uxOn={uxOn} />
+              <HeroScene eyeColor={activeColor} uxOn={uxOn} />
             </div>
 
             {/* Holographic floating cards */}
-            <FloatingDashboard eyeColor={eyeColor} uxOn={uxOn} setUxOn={setUxOn} />
+            <FloatingDashboard eyeColor={activeColor} uxOn={uxOn} setUxOn={setUxOn} />
           </div>
         </div>
       </div>
