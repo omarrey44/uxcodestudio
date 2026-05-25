@@ -331,192 +331,197 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
   const fadeUp  = { hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] as [number,number,number,number] } } };
 
   return (
+    /* Centered modal wrapper — fills viewport, flex centers the card */
     <motion.div
-      className="fixed inset-y-0 right-0 flex w-full md:w-[480px] flex-col"
+      className="fixed inset-0 flex items-center justify-center p-3 md:p-6"
       style={{ zIndex: 9001 }}
-      initial={{ x: "100%" }}
-      animate={{ x: 0 }}
-      exit={{ x: "100%" }}
-      transition={{ type: "spring", stiffness: 280, damping: 28, mass: 0.9 }}
+      initial={{ opacity: 0, scale: 0.96, y: 16 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.96, y: 16 }}
+      transition={{ type: "spring", stiffness: 340, damping: 32 }}
       onClick={(e) => e.stopPropagation()}
     >
-      {/* Glass panel — full viewport height, no overflow */}
-      <div className="flex h-full flex-col border-l border-white/[0.07] overflow-hidden"
-        style={{ background: "rgba(6,7,14,0.97)", backdropFilter: "blur(24px)" }}>
+      {/* Modal card */}
+      <div
+        className="relative w-full max-w-5xl overflow-hidden rounded-2xl md:rounded-3xl border border-white/[0.09]"
+        style={{ background: "rgba(6,7,14,0.98)", backdropFilter: "blur(28px)", maxHeight: "92vh" }}
+      >
+        {/* Accent top line */}
+        <div className="absolute inset-x-0 top-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${detail.accentColor}, transparent)` }} />
 
-        {/* Header — flex-none */}
-        <div className="relative z-20 flex-none flex items-center justify-between px-5 py-3 border-b border-white/[0.05]">
-          <div>
-            <span className="text-[10px] font-semibold uppercase tracking-[0.2em]"
-              style={{ color: detail.accentColor }}>{copy.eyebrow}</span>
-            <h2 className="text-base font-bold text-white leading-tight">{title}</h2>
+        {/* Two-column layout: image left | content right */}
+        <div className="flex flex-col lg:flex-row" style={{ maxHeight: "92vh" }}>
+
+          {/* ── Left: hero image (fixed, no scroll) ───────────────────────── */}
+          <div className="relative flex-none h-48 lg:h-auto lg:w-[340px]">
+            <ServicePanelHero idx={idx} detail={detail} />
+
+            {/* Title overlay at bottom of image */}
+            <div className="absolute inset-x-0 bottom-0 p-5 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.22em]"
+                style={{ color: detail.accentColor }}>{copy.eyebrow}</span>
+              <h2 className="mt-1 text-xl font-bold text-white leading-tight">{title}</h2>
+            </div>
+
+            {/* Close button */}
+            <button
+              type="button"
+              onClick={onClose}
+              className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.15] bg-black/50 text-white transition-colors hover:bg-white/[0.12]"
+            >
+              <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5">
+                <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+              </svg>
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-white/[0.06] text-white transition-all hover:bg-white/[0.12] hover:text-white border border-white/[0.08]"
-          >
-            <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5">
-              <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-            </svg>
-          </button>
-        </div>
 
-        {/* Hero visual — flex-none, fixed height */}
-        <div className="relative flex-none h-[155px]">
-          <ServicePanelHero idx={idx} detail={detail}/>
-          <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[#060712] to-transparent pointer-events-none"/>
-        </div>
+          {/* ── Right: scrollable content ──────────────────────────────────── */}
+          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-5 md:p-6">
+            <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-5">
 
-        {/* Body — flex-1 with scroll */}
-        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 pb-5 pt-3">
-          <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-5">
+              <motion.p variants={fadeUp} className="text-sm leading-relaxed text-white/80">
+                {copy.extendedDesc}
+              </motion.p>
 
-            <motion.p variants={fadeUp} className="text-sm leading-relaxed text-white">
-              {copy.extendedDesc}
-            </motion.p>
+              {/* Examples gallery */}
+              <motion.div variants={fadeUp}>
+                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-2">{labels.workExamples}</div>
+                <ExamplesGallery idx={idx} lang={lang} />
+              </motion.div>
 
-            {/* Examples gallery */}
-            <motion.div variants={fadeUp}>
-              <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-2">{labels.workExamples}</div>
-              <ExamplesGallery idx={idx} lang={lang} />
-            </motion.div>
-
-            {/* Two-column layout for Included + Impact */}
-            <motion.div variants={fadeUp} className="grid grid-cols-2 gap-4">
-              {/* Included */}
-              <div>
-                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-2">{labels.included}</div>
-                <div className="space-y-1.5">
-                  {copy.includes.map((item) => (
-                    <div key={item} className="flex items-start gap-1.5">
-                      <span className="flex-none mt-0.5"><CheckIcon color={detail.accentColor}/></span>
-                      <span className="text-[12px] text-white leading-tight">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Metrics + extra list */}
-              <div className="space-y-3">
+              {/* Included + Impact */}
+              <motion.div variants={fadeUp} className="grid grid-cols-2 gap-4">
                 <div>
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-2">{labels.impact}</div>
-                  <div className="grid grid-cols-1 gap-1.5">
-                    {copy.metrics.map((m) => (
-                      <div key={m.label} className="rounded-lg border border-white/[0.07] bg-white/[0.03] px-2.5 py-1.5 flex items-center gap-2">
-                        <span className="text-sm font-bold leading-none" style={{ color: detail.accentColor }}>{m.value}</span>
-                        <span className="text-[10px] text-white">{m.label}</span>
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-2">{labels.included}</div>
+                  <div className="space-y-1.5">
+                    {copy.includes.map((item) => (
+                      <div key={item} className="flex items-start gap-1.5">
+                        <span className="flex-none mt-0.5"><CheckIcon color={detail.accentColor}/></span>
+                        <span className="text-[12px] text-white/70 leading-tight">{item}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* Features / Deliverables / Attributes — whichever exists */}
-                {copy.features && (
+                <div className="space-y-3">
                   <div>
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-2">{labels.features}</div>
-                    <div className="space-y-1">
-                      {copy.features.map((f) => (
-                        <div key={f} className="flex items-center gap-1.5">
-                          <span className="h-1.5 w-1.5 rounded-full flex-none" style={{ background: detail.accentColor }}/>
-                          <span className="text-[11px] text-white">{f}</span>
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-2">{labels.impact}</div>
+                    <div className="grid grid-cols-1 gap-1.5">
+                      {copy.metrics.map((m) => (
+                        <div key={m.label} className="rounded-lg border border-white/[0.07] bg-white/[0.03] px-2.5 py-1.5 flex items-center gap-2">
+                          <span className="text-sm font-bold leading-none" style={{ color: detail.accentColor }}>{m.value}</span>
+                          <span className="text-[10px] text-white/60">{m.label}</span>
                         </div>
                       ))}
                     </div>
                   </div>
-                )}
-                {copy.deliverables && (
-                  <div>
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-2">{labels.deliver}</div>
-                    <div className="space-y-1">
-                      {copy.deliverables.map((d) => (
-                        <div key={d} className="flex items-center gap-1.5">
-                          <CheckIcon color={detail.accentColor}/>
-                          <span className="text-[11px] text-white">{d}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {copy.attributes && (
-                  <div>
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-2">{labels.aesthetic}</div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {copy.attributes.map((a) => (
-                        <span key={a} className="text-[11px] text-white border border-white/[0.08] rounded-full px-2 py-0.5">{a}</span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </motion.div>
 
-            {/* Process flow */}
-            {copy.process && (
-              <motion.div variants={fadeUp}>
-                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-2">{labels.arch}</div>
-                <div className="flex flex-wrap items-center gap-1">
-                  {copy.process.map((step, i) => (
-                    <div key={step} className="flex items-center gap-1">
-                      <div className="rounded-lg border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-[11px] text-white">{step}</div>
-                      {i < copy.process!.length - 1 && (
-                        <svg viewBox="0 0 16 16" fill="none" width="14" height="14" className="flex-none opacity-40">
-                          <path d="M3 8h10M9 4l4 4-4 4" stroke={detail.accentColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      )}
+                  {copy.features && (
+                    <div>
+                      <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-2">{labels.features}</div>
+                      <div className="space-y-1">
+                        {copy.features.map((f) => (
+                          <div key={f} className="flex items-center gap-1.5">
+                            <span className="h-1.5 w-1.5 rounded-full flex-none" style={{ background: detail.accentColor }}/>
+                            <span className="text-[11px] text-white/70">{f}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  ))}
+                  )}
+                  {copy.deliverables && (
+                    <div>
+                      <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-2">{labels.deliver}</div>
+                      <div className="space-y-1">
+                        {copy.deliverables.map((d) => (
+                          <div key={d} className="flex items-center gap-1.5">
+                            <CheckIcon color={detail.accentColor}/>
+                            <span className="text-[11px] text-white/70">{d}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {copy.attributes && (
+                    <div>
+                      <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-2">{labels.aesthetic}</div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {copy.attributes.map((a) => (
+                          <span key={a} className="text-[11px] text-white/70 border border-white/[0.08] rounded-full px-2 py-0.5">{a}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </motion.div>
-            )}
 
-            {/* Tech stack + Ideal for — two columns */}
-            <motion.div variants={fadeUp} className="grid grid-cols-2 gap-4">
-              <div>
-                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-2">{labels.stack}</div>
-                <div className="flex flex-wrap gap-1.5">
-                  {tags.map((tag) => (
-                    <span key={tag}
-                      className="inline-flex items-center gap-1 rounded-full border border-white/[0.09] bg-white/[0.04] px-2 py-0.5 text-[10px] font-medium text-white">
-                      {TAG_ICONS[tag] && <span className="opacity-70">{TAG_ICONS[tag]}</span>}
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              {copy.idealFor && (
+              {/* Process flow */}
+              {copy.process && (
+                <motion.div variants={fadeUp}>
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-2">{labels.arch}</div>
+                  <div className="flex flex-wrap items-center gap-1">
+                    {copy.process.map((step, i) => (
+                      <div key={step} className="flex items-center gap-1">
+                        <div className="rounded-lg border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-[11px] text-white/70">{step}</div>
+                        {i < copy.process!.length - 1 && (
+                          <svg viewBox="0 0 16 16" fill="none" width="14" height="14" className="flex-none opacity-30">
+                            <path d="M3 8h10M9 4l4 4-4 4" stroke={detail.accentColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Tech stack + Ideal for */}
+              <motion.div variants={fadeUp} className="grid grid-cols-2 gap-4">
                 <div>
-                  <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-2">{labels.idealFor}</div>
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-2">{labels.stack}</div>
                   <div className="flex flex-wrap gap-1.5">
-                    {copy.idealFor.map((item) => (
-                      <span key={item} className="rounded-full px-2 py-0.5 text-[10px] border"
-                        style={{ color: detail.accentColor, borderColor: detail.accentColor + "44", background: detail.accentColor + "11" }}>
-                        {item}
+                    {tags.map((tag) => (
+                      <span key={tag}
+                        className="inline-flex items-center gap-1 rounded-full border border-white/[0.09] bg-white/[0.04] px-2 py-0.5 text-[10px] font-medium text-white/70">
+                        {TAG_ICONS[tag] && <span className="opacity-70">{TAG_ICONS[tag]}</span>}
+                        {tag}
                       </span>
                     ))}
                   </div>
                 </div>
-              )}
-            </motion.div>
+                {copy.idealFor && (
+                  <div>
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40 mb-2">{labels.idealFor}</div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {copy.idealFor.map((item) => (
+                        <span key={item} className="rounded-full px-2 py-0.5 text-[10px] border"
+                          style={{ color: detail.accentColor, borderColor: detail.accentColor + "44", background: detail.accentColor + "11" }}>
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </motion.div>
 
-            {/* CTA */}
-            <motion.div variants={fadeUp}>
-              <button
-                type="button"
-                className="group relative w-full overflow-hidden rounded-xl px-5 py-3 text-sm font-semibold text-white transition-all duration-300"
-                style={{ background: `linear-gradient(135deg,${detail.accentColor}cc,${detail.accentColor})` }}
-              >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  {copy.cta}
-                  <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1">
-                    <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </span>
-                <div className="absolute inset-0 bg-white/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"/>
-              </button>
-            </motion.div>
+              {/* CTA */}
+              <motion.div variants={fadeUp} className="pb-1">
+                <button
+                  type="button"
+                  className="group relative w-full overflow-hidden rounded-xl px-5 py-3 text-sm font-semibold text-white transition-all duration-300"
+                  style={{ background: `linear-gradient(135deg,${detail.accentColor}cc,${detail.accentColor})` }}
+                >
+                  <span className="relative z-10 flex items-center justify-center gap-2">
+                    {copy.cta}
+                    <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1">
+                      <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </span>
+                  <div className="absolute inset-0 bg-white/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"/>
+                </button>
+              </motion.div>
 
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
       </div>
     </motion.div>
@@ -538,15 +543,10 @@ type ServiceCardProps = {
   detail: ServiceDetail;
   isActive: boolean;
   isDimmed: boolean;
-  isMobile: boolean;
-  closeLabel: string;
-  lang: "en" | "es";
   onClick: () => void;
 };
 
-function ServiceCard({ title, description, svgIcon, tags, learnMore, closeLabel, lang, bg, glow, glowBg, border, index, detail, isActive, isDimmed, isMobile, onClick }: ServiceCardProps) {
-  const mobileCopy = lang === "es" ? detail.es : detail;
-  const mobileLabels = PANEL_LABELS[lang];
+function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, glowBg, border, index, detail, isActive, isDimmed, onClick }: ServiceCardProps) {
   return (
     <motion.div
       layout
@@ -608,69 +608,10 @@ function ServiceCard({ title, description, svgIcon, tags, learnMore, closeLabel,
         {/* Learn more */}
         <div className="mt-6 flex items-center gap-1.5 text-sm font-medium transition-colors duration-300"
           style={{ color: isActive ? detail.accentColor : "#ffffff" }}>
-          <span>{isActive && isMobile ? closeLabel : learnMore}</span>
-          <motion.span animate={{ rotate: isActive && isMobile ? 180 : 0, x: isActive && isMobile ? 0 : 0 }}
-            transition={{ duration: 0.25 }}>
-            {isMobile ? "↓" : "→"}
-          </motion.span>
+          <span>{learnMore}</span>
+          <span>→</span>
         </div>
       </div>
-
-      {/* Mobile accordion */}
-      <AnimatePresence>
-        {isActive && isMobile && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden border-t border-white/[0.07]"
-          >
-            <div className="px-7 py-6 space-y-6">
-              {/* Extended desc */}
-              <p className="text-sm leading-relaxed text-white">{mobileCopy.extendedDesc}</p>
-
-              {/* Examples gallery */}
-              <div>
-                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-2">{mobileLabels.workExamples}</div>
-                <ExamplesGallery idx={index} lang={lang} />
-              </div>
-
-              {/* Includes */}
-              <div>
-                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-3">{mobileLabels.included}</div>
-                <div className="grid grid-cols-1 gap-2">
-                  {mobileCopy.includes.map((item) => (
-                    <div key={item} className="flex items-center gap-2">
-                      <CheckIcon color={detail.accentColor}/>
-                      <span className="text-[13px] text-white">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Metrics */}
-              <div className="grid grid-cols-3 gap-3">
-                {mobileCopy.metrics.map((m) => (
-                  <div key={m.label} className="rounded-xl border border-white/[0.07] bg-white/[0.03] p-3 text-center">
-                    <div className="text-base font-bold" style={{ color: detail.accentColor }}>{m.value}</div>
-                    <div className="text-[10px] text-white mt-0.5">{m.label}</div>
-                  </div>
-                ))}
-              </div>
-
-              {/* CTA */}
-              <button
-                className="w-full rounded-xl py-3 text-sm font-semibold text-white"
-                style={{ background: `linear-gradient(135deg,${detail.accentColor}cc,${detail.accentColor})` }}
-                onClick={(e) => { e.stopPropagation(); }}
-              >
-                {mobileCopy.cta} →
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </motion.div>
   );
 }
@@ -679,20 +620,15 @@ function ServiceCard({ title, description, svgIcon, tags, learnMore, closeLabel,
 export default function Services() {
   const { t, lang } = useLanguage();
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
   }, []);
 
-  // ESC + body scroll lock — lives here so it's never blocked by stacking context
+  // ESC + body scroll lock — all screen sizes when modal is open
   useEffect(() => {
-    if (activeIdx === null || isMobile) return;
+    if (activeIdx === null) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setActiveIdx(null); };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
@@ -700,7 +636,7 @@ export default function Services() {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [activeIdx, isMobile]);
+  }, [activeIdx]);
 
   const handleToggle = (i: number) => setActiveIdx((prev) => (prev === i ? null : i));
   const handleClose  = () => setActiveIdx(null);
@@ -712,7 +648,7 @@ export default function Services() {
     detail: SERVICE_DETAILS[i],
   }));
 
-  const showPanel = mounted && activeIdx !== null && !isMobile;
+  const showPanel = mounted && activeIdx !== null;
 
   return (
     <section id="services" className="section-separator relative isolate py-24 md:py-32">
@@ -748,8 +684,6 @@ export default function Services() {
               description={s.description}
               tags={s.tags}
               learnMore={s.learnMore}
-              closeLabel={t.services.closeLabel}
-              lang={lang}
               svgIcon={s.svgIcon}
               bg={s.bg}
               glow={s.glow}
@@ -757,8 +691,7 @@ export default function Services() {
               border={s.border}
               detail={s.detail}
               isActive={activeIdx === i}
-              isDimmed={activeIdx !== null && activeIdx !== i && !isMobile}
-              isMobile={isMobile}
+              isDimmed={activeIdx !== null && activeIdx !== i}
               onClick={() => handleToggle(i)}
             />
           ))}
