@@ -137,9 +137,7 @@ export default function Testimonials() {
         />
 
         {/* Center ambient — barely visible, ties both sides */}
-        <motion.div
-          animate={{ scale: [1, 1.08, 1], opacity: [0.4, 0.7, 0.4] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        <div
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[600px] rounded-full"
           style={{ background: "radial-gradient(ellipse at center, rgba(79,70,229,0.06) 0%, transparent 70%)", filter: "blur(50px)" }}
         />
