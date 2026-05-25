@@ -152,7 +152,7 @@ const en: Translations = {
     accent:      "designed for awe.",
     description: "One studio. Six disciplines. A workflow optimized to ship measurable wins fast — without sacrificing craft.",
     items: [
-      { title: "Ecommerce Websites",  description: "High-converting online stores built for sales, speed, and brand.",                          tags: ["Design", "Webflow", "Next.js"], learnMore: "Learn more" },
+      { title: "E-commerce Websites",  description: "High-converting online stores built for sales, speed, and brand.",                          tags: ["Design", "Webflow", "Next.js"], learnMore: "Learn more" },
       { title: "Landing Pages",       description: "Systems and strategies to help companies understand and accelerate their growth.",          tags: ["CRO", "Analytics", "Next.js", "React", "Angular", "Python"], learnMore: "Learn more" },
       { title: "Web Applications",    description: "Production-grade interfaces, design systems and full-stack engineering.",                   tags: ["React", "TS", "Node"], learnMore: "Learn more" },
       { title: "SaaS Platforms",      description: "End-to-end product studios: from 0→1 architecture to billing flows.",                     tags: ["Stripe", "Auth", "AI"], learnMore: "Learn more" },
@@ -337,7 +337,7 @@ const es: Translations = {
     accent:       "diseñado para asombrar.",
     description:  "Un estudio. Seis disciplinas. Un flujo de trabajo optimizado para lanzar victorias medibles rápido — sin sacrificar la calidad.",
     items: [
-      { title: "Sitios de Ecommerce", description: "Tiendas online de alto rendimiento construidas para vender, cargar rápido y posicionarse.",          tags: ["Diseño", "Webflow", "Next.js"], learnMore: "Saber más" },
+      { title: "Sitios de E-commerce", description: "Tiendas online de alto rendimiento construidas para vender, cargar rápido y posicionarse.",          tags: ["Diseño", "Webflow", "Next.js"], learnMore: "Saber más" },
       { title: "Landing Pages",       description: "Sistemas y estrategias para que empresas entiendan y aceleren su crecimiento.",                     tags: ["CRO", "Analytics", "Next.js", "React", "Angular", "Python"], learnMore: "Saber más" },
       { title: "Aplicaciones Web",    description: "Interfaces de nivel producción, sistemas de diseño e ingeniería full-stack.",                        tags: ["React", "TS", "Node"], learnMore: "Saber más" },
       { title: "Plataformas SaaS",    description: "Estudio de producto end-to-end: de la arquitectura 0→1 a los flujos de pago.",                      tags: ["Stripe", "Auth", "AI"], learnMore: "Saber más" },

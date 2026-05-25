@@ -94,16 +94,16 @@ type ServiceDetail = DetailCopy & {
 
 const SERVICE_DETAILS: ServiceDetail[] = [
   {
-    eyebrow: "Marketing", extendedDesc: "High-converting ecommerce stores built for sales and growth. We combine product UX, payment engineering, and performance optimization to create stores that sell.",
-    includes: ["Ecommerce websites", "Product catalog", "Shopping cart & checkout", "Payment integration", "SEO architecture", "Performance optimization"],
+    eyebrow: "Marketing", extendedDesc: "High-converting e-commerce stores built for sales and growth. We combine product UX, payment engineering, and performance optimization to create stores that sell.",
+    includes: ["E-commerce websites", "Product catalog", "Shopping cart & checkout", "Payment integration", "SEO architecture", "Performance optimization"],
     metrics: [{ value: "+58%", label: "Engagement" }, { value: "<1s", label: "Load speed" }, { value: "100", label: "SEO score" }],
     idealFor: ["Startups", "SaaS companies", "Premium brands", "Product launches"],
     cta: "Launch Your Brand Presence",
     accentColor: "#4f6ef7", accentRgb: "79,110,247",
     heroBg: "linear-gradient(135deg,#0a0f2e 0%,#1a1060 60%,#0d1845 100%)",
     es: {
-      eyebrow: "Marketing", extendedDesc: "Tiendas de ecommerce de alta conversión construidas para vender y crecer. Combinamos UX de producto, ingeniería de pagos y optimización de rendimiento para crear tiendas que convierten.",
-      includes: ["Sitios de ecommerce", "Catálogo de productos", "Carrito y checkout", "Integración de pagos", "Arquitectura SEO", "Optimización de rendimiento"],
+      eyebrow: "Marketing", extendedDesc: "Tiendas de e-commerce de alta conversión construidas para vender y crecer. Combinamos UX de producto, ingeniería de pagos y optimización de rendimiento para crear tiendas que convierten.",
+      includes: ["Sitios de e-commerce", "Catálogo de productos", "Carrito y checkout", "Integración de pagos", "Arquitectura SEO", "Optimización de rendimiento"],
       metrics: [{ value: "+58%", label: "Engagement" }, { value: "<1s", label: "Velocidad de carga" }, { value: "100", label: "Score SEO" }],
       idealFor: ["Startups", "Empresas SaaS", "Marcas premium", "Lanzamientos de producto"],
       cta: "Lanza tu Presencia de Marca",
