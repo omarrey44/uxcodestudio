@@ -588,8 +588,8 @@ export default function Services() {
       <div className="pointer-events-none absolute inset-0">
         {/* Dark site-palette gradient background */}
         <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, #050508 0%, #07091a 40%, #050810 70%, #050508 100%)" }} />
-        <div className="absolute -left-60 top-1/4 h-[600px] w-[600px] rounded-full bg-accent-violet/[0.07] blur-[140px] will-change-transform" style={{ transform: "translateZ(0)" }} />
-        <div className="absolute -right-40 bottom-1/3 h-[500px] w-[500px] rounded-full bg-accent-blue/[0.06] blur-[120px] will-change-transform" style={{ transform: "translateZ(0)" }} />
+        <div className="absolute -left-60 top-1/4 h-[600px] w-[600px] rounded-full bg-accent-violet/[0.07] blur-[140px]" />
+        <div className="absolute -right-40 bottom-1/3 h-[500px] w-[500px] rounded-full bg-accent-blue/[0.06] blur-[120px]" />
         <div className="absolute inset-0 grid-bg opacity-[0.12]" style={{ maskImage: "radial-gradient(ellipse 85% 70% at 50% 50%, black 10%, transparent 100%)" }} />
         <div className="absolute inset-x-0 top-0 h-40"
           style={{ background: "linear-gradient(to bottom, #050508 0%, transparent 100%)" }}/>

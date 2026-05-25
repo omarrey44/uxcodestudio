@@ -65,8 +65,8 @@ export default function Process() {
 
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute inset-0 grid-bg opacity-[0.18]" style={{ maskImage: "radial-gradient(ellipse 90% 80% at 50% 50%, black 20%, transparent 100%)" }} />
-        <div className="absolute -left-40 top-1/3 h-[500px] w-[500px] rounded-full bg-accent-violet/[0.08] blur-[130px] will-change-transform" style={{ transform: "translateZ(0)" }} />
-        <div className="absolute -right-24 bottom-1/4 h-[400px] w-[500px] rounded-full bg-accent-blue/[0.06] blur-[110px] will-change-transform" style={{ transform: "translateZ(0)" }} />
+        <div className="absolute -left-40 top-1/3 h-[500px] w-[500px] rounded-full bg-accent-violet/[0.08] blur-[130px]" />
+        <div className="absolute -right-24 bottom-1/4 h-[400px] w-[500px] rounded-full bg-accent-blue/[0.06] blur-[110px]" />
       </div>
 
       <div className="container-x">
