@@ -159,7 +159,7 @@ export default function HeroScene({ eyeColor = "#00d4ff", uxOn = false }: { eyeC
     if (!el) return;
     const obs = new IntersectionObserver(
       ([e]) => setFrameloop(e.isIntersecting ? "always" : "never"),
-      { rootMargin: "200px" }
+      { rootMargin: "0px" }
     );
     obs.observe(el);
     return () => obs.disconnect();
