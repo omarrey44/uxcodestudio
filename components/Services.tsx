@@ -491,8 +491,8 @@ function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, g
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ y: 28 }}
+      whileInView={{ y: 0 }}
       viewport={{ once: true, margin: "-20px" }}
       transition={{ duration: 0.65, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
       animate={{
@@ -684,8 +684,8 @@ export function SectionHeader({
   return (
     <div className="mx-auto max-w-3xl text-center">
       <motion.div
-        initial={{ opacity: 0, y: 14 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ y: 14 }}
+        whileInView={{ y: 0 }}
         viewport={{ once: true, margin: "-20px" }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="mb-6 inline-flex items-center gap-3 rounded-full border border-accent-cyan/25 bg-gradient-to-r from-accent-cyan/10 to-accent-blue/10 px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.22em]"
@@ -711,8 +711,8 @@ export function SectionHeader({
 
       {description && (
         <motion.p
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ y: 18 }}
+          whileInView={{ y: 0 }}
           viewport={{ once: true, margin: "-20px" }}
           transition={{ duration: 0.9, delay: 0.28, ease: "easeOut" }}
           className="mx-auto mt-6 max-w-2xl text-balance text-white md:text-lg"

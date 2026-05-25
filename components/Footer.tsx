@@ -60,8 +60,8 @@ export default function Footer() {
       <div className="container-x relative py-20">
         {/* Huge wordmark */}
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          initial={{ y: 16 }}
+          whileInView={{ y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1 }}
           className="select-none overflow-hidden pb-12"

@@ -95,8 +95,8 @@ export default function FinalCTA() {
 
       <div className="container-x relative">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ y: 20 }}
+          whileInView={{ y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="mb-16 text-center"
@@ -117,8 +117,8 @@ export default function FinalCTA() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 60, scale: 0.96 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          initial={{ y: 60, scale: 0.96 }}
+          whileInView={{ y: 0, scale: 1 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
           className="relative mx-auto max-w-6xl overflow-hidden rounded-[36px] glass-strong p-12 text-center md:p-16"

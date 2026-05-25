@@ -24,8 +24,8 @@ export default function FAQ() {
 
         <motion.div
           className="mx-auto mt-16 max-w-3xl space-y-3"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ y: 24 }}
+          whileInView={{ y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
         >

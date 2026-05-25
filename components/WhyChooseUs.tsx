@@ -30,8 +30,8 @@ export default function WhyChooseUs() {
         </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ y: 30 }}
+          whileInView={{ y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.9 }}
           className="relative mx-auto mt-24 max-w-5xl overflow-hidden rounded-3xl glass-strong p-10 md:p-14"
@@ -67,8 +67,8 @@ export default function WhyChooseUs() {
 function StatCard({ value, suffix, label, sub, index }: { value: number; suffix: string; label: string; sub: string; index: number }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ y: 30 }}
+      whileInView={{ y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.9, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
       className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-6 transition-colors hover:border-white/20"

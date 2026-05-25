@@ -120,8 +120,8 @@ export default function FeaturedWork() {
                 key={w.title}
                 className="work-card group relative shrink-0 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-6"
                 style={{ width: "clamp(320px, 38vw, 520px)" }}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ y: 40 }}
+                whileInView={{ y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.9, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
               >

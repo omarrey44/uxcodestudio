@@ -153,8 +153,8 @@ function PricingCard({ plan, index, badge }: { plan: Plan; index: number; badge:
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 36 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ y: 36 }}
+      whileInView={{ y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       whileHover={{ y: isCenter ? -8 : -5, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }}
       animate={isCenter ? { y: [0, -6, 0] } : {}}
@@ -168,7 +168,7 @@ function PricingCard({ plan, index, badge }: { plan: Plan; index: number; badge:
       {isCenter && (
         <motion.div
           className="pointer-events-none absolute -inset-6 -z-10 rounded-[2.5rem]"
-          animate={{ opacity: [0.35, 0.65, 0.35], scale: [1, 1.03, 1] }}
+          animate={{ scale: [1, 1.04, 1] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
           style={{
             background: "radial-gradient(ellipse at 50% 60%, rgba(6,182,212,0.22) 0%, rgba(99,102,241,0.15) 45%, transparent 72%)",
@@ -263,8 +263,8 @@ function PricingCard({ plan, index, badge }: { plan: Plan; index: number; badge:
           <div className="mt-6">
             <motion.div
               className="flex items-baseline gap-2 whitespace-nowrap"
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ y: 10 }}
+              whileInView={{ y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.2 + index * 0.1 }}
             >

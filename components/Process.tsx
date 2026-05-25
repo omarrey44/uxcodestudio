@@ -78,7 +78,7 @@ export default function Process() {
           >
             <div>
               <motion.div
-                variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.55 } } }}
+                variants={{ hidden: { y: 10 }, visible: { y: 0, transition: { duration: 0.55 } } }}
                 className="mb-7 inline-flex items-center gap-3 rounded-full border border-accent-violet/30 bg-gradient-to-r from-accent-violet/10 to-accent-blue/10 px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.2em]"
                 style={{ boxShadow: "0 0 20px rgba(139,92,246,0.12)" }}
               >
@@ -101,14 +101,14 @@ export default function Process() {
               </motion.h2>
 
               <motion.p
-                variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7 } } }}
+                variants={{ hidden: { y: 12 }, visible: { y: 0, transition: { duration: 0.7 } } }}
                 className="mt-5 text-sm leading-relaxed text-white/70"
               >
                 {t.process.sub}
               </motion.p>
 
               <motion.div
-                variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7 } } }}
+                variants={{ hidden: { y: 12 }, visible: { y: 0, transition: { duration: 0.7 } } }}
                 className="mt-10 space-y-6"
               >
                 {t.process.pills.map((label, i) => (
@@ -124,7 +124,7 @@ export default function Process() {
             </div>
 
             <motion.div
-              variants={{ hidden: { opacity: 0, y: 18 }, visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 280, damping: 26 } } }}
+              variants={{ hidden: { y: 18 }, visible: { y: 0, transition: { type: "spring", stiffness: 280, damping: 26 } } }}
               className="mt-12 overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.025] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.07)] backdrop-blur-sm"
             >
               <div className="flex items-start gap-3.5">
@@ -176,7 +176,7 @@ export default function Process() {
               {t.process.steps.map((s, i) => (
                 <motion.div
                   key={s.n}
-                  variants={{ hidden: { opacity: 0, x: 16 }, visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+                  variants={{ hidden: { x: 16 }, visible: { x: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
                   className={`relative flex gap-6 ${i < t.process.steps.length - 1 ? "pb-14" : "pb-0"}`}
                 >
                   {/* Step bubble */}
