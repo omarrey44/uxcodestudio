@@ -59,9 +59,7 @@ export default function Process() {
                   <span className="absolute inset-0 animate-ping rounded-full bg-accent-violet opacity-60" />
                   <span className="relative h-2 w-2 rounded-full bg-accent-violet" style={{ boxShadow: "0 0 6px rgba(139,92,246,0.9)" }} />
                 </span>
-                <span style={{ background: "linear-gradient(90deg, #c4b5fd, #a78bfa, #67e8f9)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent", color: "transparent", display: "inline-block" }}>
-                  Our Process
-                </span>
+                <span className="text-white font-semibold">Our Process</span>
               </motion.div>
 
               <motion.h2
