@@ -172,12 +172,9 @@ export default function Hero() {
             {scrambledHero}
           </p>
 
-          <div className="hero-cta mt-10 flex flex-wrap items-center gap-4 justify-center md:justify-start">
-            <MagneticButton href="#contact" variant="primary">
+          <div className="hero-cta mt-10 flex justify-center md:justify-start">
+            <MagneticButton href="#contact" variant="primary" className="px-14 py-4 text-base">
               {t.hero.cta1} <span aria-hidden>→</span>
-            </MagneticButton>
-            <MagneticButton href="#work" variant="secondary">
-              {t.hero.cta2}
             </MagneticButton>
           </div>
 
