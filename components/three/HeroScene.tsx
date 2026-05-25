@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useRef, useMemo, useEffect, useState } from "react";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   useGLTF,
@@ -207,6 +208,10 @@ export default function HeroScene({ eyeColor = "#00d4ff", uxOn = false }: { eyeC
           </Environment>
 
         </Suspense>
+
+        <EffectComposer enableNormalPass={false}>
+          <Bloom intensity={1.0} luminanceThreshold={0.75} luminanceSmoothing={0.2} />
+        </EffectComposer>
 
       </Canvas>
     </div>
