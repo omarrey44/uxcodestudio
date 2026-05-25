@@ -13,6 +13,96 @@ const HeroScene = dynamic(() => import("./three/HeroScene"), { ssr: false });
 
 const EYE_COLORS = ["#4f6ef7", "#00d4ff", "#8b5cf6", "#f43f5e"];
 
+function HeroComets() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    interface Comet {
+      x: number; y: number;
+      vx: number; vy: number;
+      len: number; alpha: number;
+      size: number; isStatic: boolean;
+      twinkle: number;
+    }
+
+    let w = 0, h = 0;
+    let comets: Comet[] = [];
+    let raf = 0;
+
+    const resize = () => {
+      w = canvas.width = canvas.offsetWidth;
+      h = canvas.height = canvas.offsetHeight;
+    };
+
+    const spawn = (): Comet => {
+      const isStatic = Math.random() < 0.55;
+      const angle = isStatic ? 0 : (Math.PI / 4) + (Math.random() - 0.5) * 0.6;
+      const speed = isStatic ? 0 : 0.4 + Math.random() * 1.2;
+      return {
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        len: isStatic ? 0 : 12 + Math.random() * 40,
+        alpha: 0.15 + Math.random() * 0.55,
+        size: isStatic ? 0.6 + Math.random() * 0.8 : 0.8 + Math.random() * 1.0,
+        isStatic,
+        twinkle: Math.random() * Math.PI * 2,
+      };
+    };
+
+    const init = () => {
+      resize();
+      comets = Array.from({ length: 70 }, spawn);
+    };
+
+    const render = (time: number) => {
+      ctx.clearRect(0, 0, w, h);
+      comets.forEach((c, i) => {
+        const tw = 0.5 + 0.5 * Math.sin(time * 0.0006 + c.twinkle);
+        const a = c.alpha * tw;
+
+        if (c.isStatic) {
+          ctx.globalAlpha = a * 0.8;
+          ctx.fillStyle = "#ffffff";
+          ctx.beginPath();
+          ctx.arc(c.x, c.y, c.size * 0.5, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.globalAlpha = a;
+          const grad = ctx.createLinearGradient(c.x - c.vx * c.len, c.y - c.vy * c.len, c.x, c.y);
+          grad.addColorStop(0, "rgba(255,255,255,0)");
+          grad.addColorStop(1, `rgba(180,220,255,${a})`);
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = c.size;
+          ctx.beginPath();
+          ctx.moveTo(c.x - c.vx * c.len, c.y - c.vy * c.len);
+          ctx.lineTo(c.x, c.y);
+          ctx.stroke();
+
+          c.x += c.vx;
+          c.y += c.vy;
+          if (c.x > w + 60 || c.y > h + 60) comets[i] = spawn();
+        }
+      });
+      ctx.globalAlpha = 1;
+      raf = requestAnimationFrame(render);
+    };
+
+    init();
+    window.addEventListener("resize", init);
+    raf = requestAnimationFrame(render);
+    return () => { window.removeEventListener("resize", init); cancelAnimationFrame(raf); };
+  }, []);
+
+  return <canvas ref={canvasRef} aria-hidden className="absolute inset-0 h-full w-full" style={{ pointerEvents: "none", opacity: 0.45 }} />;
+}
+
 export default function Hero() {
   const rootRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -101,6 +191,7 @@ export default function Hero() {
           style={{ backgroundImage: "url('/Hero1.png')" }}
         />
         <div className="absolute inset-0" style={{ background: "rgba(5,5,8,0.30)" }} />
+        <HeroComets />
       </div>
 
       <div ref={contentRef} className="container-x relative grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-8">

@@ -1,13 +1,11 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import dynamic from "next/dynamic";
 import { createPortal } from "react-dom";
 import { useLanguage } from "@/lib/i18n";
 import { useState, useEffect } from "react";
 import React from "react";
 
-const ShaderBackground = dynamic(() => import("./ui/ShaderBackground"), { ssr: false });
 
 /* ── App-icon SVGs ──────────────────────────────────────────────────────────── */
 const SERVICE_ICONS = [
@@ -135,16 +133,16 @@ type ServiceDetail = DetailCopy & {
 
 const SERVICE_DETAILS: ServiceDetail[] = [
   {
-    eyebrow: "Marketing", extendedDesc: "Cinematic websites that convert visitors into believers. We combine branding precision, performance engineering, and motion design to create digital flagships.",
-    includes: ["Marketing websites", "CMS editable (Sanity)", "SEO architecture", "Motion design", "Performance optimization", "Interactive storytelling"],
+    eyebrow: "Marketing", extendedDesc: "High-converting ecommerce stores built for sales and growth. We combine product UX, payment engineering, and performance optimization to create stores that sell.",
+    includes: ["Ecommerce websites", "Product catalog", "Shopping cart & checkout", "Payment integration", "SEO architecture", "Performance optimization"],
     metrics: [{ value: "+58%", label: "Engagement" }, { value: "<1s", label: "Load speed" }, { value: "100", label: "SEO score" }],
     idealFor: ["Startups", "SaaS companies", "Premium brands", "Product launches"],
     cta: "Launch Your Brand Presence",
     accentColor: "#4f6ef7", accentRgb: "79,110,247",
     heroBg: "linear-gradient(135deg,#0a0f2e 0%,#1a1060 60%,#0d1845 100%)",
     es: {
-      eyebrow: "Marketing", extendedDesc: "Sitios web cinemáticos que convierten visitantes en clientes. Combinamos branding de precisión, ingeniería de rendimiento y motion design para crear experiencias que definen categorías.",
-      includes: ["Sitios de marketing", "CMS editable (Sanity)", "Arquitectura SEO", "Motion design", "Optimización de rendimiento", "Storytelling interactivo"],
+      eyebrow: "Marketing", extendedDesc: "Tiendas de ecommerce de alta conversión construidas para vender y crecer. Combinamos UX de producto, ingeniería de pagos y optimización de rendimiento para crear tiendas que convierten.",
+      includes: ["Sitios de ecommerce", "Catálogo de productos", "Carrito y checkout", "Integración de pagos", "Arquitectura SEO", "Optimización de rendimiento"],
       metrics: [{ value: "+58%", label: "Engagement" }, { value: "<1s", label: "Velocidad de carga" }, { value: "100", label: "Score SEO" }],
       idealFor: ["Startups", "Empresas SaaS", "Marcas premium", "Lanzamientos de producto"],
       cta: "Lanza tu Presencia de Marca",
@@ -654,13 +652,11 @@ export default function Services() {
     <section id="services" className="section-separator relative isolate py-24 md:py-32">
       {/* Background */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 block md:hidden"
-          style={{ backgroundImage: "url('/fondoMovilServices.png')", backgroundSize: "cover", backgroundPosition: "center" }} />
-        <div className="absolute inset-0 hidden md:block"
-          style={{ backgroundImage: "url('/fondoServices.png')", backgroundSize: "cover", backgroundPosition: "center" }} />
-        <div className="absolute inset-0 hidden md:block opacity-60">
-          <ShaderBackground/>
-        </div>
+        {/* Dark site-palette gradient background */}
+        <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, #050508 0%, #07091a 40%, #050810 70%, #050508 100%)" }} />
+        <div className="absolute -left-60 top-1/4 h-[600px] w-[600px] rounded-full bg-accent-violet/[0.07] blur-[140px]" />
+        <div className="absolute -right-40 bottom-1/3 h-[500px] w-[500px] rounded-full bg-accent-blue/[0.06] blur-[120px]" />
+        <div className="absolute inset-0 grid-bg opacity-[0.12]" style={{ maskImage: "radial-gradient(ellipse 85% 70% at 50% 50%, black 10%, transparent 100%)" }} />
         <div className="absolute inset-x-0 top-0 h-40"
           style={{ background: "linear-gradient(to bottom, #050508 0%, transparent 100%)" }}/>
         <div className="absolute inset-x-0 bottom-0 h-32"
