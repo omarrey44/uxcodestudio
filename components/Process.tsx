@@ -130,11 +130,11 @@ export default function Process() {
           {/* RIGHT — scroll-fill timeline */}
           <div ref={stepsRef} className="relative">
             {/* Background rail */}
-            <div className="absolute left-[17px] top-5 bottom-5 w-px bg-white/[0.06]" />
+            <div className="absolute left-[21px] top-6 bottom-6 w-[2px] rounded-full bg-white/[0.06]" />
             {/* Animated fill */}
             <motion.div
-              className="absolute left-[17px] top-5 bottom-5 w-px origin-top bg-gradient-to-b from-accent-cyan via-accent-blue to-accent-cyan/20"
-              style={{ scaleY: lineScaleY }}
+              className="absolute left-[21px] top-6 bottom-6 w-[2px] rounded-full origin-top bg-gradient-to-b from-accent-cyan via-accent-blue to-accent-violet"
+              style={{ scaleY: lineScaleY, boxShadow: "0 0 8px rgba(0,212,255,0.6), 0 0 20px rgba(0,144,255,0.3)" }}
             />
 
             <motion.div
@@ -148,10 +148,13 @@ export default function Process() {
                 <motion.div
                   key={s.n}
                   variants={{ hidden: { opacity: 0, x: 16 }, visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
-                  className={`relative flex gap-5 ${i < t.process.steps.length - 1 ? "pb-12" : "pb-0"}`}
+                  className={`relative flex gap-6 ${i < t.process.steps.length - 1 ? "pb-14" : "pb-0"}`}
                 >
                   {/* Step bubble */}
-                  <div className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-accent-cyan/30 bg-[#050508] text-[11px] font-bold tabular-nums text-accent-cyan">
+                  <div
+                    className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-accent-cyan/50 bg-[#050508] text-sm font-bold tabular-nums text-accent-cyan"
+                    style={{ boxShadow: "0 0 12px rgba(0,212,255,0.35), inset 0 1px 0 rgba(0,212,255,0.15)" }}
+                  >
                     {s.n}
                   </div>
 
