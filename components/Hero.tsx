@@ -218,7 +218,7 @@ function RotatingWord({ words }: { words: string[] }) {
       <AnimatePresence mode="popLayout">
         <motion.span
           key={words[index]}
-          className="absolute inset-x-0 text-center whitespace-nowrap text-gradient-accent"
+          className="absolute left-0 text-left whitespace-nowrap text-gradient-accent"
           initial={{ y: "110%", opacity: 0 }}
           animate={{ y: "0%", opacity: 1 }}
           exit={{ y: "-110%", opacity: 0 }}

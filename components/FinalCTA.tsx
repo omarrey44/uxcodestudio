@@ -9,14 +9,28 @@ export default function FinalCTA() {
   const { t } = useLanguage();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const { name, email, message } = form;
-    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
-    window.open(`mailto:hello@uxcodestudio.com?subject=Project inquiry from ${encodeURIComponent(name)}&body=${body}`);
-    setSent(true);
-    setTimeout(() => setSent(false), 4000);
+    setSending(true);
+    setError("");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error("send failed");
+      setSent(true);
+      setForm({ name: "", email: "", message: "" });
+      setTimeout(() => setSent(false), 5000);
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setSending(false);
+    }
   }
 
   return (
@@ -32,7 +46,7 @@ export default function FinalCTA() {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-auto max-w-5xl overflow-hidden rounded-[36px] glass-strong p-12 text-center md:p-16"
+          className="relative mx-auto max-w-6xl overflow-hidden rounded-[36px] glass-strong p-12 text-center md:p-16"
         >
           <div className="absolute -inset-px rounded-[36px] bg-gradient-to-br from-accent-blue/50 via-accent-cyan/30 to-accent-violet/50 opacity-60 blur-2xl" />
           <div className="absolute -inset-px rounded-[36px] bg-gradient-to-br from-accent-blue via-accent-cyan to-accent-violet [mask:linear-gradient(#000_0_0)_content-box,linear-gradient(#000_0_0)] [mask-composite:exclude] p-px opacity-60" />
@@ -53,7 +67,7 @@ export default function FinalCTA() {
             </p>
 
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <MagneticButton href="mailto:hello@uxcodestudio.com" variant="primary">
+              <MagneticButton href="mailto:info@uxcodestudio.com" variant="primary">
                 {t.cta.cta1} <span aria-hidden>→</span>
               </MagneticButton>
               <MagneticButton href="#work" variant="secondary">
@@ -95,17 +109,21 @@ export default function FinalCTA() {
               />
               <button
                 type="submit"
-                className="w-full rounded-xl bg-accent-cyan px-6 py-3 text-sm font-semibold text-black transition-all hover:bg-accent-cyan/90 active:scale-[0.98]"
+                disabled={sending}
+                className="w-full rounded-xl bg-accent-cyan px-6 py-3 text-sm font-semibold text-black transition-all hover:bg-accent-cyan/90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                {sent ? "✓ " + t.cta.formSent : t.cta.formSubmit}
+                {sending ? "Sending…" : sent ? "✓ " + t.cta.formSent : t.cta.formSubmit}
               </button>
+              {error && (
+                <p className="text-center text-xs text-red-400">{error}</p>
+              )}
             </form>
 
             {/* Divider */}
             <div className="my-10 h-px w-full bg-white/10" />
 
             {/* Contact methods — integrated */}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {t.cta.contactMethods.map((m, i) => (
                 <motion.a
                   key={m.label}
@@ -124,12 +142,57 @@ export default function FinalCTA() {
                   </span>
                   <div className="min-w-0 flex-1">
                     <div className="text-[10px] uppercase tracking-[0.2em] text-muted-dim">{m.label}</div>
-                    <div className="mt-0.5 truncate text-sm font-medium text-white">{m.value}</div>
+                    <div className="mt-0.5 text-sm font-medium text-white">{m.value}</div>
                     <div className="text-[10px] text-muted-dim">{m.hint}</div>
                   </div>
                   <span className="shrink-0 text-muted-dim transition-transform group-hover:translate-x-1 group-hover:text-accent-cyan">→</span>
                 </motion.a>
               ))}
+
+              {/* Video call card — Zoom + Teams */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: 0.5 + 3 * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/30 bg-black/40 text-white">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+                      <path d="M15 10l4.55-2.73A1 1 0 0 1 21 8.13v7.74a1 1 0 0 1-1.45.9L15 14"/><rect x="1" y="6" width="14" height="12" rx="2"/>
+                    </svg>
+                  </span>
+                  <div>
+                    <div className="text-[10px] uppercase tracking-[0.2em] text-muted-dim">Video call</div>
+                    <div className="text-[10px] text-muted-dim">Pick your platform</div>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <a
+                    href="https://zoom.us/my/uxcodestudio"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] py-2 text-xs font-medium text-white/60 transition-colors hover:border-accent-cyan/50 hover:bg-accent-cyan/10 hover:text-accent-cyan"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5 shrink-0">
+                      <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S.02 4.88.02 3.5 1.13 1 2.5 1s2.48 1.12 2.48 2.5zM.02 8h4.95v16H.02V8zm7.93 0h4.73v2.19h.07c.66-1.25 2.27-2.56 4.67-2.56 5 0 5.92 3.29 5.92 7.57V24h-4.95v-7.82c0-1.87-.03-4.27-2.6-4.27-2.61 0-3.01 2.04-3.01 4.14V24H7.95V8z"/>
+                    </svg>
+                    Zoom
+                  </a>
+                  <a
+                    href="https://teams.microsoft.com/l/meetup-join/uxcodestudio"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] py-2 text-xs font-medium text-white/60 transition-colors hover:border-accent-violet/50 hover:bg-accent-violet/10 hover:text-accent-violet"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5 shrink-0">
+                      <path d="M20.625 6.75h-4.5V3.375A1.125 1.125 0 0 0 15 2.25H9a1.125 1.125 0 0 0-1.125 1.125V6.75h-4.5A1.125 1.125 0 0 0 2.25 7.875v9A1.125 1.125 0 0 0 3.375 18h4.5v2.625A1.125 1.125 0 0 0 9 21.75h6a1.125 1.125 0 0 0 1.125-1.125V18h4.5a1.125 1.125 0 0 0 1.125-1.125v-9A1.125 1.125 0 0 0 20.625 6.75zM13.5 15.75h-3V9.75h3v6z"/>
+                    </svg>
+                    Teams
+                  </a>
+                </div>
+              </motion.div>
             </div>
           </div>
         </motion.div>

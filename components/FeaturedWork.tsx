@@ -138,8 +138,8 @@ export default function FeaturedWork() {
 
                 <div className="relative mt-6 flex items-end justify-between">
                   <div>
-                    <div className="text-[11px] uppercase tracking-[0.3em] text-muted-dim">{w.tag}</div>
-                    <div className="mt-2 font-display text-2xl font-semibold text-white">{w.title}</div>
+                    <div className="text-[11px] uppercase tracking-[0.3em] text-muted-dim">{t.work.items[i]?.tag ?? w.tag}</div>
+                    <div className="mt-2 font-display text-2xl font-semibold text-white">{t.work.items[i]?.title ?? w.title}</div>
                   </div>
                   <span className="grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-white transition-all duration-500 group-hover:rotate-45 group-hover:bg-white group-hover:text-black">
                     →
@@ -162,7 +162,7 @@ export default function FeaturedWork() {
             />
           </div>
           <p className="mt-3 text-center text-[11px] uppercase tracking-[0.25em] text-muted-dim">
-            Scroll to explore
+            {t.work.scrollExplore}
           </p>
         </div>
       </div>

@@ -107,7 +107,7 @@ uxcodestudio/
 ## ✅ Checklist de despliegue
 
 - [ ] Cambia `metadataBase` y el dominio en `app/layout.tsx`.
-- [ ] Sustituye el email `hello@uxcodestudio.com` en `FinalCTA.tsx`.
+- [ ] Sustituye el email `info@uxcodestudio.com` en `FinalCTA.tsx`.
 - [ ] Añade tu favicon en `app/icon.png` (Next.js lo detecta automáticamente).
 - [ ] `npm run build` antes de subir a Vercel / Netlify.
 

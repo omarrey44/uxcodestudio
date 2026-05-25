@@ -11,7 +11,8 @@ const TESTIMONIALS = [
     name: "Sofía R.",
     role: "CEO · Nebula",
     rating: 5,
-    quote: "The handoff between design and engineering was invisible. We launched 3 weeks early and conversion doubled.",
+    quote:   "The handoff between design and engineering was invisible. We launched 3 weeks early and conversion doubled.",
+    quoteEs: "La transición entre diseño e ingeniería fue invisible. Lanzamos 3 semanas antes y la conversión se duplicó.",
     gradient: "from-accent-blue to-accent-cyan",
   },
   {
@@ -19,7 +20,8 @@ const TESTIMONIALS = [
     name: "Marcus L.",
     role: "Co-founder · Helio",
     rating: 5,
-    quote: "These are the people other agencies copy. The motion alone closed our Series A pitch.",
+    quote:   "These are the people other agencies copy. The motion alone closed our Series A pitch.",
+    quoteEs: "Son las personas que otras agencias copian. Solo el motion cerró nuestra ronda Serie A.",
     gradient: "from-accent-violet to-accent-blue",
   },
   {
@@ -27,7 +29,8 @@ const TESTIMONIALS = [
     name: "Priya K.",
     role: "Head of Product · Orbit AI",
     rating: 5,
-    quote: "We needed an interface that feels like the future. Investors literally applauded the demo.",
+    quote:   "We needed an interface that feels like the future. Investors literally applauded the demo.",
+    quoteEs: "Necesitábamos una interfaz que se sintiera del futuro. Los inversores aplaudieron literalmente el demo.",
     gradient: "from-accent-cyan to-accent-violet",
   },
   {
@@ -35,7 +38,8 @@ const TESTIMONIALS = [
     name: "Daniel P.",
     role: "CTO · Lumen",
     rating: 5,
-    quote: "Senior. Opinionated. Fast. They became part of our team in a week and never slowed down.",
+    quote:   "Senior. Opinionated. Fast. They became part of our team in a week and never slowed down.",
+    quoteEs: "Senior. Con criterio. Rápidos. Se integraron a nuestro equipo en una semana y nunca frenaron.",
     gradient: "from-accent-blue to-accent-violet",
   },
 ];
@@ -83,7 +87,7 @@ const LOGOS = [
 ];
 
 export default function Testimonials() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [order, setOrder] = useState([0, 1, 2, 3]);
   const [busy, setBusy] = useState(false);
 
@@ -102,6 +106,7 @@ export default function Testimonials() {
   }, [shuffle]);
 
   const active = TESTIMONIALS[order[0]];
+  const q = (item: typeof TESTIMONIALS[0]) => lang === "es" ? item.quoteEs : item.quote;
 
   return (
     <section className="section-separator relative overflow-hidden py-24 md:py-32">
@@ -185,7 +190,7 @@ export default function Testimonials() {
               >
                 <div className="mb-4 text-4xl leading-none text-accent-cyan">"</div>
                 <blockquote className="text-lg font-light leading-relaxed text-white md:text-xl">
-                  {active.quote}
+                  {q(active)}
                 </blockquote>
                 <div className="mt-7 flex items-center gap-3">
                   <span
@@ -266,7 +271,7 @@ export default function Testimonials() {
                         <div className="flex flex-col items-center gap-4 text-center">
                           <ReviewStars rating={item.rating} className="text-accent-cyan" />
                           <blockquote className="text-[15px] leading-relaxed text-white">
-                            "{item.quote}"
+                            "{q(item)}"
                           </blockquote>
                         </div>
                         <div className="flex w-full items-center gap-3 border-t border-white/[0.08] pt-4">
@@ -280,7 +285,7 @@ export default function Testimonials() {
                             <div className="text-xs text-muted-soft">{item.role}</div>
                           </div>
                           <span className="ml-auto text-[10px] uppercase tracking-widest text-muted-dim">
-                            tap ↻
+                            {lang === "es" ? "toca ↻" : "tap ↻"}
                           </span>
                         </div>
                       </>

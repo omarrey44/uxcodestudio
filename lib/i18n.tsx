@@ -7,7 +7,8 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 type Lang = "en" | "es";
 
 export type ServiceItem   = { title: string; description: string; tags: string[]; learnMore: string };
-export type StepItem      = { n: string; title: string; body: string };
+export type StepMetric    = { value: string; label: string };
+export type StepItem      = { n: string; tag: string; title: string; body: string; output: string[]; metrics: StepMetric[] };
 export type StatItem      = { value: number; suffix: string; label: string; sub: string };
 export type PlanItem      = { name: string; price: string; cadence: string; description: string; features: string[]; cta: string; highlight: boolean };
 export type FaqItem       = { q: string; a: string };
@@ -36,6 +37,7 @@ interface Translations {
     titlePart2: string;
     accent: string;
     description: string;
+    closeLabel: string;
     items: ServiceItem[];
   };
   process: {
@@ -45,6 +47,11 @@ interface Translations {
     headlineAccent: string;
     sub: string;
     steps: StepItem[];
+    pills: string[];
+    pillDescs: string[];
+    sidebarTagline: string;
+    sidebarSub: string;
+    transparencyItems: string[];
   };
   why: {
     eyebrow: string;
@@ -64,6 +71,8 @@ interface Translations {
     titlePart1: string;
     accent: string;
     description: string;
+    scrollExplore: string;
+    items: { title: string; tag: string }[];
   };
   testimonials: {
     eyebrow: string;
@@ -139,6 +148,7 @@ const en: Translations = {
     titlePart1:  "Engineered",
     titleEmphasis: "for",
     titlePart2:  "momentum,",
+    closeLabel:  "Close",
     accent:      "designed for awe.",
     description: "One studio. Six disciplines. A workflow optimized to ship measurable wins fast — without sacrificing craft.",
     items: [
@@ -157,12 +167,27 @@ const en: Translations = {
     headlineAccent:   "cinematic outcomes.",
     sub:              "Five tight phases — no fluff, no surprises.",
     steps: [
-      { n: "01", title: "Discover",       body: "Deep-dive workshops to align on business goals, audience and the moat we're building." },
-      { n: "02", title: "Define",         body: "Strategy, brand foundations, IA and motion principles documented as a living spec." },
-      { n: "03", title: "Design",         body: "High-fidelity UI, prototyping and choreography mapped to real conversion targets." },
-      { n: "04", title: "Build",          body: "Production engineering with Next.js, TypeScript and a tested component system." },
-      { n: "05", title: "Launch & Scale", body: "Analytics, experimentation and ongoing product partnership to compound results." },
+      { n: "01", tag: "Research",     title: "Discover",       body: "Deep-dive workshops to align on business goals, audience and the moat we're building.",
+        output: ["Opportunity map", "UX audit", "Priority insights"],
+        metrics: [{ value: "12+", label: "Key insights" }, { value: "8", label: "Interviews" }, { value: "25+", label: "Metrics analyzed" }] },
+      { n: "02", tag: "Strategy",     title: "Define",         body: "Strategy, brand foundations, IA and motion principles documented as a living spec.",
+        output: ["Information architecture", "User flows", "Structural wireframes"],
+        metrics: [{ value: "IA", label: "Architecture" }, { value: "Flows", label: "User journeys" }, { value: "Specs", label: "Living doc" }] },
+      { n: "03", tag: "Design",       title: "Design",         body: "High-fidelity UI, prototyping and choreography mapped to real conversion targets.",
+        output: ["UI design", "Visual system", "Interactive prototype"],
+        metrics: [{ value: "120fps", label: "Motion" }, { value: "50+", label: "Interactions" }, { value: "98%", label: "Feedback" }] },
+      { n: "04", tag: "Development",  title: "Build",          body: "Production engineering with Next.js, TypeScript and a tested component system.",
+        output: ["Scalable components", "Optimized performance", "Pro codebase"],
+        metrics: [{ value: "0.8s", label: "LCP" }, { value: "0.01", label: "CLS" }, { value: "0.2s", label: "TTFB" }] },
+      { n: "05", tag: "Optimization", title: "Launch & Scale", body: "Analytics, experimentation and ongoing product partnership to compound results.",
+        output: ["Continuous experiments", "A/B testing", "Constant improvement"],
+        metrics: [{ value: "+32%", label: "Engagement" }, { value: "-24%", label: "Bounce rate" }, { value: "+18%", label: "Conversion" }] },
     ],
+    pills:              ["Clarity at every step", "Aligned with your goals", "Built for speed and quality"],
+    pillDescs:          ["Align strategy, users and business goals.", "Iterate fast, validate and build without friction.", "Interaction, motion and detail at every touchpoint."],
+    sidebarTagline:     "Structured, transparent, cinematic.",
+    sidebarSub:         "You always know what's next.",
+    transparencyItems:  ["Weekly check-ins", "Shared roadmap", "Full visibility"],
   },
   why: {
     eyebrow:            "Why us",
@@ -188,10 +213,17 @@ const en: Translations = {
     ],
   },
   work: {
-    eyebrow:     "Featured work",
-    titlePart1:  "Selected pieces from",
-    accent:      "our 2025–2026 lab.",
-    description: "A few products we engineered end-to-end. Every detail tuned for clarity, depth and feel.",
+    eyebrow:       "Featured work",
+    titlePart1:    "Selected pieces from",
+    accent:        "our 2025–2026 lab.",
+    description:   "A few products we engineered end-to-end. Every detail tuned for clarity, depth and feel.",
+    scrollExplore: "Scroll to explore",
+    items: [
+      { title: "Nebula Analytics", tag: "SaaS · Dashboard" },
+      { title: "Helio Wallet",     tag: "Fintech · Web App" },
+      { title: "Orbit AI",         tag: "AI · Marketing site" },
+      { title: "Lumen CMS",        tag: "Platform · Tooling" },
+    ],
   },
   testimonials: {
     eyebrow:    "Loved by founders",
@@ -253,8 +285,8 @@ const en: Translations = {
     formSent:      "Message sent!",
     contactTitle:  "Or reach us directly",
     contactMethods: [
-      { icon: "✉", label: "Send an email", value: "hello@uxcodestudio.com", href: "mailto:hello@uxcodestudio.com", hint: "We reply within 24h" },
-      { icon: "✆", label: "Call us", value: "+1 (000) 000-0000", href: "tel:+10000000000", hint: "Mon–Fri · 9am–6pm" },
+      { icon: "✉", label: "Send an email", value: "info@uxcodestudio.com", href: "mailto:info@uxcodestudio.com", hint: "We reply within 24h" },
+      { icon: "✆", label: "Call us", value: "+1 562-269-5923", href: "tel:+15622695923", hint: "Mon–Fri · 9am–6pm" },
       { icon: "◈", label: "Book a meeting", value: "Schedule 30 min", href: "https://calendly.com/uxcodestudio", hint: "Free discovery call" },
     ],
   },
@@ -301,6 +333,7 @@ const es: Translations = {
     titlePart1:   "Construido",
     titleEmphasis:"para",
     titlePart2:   "el impulso,",
+    closeLabel:   "Cerrar",
     accent:       "diseñado para asombrar.",
     description:  "Un estudio. Seis disciplinas. Un flujo de trabajo optimizado para lanzar victorias medibles rápido — sin sacrificar la calidad.",
     items: [
@@ -319,12 +352,27 @@ const es: Translations = {
     headlineAccent:   "resultados cinematográficos.",
     sub:              "Cinco fases precisas — sin relleno, sin sorpresas.",
     steps: [
-      { n: "01", title: "Descubrir",       body: "Talleres profundos para alinear objetivos de negocio, audiencia y la ventaja competitiva que estamos construyendo." },
-      { n: "02", title: "Definir",         body: "Estrategia, fundamentos de marca, IA y principios de movimiento documentados como especificación viva." },
-      { n: "03", title: "Diseñar",         body: "UI de alta fidelidad, prototipado y coreografía mapeada a objetivos de conversión reales." },
-      { n: "04", title: "Construir",       body: "Ingeniería de producción con Next.js, TypeScript y un sistema de componentes probado." },
-      { n: "05", title: "Lanzar & Escalar",body: "Analytics, experimentación y alianza continua de producto para multiplicar resultados." },
+      { n: "01", tag: "Investigación", title: "Descubrir",       body: "Talleres profundos para alinear objetivos de negocio, audiencia y la ventaja competitiva que estamos construyendo.",
+        output: ["Mapa de oportunidades", "Auditoría UX", "Insights prioritarios"],
+        metrics: [{ value: "12+", label: "Insights clave" }, { value: "8", label: "Entrevistas" }, { value: "25+", label: "Métricas analizadas" }] },
+      { n: "02", tag: "Estrategia",    title: "Definir",         body: "Estrategia, fundamentos de marca, IA y principios de movimiento documentados como especificación viva.",
+        output: ["Arquitectura de información", "Flujos de usuario", "Wireframes estructurales"],
+        metrics: [{ value: "IA", label: "Arquitectura" }, { value: "Flujos", label: "Recorridos" }, { value: "Specs", label: "Doc viva" }] },
+      { n: "03", tag: "Diseño",        title: "Diseñar",         body: "UI de alta fidelidad, prototipado y coreografía mapeada a objetivos de conversión reales.",
+        output: ["Diseño UI", "Sistema visual", "Prototipo interactivo"],
+        metrics: [{ value: "120fps", label: "Motion" }, { value: "50+", label: "Interacciones" }, { value: "98%", label: "Feedback positivo" }] },
+      { n: "04", tag: "Desarrollo",    title: "Construir",       body: "Ingeniería de producción con Next.js, TypeScript y un sistema de componentes probado.",
+        output: ["Componentes escalables", "Rendimiento optimizado", "Codebase profesional"],
+        metrics: [{ value: "0.8s", label: "LCP" }, { value: "0.01", label: "CLS" }, { value: "0.2s", label: "TTFB" }] },
+      { n: "05", tag: "Optimización",  title: "Lanzar & Escalar",body: "Analytics, experimentación y alianza continua de producto para multiplicar resultados.",
+        output: ["Experimentación continua", "A/B testing", "Mejora constante"],
+        metrics: [{ value: "+32%", label: "Engagement" }, { value: "-24%", label: "Bounce rate" }, { value: "+18%", label: "Conversión" }] },
     ],
+    pills:             ["Claridad en cada paso", "Alineado con tus metas", "Velocidad y calidad"],
+    pillDescs:         ["Alineamos estrategia, usuarios y objetivos de negocio.", "Iteramos rápido, validamos y construimos sin fricción.", "Interacción, motion y detalle en cada punto de contacto."],
+    sidebarTagline:    "Estructurado, transparente, cinematográfico.",
+    sidebarSub:        "Siempre sabes qué sigue.",
+    transparencyItems: ["Check-ins semanales", "Roadmap compartido", "Visibilidad total"],
   },
   why: {
     eyebrow:            "Por qué nosotros",
@@ -350,10 +398,17 @@ const es: Translations = {
     ],
   },
   work: {
-    eyebrow:     "Trabajo destacado",
-    titlePart1:  "Piezas seleccionadas de",
-    accent:      "nuestro laboratorio 2025–2026.",
-    description: "Algunos productos que construimos de principio a fin. Cada detalle calibrado para claridad, profundidad y sensación.",
+    eyebrow:       "Trabajo destacado",
+    titlePart1:    "Piezas seleccionadas de",
+    accent:        "nuestro laboratorio 2025–2026.",
+    description:   "Algunos productos que construimos de principio a fin. Cada detalle calibrado para claridad, profundidad y sensación.",
+    scrollExplore: "Desliza para explorar",
+    items: [
+      { title: "Nebula Analytics", tag: "SaaS · Dashboard" },
+      { title: "Helio Wallet",     tag: "Fintech · App Web" },
+      { title: "Orbit AI",         tag: "IA · Sitio de marketing" },
+      { title: "Lumen CMS",        tag: "Plataforma · Herramientas" },
+    ],
   },
   testimonials: {
     eyebrow:    "Amados por founders",
@@ -415,8 +470,8 @@ const es: Translations = {
     formSent:      "¡Mensaje enviado!",
     contactTitle:  "O contáctanos directamente",
     contactMethods: [
-      { icon: "✉", label: "Envíanos un email", value: "hello@uxcodestudio.com", href: "mailto:hello@uxcodestudio.com", hint: "Respondemos en 24h" },
-      { icon: "✆", label: "Llámanos", value: "+1 (000) 000-0000", href: "tel:+10000000000", hint: "Lun–Vie · 9am–6pm" },
+      { icon: "✉", label: "Envíanos un email", value: "info@uxcodestudio.com", href: "mailto:info@uxcodestudio.com", hint: "Respondemos en 24h" },
+      { icon: "✆", label: "Llámanos", value: "+1 562-269-5923", href: "tel:+15622695923", hint: "Lun–Vie · 9am–6pm" },
       { icon: "◈", label: "Agenda una cita", value: "Reservar 30 min", href: "https://calendly.com/uxcodestudio", hint: "Llamada de discovery gratis" },
     ],
   },

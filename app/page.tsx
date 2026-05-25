@@ -2,9 +2,6 @@ import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import WarpStars from "@/components/WarpStars";
 import Process from "@/components/Process";
-import WhyChooseUs from "@/components/WhyChooseUs";
-import FeaturedWork from "@/components/FeaturedWork";
-import Testimonials from "@/components/Testimonials";
 import Pricing from "@/components/Pricing";
 import FAQ from "@/components/FAQ";
 import FinalCTA from "@/components/FinalCTA";
@@ -17,9 +14,6 @@ export default function HomePage() {
       <Hero />
       <Services />
       <Process />
-      <WhyChooseUs />
-      <FeaturedWork />
-      <Testimonials />
       <Pricing />
       <FAQ />
       <FinalCTA />

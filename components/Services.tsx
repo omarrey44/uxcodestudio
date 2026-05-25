@@ -19,6 +19,62 @@ const SERVICE_ICONS = [
   <svg key="phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><path d="M12 18h.01"/></svg>,
 ];
 
+/* ── Service hero images (panel top) ────────────────────────────────────────── */
+const SERVICE_HERO_IMAGES = [
+  // 0 Marketing — web design workspace
+  "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=900&q=80&fit=crop&auto=format",
+  // 1 Growth — analytics on laptop
+  "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&q=80&fit=crop&auto=format",
+  // 2 Web Apps — UI dashboard design
+  "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=900&q=80&fit=crop&auto=format",
+  // 3 SaaS — developer + platform
+  "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=900&q=80&fit=crop&auto=format",
+  // 4 Brand — logo / visual identity
+  "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=900&q=80&fit=crop&auto=format",
+  // 5 Mobile — app screens
+  "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=900&q=80&fit=crop&auto=format",
+];
+
+/* ── Service example images (3 per service shown in gallery) ─────────────────── */
+const SERVICE_EXAMPLES: { src: string; caption: string; captionEs: string }[][] = [
+  // 0 Marketing
+  [
+    { src: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=440&q=75&fit=crop&auto=format", caption: "Premium landing page", captionEs: "Landing premium" },
+    { src: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=440&q=75&fit=crop&auto=format", caption: "Product showcase", captionEs: "Showcase de producto" },
+    { src: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=440&q=75&fit=crop&auto=format", caption: "Brand website", captionEs: "Sitio de marca" },
+  ],
+  // 1 Growth
+  [
+    { src: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=440&q=75&fit=crop&auto=format", caption: "Conversion dashboard", captionEs: "Dashboard de conversión" },
+    { src: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=440&q=75&fit=crop&auto=format", caption: "Analytics overview", captionEs: "Panel de analytics" },
+    { src: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=440&q=75&fit=crop&auto=format", caption: "Growth metrics", captionEs: "Métricas de crecimiento" },
+  ],
+  // 2 Web Apps
+  [
+    { src: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=440&q=75&fit=crop&auto=format", caption: "Admin dashboard", captionEs: "Panel de administración" },
+    { src: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=440&q=75&fit=crop&auto=format", caption: "Dev environment", captionEs: "Entorno de desarrollo" },
+    { src: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=440&q=75&fit=crop&auto=format", caption: "Web application", captionEs: "Aplicación web" },
+  ],
+  // 3 SaaS
+  [
+    { src: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=440&q=75&fit=crop&auto=format", caption: "SaaS platform", captionEs: "Plataforma SaaS" },
+    { src: "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=440&q=75&fit=crop&auto=format", caption: "Team workspace", captionEs: "Espacio de equipo" },
+    { src: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=440&q=75&fit=crop&auto=format", caption: "Usage analytics", captionEs: "Analytics de uso" },
+  ],
+  // 4 Brand
+  [
+    { src: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=440&q=75&fit=crop&auto=format", caption: "Brand identity", captionEs: "Identidad de marca" },
+    { src: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=440&q=75&fit=crop&auto=format", caption: "Visual system", captionEs: "Sistema visual" },
+    { src: "https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?w=440&q=75&fit=crop&auto=format", caption: "Brand guidelines", captionEs: "Manual de marca" },
+  ],
+  // 5 Mobile
+  [
+    { src: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=440&q=75&fit=crop&auto=format", caption: "iOS app", captionEs: "App iOS" },
+    { src: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=440&q=75&fit=crop&auto=format", caption: "App analytics", captionEs: "Analytics de app" },
+    { src: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=440&q=75&fit=crop&auto=format", caption: "Mobile UX", captionEs: "UX móvil" },
+  ],
+];
+
 /* ── Card visual configs ────────────────────────────────────────────────────── */
 const VISUALS = [
   { bg: "linear-gradient(135deg,#3b30cc 0%,#4f6ef7 100%)", glow: "rgba(79,110,247,0.55)",  glowBg: "rgba(79,110,247,0.10)",  border: "rgba(79,110,247,0.35)"  },
@@ -188,198 +244,44 @@ function CheckIcon({ color }: { color: string }) {
   );
 }
 
-/* ── Panel hero visuals (one per service) ──────────────────────────────────── */
-function PanelHeroVisual({ idx, detail }: { idx: number; detail: ServiceDetail }) {
-  const ac = detail.accentColor;
-  const rgb = detail.accentRgb;
-
-  const visuals = [
-    /* 0 — Marketing: browser window mockup */
-    <div key="mkt" className="relative w-full h-full flex items-center justify-center overflow-hidden">
-      <motion.div
-        initial={{ y: 10, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.15, duration: 0.5 }}
-        className="w-[85%] rounded-xl border border-white/10 bg-[#060912]/80 shadow-2xl overflow-hidden"
-      >
-        <div className="h-7 bg-white/[0.04] flex items-center px-3 gap-1.5 border-b border-white/[0.06]">
-          <span className="w-2.5 h-2.5 rounded-full bg-red-500/50"/>
-          <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/50"/>
-          <span className="w-2.5 h-2.5 rounded-full bg-green-500/50"/>
-          <span className="flex-1 mx-4 h-3.5 rounded-full bg-white/[0.06]"/>
-        </div>
-        <div className="p-4 space-y-2.5">
-          <motion.div initial={{ width: "30%" }} animate={{ width: "55%" }} transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-            className="h-4 rounded" style={{ background: `rgba(${rgb},0.35)` }}/>
-          <div className="h-2.5 w-4/5 rounded bg-white/[0.08]"/>
-          <div className="h-2.5 w-3/5 rounded bg-white/[0.06]"/>
-          <div className="flex gap-2 mt-3">
-            <div className="h-7 w-24 rounded-full" style={{ background: ac + "33", border: `1px solid ${ac}44` }}/>
-            <div className="h-7 w-20 rounded-full bg-white/[0.05] border border-white/[0.08]"/>
-          </div>
-        </div>
-      </motion.div>
-      <motion.div animate={{ opacity: [0.4, 0.7, 0.4] }} transition={{ duration: 3, repeat: Infinity }}
-        className="absolute bottom-4 right-8 w-20 h-20 rounded-full blur-2xl"
-        style={{ background: `rgba(${rgb},0.4)` }}/>
-    </div>,
-
-    /* 1 — Landing Pages: conversion bar chart */
-    <div key="lp" className="relative w-full h-full flex items-end justify-center pb-6 gap-3 overflow-hidden">
-      {[40, 55, 48, 72, 65, 88, 95].map((h, i) => (
-        <motion.div key={i} className="w-8 rounded-t-md relative"
-          initial={{ height: 0 }}
-          animate={{ height: `${h}%` }}
-          transition={{ delay: 0.1 + i * 0.07, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          style={{ background: i === 6 ? ac : `rgba(${rgb},${0.2 + i * 0.06})` }}
-        >
-          {i === 6 && (
-            <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}
-              className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold whitespace-nowrap"
-              style={{ color: ac }}>+43%</motion.div>
-          )}
-        </motion.div>
-      ))}
-      <motion.div animate={{ opacity: [0.3, 0.6, 0.3] }} transition={{ duration: 2.5, repeat: Infinity }}
-        className="absolute top-3 right-6 w-16 h-16 rounded-full blur-2xl"
-        style={{ background: `rgba(${rgb},0.5)` }}/>
-    </div>,
-
-    /* 2 — Web Apps: terminal */
-    <div key="wa" className="relative w-full h-full flex items-center justify-center overflow-hidden">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.1, duration: 0.4 }}
-        className="w-[85%] rounded-xl border border-white/10 bg-[#040408]/90 overflow-hidden font-mono text-xs"
-      >
-        <div className="h-6 bg-white/[0.03] flex items-center px-3 gap-1.5 border-b border-white/[0.06]">
-          <span className="w-2 h-2 rounded-full bg-white/20"/>
-          <span className="text-white text-[10px] ml-1">Terminal</span>
-        </div>
-        <div className="p-3 space-y-1.5">
-          {[
-            { t: "$ npm run build", c: "text-white", d: 0.2 },
-            { t: "✓ Compiled successfully", c: "text-green-400/80", d: 0.5 },
-            { t: "✓ API routes ready (12)", c: "text-green-400/60", d: 0.7 },
-            { t: "✓ Database connected", c: "text-green-400/60", d: 0.9 },
-            { t: "→ Deploying to production…", c: "", d: 1.1, ac: true },
-          ].map((l, i) => (
-            <motion.div key={i} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: l.d, duration: 0.3 }}
-              className={`${l.c}`} style={l.ac ? { color: ac } : {}}>{l.t}</motion.div>
-          ))}
-          <motion.span initial={{ opacity: 0 }} animate={{ opacity: [0, 1, 0] }}
-            transition={{ delay: 1.4, duration: 0.8, repeat: Infinity }}
-            className="inline-block w-1.5 h-3.5 rounded-sm" style={{ background: ac }}/>
-        </div>
-      </motion.div>
-    </div>,
-
-    /* 3 — SaaS: MRR line chart */
-    <div key="saas" className="relative w-full h-full flex items-center justify-center overflow-hidden">
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.1 }}
-        className="w-[85%]"
-      >
-        <div className="text-[10px] text-white mb-2 font-mono">Monthly Recurring Revenue</div>
-        <svg viewBox="0 0 200 80" className="w-full">
-          <defs>
-            <linearGradient id={`saas-grad-${idx}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={ac} stopOpacity="0.3"/>
-              <stop offset="100%" stopColor={ac} stopOpacity="0.0"/>
-            </linearGradient>
-          </defs>
-          <motion.path
-            d="M0 70 C20 65,40 55,60 45 C80 35,100 30,120 20 C140 10,160 8,200 4"
-            fill="none" stroke={ac} strokeWidth="2" strokeLinecap="round"
-            initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-            transition={{ delay: 0.3, duration: 1.2, ease: "easeInOut" }}
-          />
-          <motion.path
-            d="M0 70 C20 65,40 55,60 45 C80 35,100 30,120 20 C140 10,160 8,200 4 L200 80 L0 80 Z"
-            fill={`url(#saas-grad-${idx})`}
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            transition={{ delay: 1.0, duration: 0.4 }}
-          />
-          <motion.circle cx="200" cy="4" r="3" fill={ac}
-            initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 1.4 }}/>
-          <motion.text x="160" y="18" fill={ac} fontSize="8" fontFamily="monospace"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }}>
-            +MRR ↑
-          </motion.text>
-        </svg>
-        <div className="flex gap-4 mt-2">
-          {["$12k", "$28k", "$64k"].map((v, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 + i * 0.1 }} className="text-center">
-              <div className="text-sm font-bold" style={{ color: ac }}>{v}</div>
-              <div className="text-[9px] text-white">mo {i + 1}</div>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-    </div>,
-
-    /* 4 — Brand: color palette + type */
-    <div key="brand" className="relative w-full h-full flex items-center justify-center gap-6 overflow-hidden px-6">
-      <div className="flex flex-col gap-2">
-        {["#a855f7","#7c3aed","#4f6ef7","#1e1040"].map((c, i) => (
-          <motion.div key={i} initial={{ width: 0 }} animate={{ width: 48 }}
-            transition={{ delay: 0.1 + i * 0.08, duration: 0.5, ease: [0.22,1,0.36,1] }}
-            className="h-10 rounded-lg overflow-hidden" style={{ background: c, minWidth: 0 }}/>
-        ))}
-      </div>
-      <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }}
-        className="flex flex-col gap-1">
-        <div className="text-2xl font-bold tracking-tight text-white" style={{ fontFamily: "system-ui" }}>Brand</div>
-        <div className="text-sm text-white tracking-[0.2em] uppercase">Identity</div>
-        <div className="mt-2 flex gap-1.5">
-          {["Aa","Bb","Cc"].map((l, i) => (
-            <motion.span key={l} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 + i * 0.1 }}
-              className="text-xs px-2 py-1 rounded border border-white/[0.08] text-white">{l}</motion.span>
-          ))}
-        </div>
-      </motion.div>
-    </div>,
-
-    /* 5 — Mobile: iPhone mockup */
-    <div key="mob" className="relative w-full h-full flex items-center justify-center overflow-hidden">
-      <motion.div
-        initial={{ y: 12, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.1, duration: 0.5, ease: [0.22,1,0.36,1] }}
-        className="relative w-24 h-44 rounded-[22px] border-2 border-white/20 bg-[#060912]/80 overflow-hidden shadow-2xl"
-      >
-        {/* notch */}
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 w-10 h-3 rounded-full bg-black/60 z-10"/>
-        {/* screen content */}
-        <div className="absolute inset-0 pt-8 p-2 space-y-1.5">
-          <div className="h-4 w-3/4 rounded-md" style={{ background: `rgba(${rgb},0.4)` }}/>
-          <div className="h-2.5 w-full rounded bg-white/[0.08]"/>
-          <div className="h-2.5 w-4/5 rounded bg-white/[0.06]"/>
-          <div className="mt-2 grid grid-cols-2 gap-1">
-            <div className="h-10 rounded-lg bg-white/[0.05]"/>
-            <div className="h-10 rounded-lg" style={{ background: `rgba(${rgb},0.15)` }}/>
-          </div>
-          <motion.div animate={{ opacity: [0.6, 1, 0.6] }} transition={{ duration: 2, repeat: Infinity }}
-            className="mx-auto mt-2 h-6 w-16 rounded-full"
-            style={{ background: `rgba(${rgb},0.5)` }}/>
-        </div>
-      </motion.div>
-      <motion.div animate={{ opacity: [0.2, 0.5, 0.2] }} transition={{ duration: 2.5, repeat: Infinity }}
-        className="absolute w-32 h-32 rounded-full blur-3xl"
-        style={{ background: `rgba(${rgb},0.4)` }}/>
-    </div>,
-  ];
-
+/* ── Panel hero visual — real photo per service ──────────────────────────────── */
+function ServicePanelHero({ idx, detail }: { idx: number; detail: ServiceDetail }) {
   return (
-    <div className="relative w-full h-full" style={{ background: detail.heroBg }}>
-      <div className="absolute inset-0 opacity-20"
-        style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.12) 1px, transparent 0)", backgroundSize: "24px 24px" }}/>
-      {visuals[idx]}
+    <div className="relative w-full h-full overflow-hidden">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={SERVICE_HERO_IMAGES[idx]}
+        alt={detail.eyebrow}
+        className="h-full w-full object-cover opacity-65"
+        loading="lazy"
+      />
+      <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, rgba(${detail.accentRgb},0.4) 0%, transparent 55%)` }} />
+      <div className="absolute inset-0" style={{ background: "rgba(6,7,14,0.38)" }} />
+      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#060712] to-transparent" />
+    </div>
+  );
+}
+
+/* ── Examples gallery ──────────────────────────────────────────────────────── */
+function ExamplesGallery({ idx, lang }: { idx: number; lang: "en" | "es" }) {
+  const examples = SERVICE_EXAMPLES[idx];
+  return (
+    <div className="grid grid-cols-3 gap-2">
+      {examples.map((ex) => (
+        <div key={ex.src} className="relative aspect-[4/3] overflow-hidden rounded-lg border border-white/[0.07] group">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={ex.src}
+            alt={lang === "es" ? ex.captionEs : ex.caption}
+            className="h-full w-full object-cover opacity-55 transition-opacity duration-300 group-hover:opacity-80"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+          <div className="absolute bottom-1.5 left-2 text-[9px] font-medium text-white/70 leading-none">
+            {lang === "es" ? ex.captionEs : ex.caption}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -398,24 +300,26 @@ type PanelProps = {
 
 const PANEL_LABELS = {
   en: {
-    included:   "What's Included",
-    impact:     "Impact",
-    arch:       "Architecture",
-    stack:      "Tech Stack",
-    idealFor:   "Ideal For",
-    features:   "AI & Advanced Features",
-    deliver:    "Deliverables",
-    aesthetic:  "Aesthetic Direction",
+    included:      "What's Included",
+    impact:        "Impact",
+    arch:          "Architecture",
+    stack:         "Tech Stack",
+    idealFor:      "Ideal For",
+    features:      "AI & Advanced Features",
+    deliver:       "Deliverables",
+    aesthetic:     "Aesthetic Direction",
+    workExamples:  "Work Examples",
   },
   es: {
-    included:   "Incluye",
-    impact:     "Impacto",
-    arch:       "Arquitectura",
-    stack:      "Stack Tecnológico",
-    idealFor:   "Ideal Para",
-    features:   "IA y Funciones Avanzadas",
-    deliver:    "Entregables",
-    aesthetic:  "Dirección Estética",
+    included:      "Incluye",
+    impact:        "Impacto",
+    arch:          "Arquitectura",
+    stack:         "Stack Tecnológico",
+    idealFor:      "Ideal Para",
+    features:      "IA y Funciones Avanzadas",
+    deliver:       "Entregables",
+    aesthetic:     "Dirección Estética",
+    workExamples:  "Ejemplos de Trabajo",
   },
 };
 
@@ -460,7 +364,7 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
 
         {/* Hero visual — flex-none, fixed height */}
         <div className="relative flex-none h-[155px]">
-          <PanelHeroVisual idx={idx} detail={detail}/>
+          <ServicePanelHero idx={idx} detail={detail}/>
           <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[#060712] to-transparent pointer-events-none"/>
         </div>
 
@@ -471,6 +375,12 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
             <motion.p variants={fadeUp} className="text-sm leading-relaxed text-white">
               {copy.extendedDesc}
             </motion.p>
+
+            {/* Examples gallery */}
+            <motion.div variants={fadeUp}>
+              <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-2">{labels.workExamples}</div>
+              <ExamplesGallery idx={idx} lang={lang} />
+            </motion.div>
 
             {/* Two-column layout for Included + Impact */}
             <motion.div variants={fadeUp} className="grid grid-cols-2 gap-4">
@@ -629,10 +539,14 @@ type ServiceCardProps = {
   isActive: boolean;
   isDimmed: boolean;
   isMobile: boolean;
+  closeLabel: string;
+  lang: "en" | "es";
   onClick: () => void;
 };
 
-function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, glowBg, border, index, detail, isActive, isDimmed, isMobile, onClick }: ServiceCardProps) {
+function ServiceCard({ title, description, svgIcon, tags, learnMore, closeLabel, lang, bg, glow, glowBg, border, index, detail, isActive, isDimmed, isMobile, onClick }: ServiceCardProps) {
+  const mobileCopy = lang === "es" ? detail.es : detail;
+  const mobileLabels = PANEL_LABELS[lang];
   return (
     <motion.div
       layout
@@ -694,7 +608,7 @@ function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, g
         {/* Learn more */}
         <div className="mt-6 flex items-center gap-1.5 text-sm font-medium transition-colors duration-300"
           style={{ color: isActive ? detail.accentColor : "#ffffff" }}>
-          <span>{isActive && isMobile ? "Close" : learnMore}</span>
+          <span>{isActive && isMobile ? closeLabel : learnMore}</span>
           <motion.span animate={{ rotate: isActive && isMobile ? 180 : 0, x: isActive && isMobile ? 0 : 0 }}
             transition={{ duration: 0.25 }}>
             {isMobile ? "↓" : "→"}
@@ -714,13 +628,19 @@ function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, g
           >
             <div className="px-7 py-6 space-y-6">
               {/* Extended desc */}
-              <p className="text-sm leading-relaxed text-white">{detail.extendedDesc}</p>
+              <p className="text-sm leading-relaxed text-white">{mobileCopy.extendedDesc}</p>
+
+              {/* Examples gallery */}
+              <div>
+                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-2">{mobileLabels.workExamples}</div>
+                <ExamplesGallery idx={index} lang={lang} />
+              </div>
 
               {/* Includes */}
               <div>
-                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-3">What&apos;s Included</div>
+                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-3">{mobileLabels.included}</div>
                 <div className="grid grid-cols-1 gap-2">
-                  {detail.includes.map((item) => (
+                  {mobileCopy.includes.map((item) => (
                     <div key={item} className="flex items-center gap-2">
                       <CheckIcon color={detail.accentColor}/>
                       <span className="text-[13px] text-white">{item}</span>
@@ -731,7 +651,7 @@ function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, g
 
               {/* Metrics */}
               <div className="grid grid-cols-3 gap-3">
-                {detail.metrics.map((m) => (
+                {mobileCopy.metrics.map((m) => (
                   <div key={m.label} className="rounded-xl border border-white/[0.07] bg-white/[0.03] p-3 text-center">
                     <div className="text-base font-bold" style={{ color: detail.accentColor }}>{m.value}</div>
                     <div className="text-[10px] text-white mt-0.5">{m.label}</div>
@@ -745,7 +665,7 @@ function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, g
                 style={{ background: `linear-gradient(135deg,${detail.accentColor}cc,${detail.accentColor})` }}
                 onClick={(e) => { e.stopPropagation(); }}
               >
-                {detail.cta} →
+                {mobileCopy.cta} →
               </button>
             </div>
           </motion.div>
@@ -828,6 +748,8 @@ export default function Services() {
               description={s.description}
               tags={s.tags}
               learnMore={s.learnMore}
+              closeLabel={t.services.closeLabel}
+              lang={lang}
               svgIcon={s.svgIcon}
               bg={s.bg}
               glow={s.glow}
