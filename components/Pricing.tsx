@@ -349,9 +349,9 @@ export default function Pricing() {
     >
       {/* Dark site-palette background */}
       <div className="pointer-events-none absolute inset-0" style={{ background: "linear-gradient(160deg, #050508 0%, #07091c 35%, #050a10 65%, #050508 100%)" }} />
-      <div className="pointer-events-none absolute -left-40 top-1/4 h-[600px] w-[600px] rounded-full bg-accent-blue/[0.07] blur-[140px]" />
-      <div className="pointer-events-none absolute -right-32 bottom-1/3 h-[500px] w-[500px] rounded-full bg-accent-violet/[0.06] blur-[120px]" />
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-cyan/[0.04] blur-[100px]" />
+      <div className="pointer-events-none absolute -left-40 top-1/4 h-[600px] w-[600px] rounded-full bg-accent-blue/[0.07] blur-[140px] will-change-transform" style={{ transform: "translateZ(0)" }} />
+      <div className="pointer-events-none absolute -right-32 bottom-1/3 h-[500px] w-[500px] rounded-full bg-accent-violet/[0.06] blur-[120px] will-change-transform" style={{ transform: "translateZ(0)" }} />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-cyan/[0.04] blur-[100px] will-change-transform" style={{ transform: "translateZ(0) translateX(-50%) translateY(-50%)" }} />
 
       {/* Top/bottom edge fades */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-40 -z-0"

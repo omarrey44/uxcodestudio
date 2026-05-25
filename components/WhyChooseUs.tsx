@@ -11,9 +11,9 @@ export default function WhyChooseUs() {
   return (
     <section className="section-alt section-separator relative overflow-hidden py-24 md:py-32">
       <div className="absolute inset-0">
-        <div className="absolute left-1/2 top-1/2 h-[750px] w-[750px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-cyan/[0.13] blur-[120px]" />
-        <div className="absolute -right-24 top-1/4 h-[450px] w-[450px] rounded-full bg-accent-violet/[0.09] blur-[100px]" />
-        <div className="absolute -left-16 bottom-1/4 h-[350px] w-[400px] rounded-full bg-accent-blue/[0.08] blur-3xl" />
+        <div className="absolute left-1/2 top-1/2 h-[750px] w-[750px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-cyan/[0.13] blur-[120px] will-change-transform" style={{ transform: "translateZ(0) translateX(-50%) translateY(-50%)" }} />
+        <div className="absolute -right-24 top-1/4 h-[450px] w-[450px] rounded-full bg-accent-violet/[0.09] blur-[100px] will-change-transform" style={{ transform: "translateZ(0)" }} />
+        <div className="absolute -left-16 bottom-1/4 h-[350px] w-[400px] rounded-full bg-accent-blue/[0.08] blur-3xl will-change-transform" style={{ transform: "translateZ(0)" }} />
       </div>
 
       <div className="container-x relative z-10">
@@ -67,8 +67,8 @@ export default function WhyChooseUs() {
 function StatCard({ value, suffix, label, sub, index }: { value: number; suffix: string; label: string; sub: string; index: number }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.9, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
       className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-6 transition-colors hover:border-white/20"
