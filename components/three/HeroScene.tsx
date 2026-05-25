@@ -31,8 +31,9 @@ type OrbitRobotProps = {
   uxOn?: boolean;
 };
 
-function OrbitRobot({ ledColor = "#00d8ff", uxOn = false, ...props }: OrbitRobotProps) {
+function OrbitRobot({ ledColor = "#ffffff", uxOn = false, ...props }: OrbitRobotProps) {
   const group = useRef<THREE.Group>(null);
+  const eyeLight = useRef<THREE.PointLight>(null);
   const { scene, animations } = useGLTF(MODEL_URL);
   const { actions } = useAnimations(animations, group);
   const { pointer } = useThree();
@@ -131,18 +132,21 @@ function OrbitRobot({ ledColor = "#00d8ff", uxOn = false, ...props }: OrbitRobot
       const blinkCycle = elapsedRef.current % 5.0;
       const blink = blinkCycle > 4.82 ? 0.0 : 1.0;
       const pulse = 15 + Math.sin(elapsedRef.current * 1.8) * 3; // 12–18
-      ledMats.current.forEach((m) => { m.emissiveIntensity = pulse * blink; });
+      const intensity = pulse * blink;
+      ledMats.current.forEach((m) => { m.emissiveIntensity = intensity; });
+      if (eyeLight.current) eyeLight.current.intensity = intensity * 0.6;
     } else {
       group.current.rotation.y = THREE.MathUtils.damp(group.current.rotation.y, 0, 3, delta);
       group.current.rotation.x = THREE.MathUtils.damp(group.current.rotation.x, 0, 3, delta);
+      if (eyeLight.current) eyeLight.current.intensity = 0;
     }
   });
 
   return (
     <group ref={group} {...props}>
       <primitive object={model} />
-
-      {/* UX text — toggles via switch in HeroScene wrapper */}
+      {/* Eye glow light — white, no shadows, positioned at face level */}
+      <pointLight ref={eyeLight} color="#ffffff" intensity={0} distance={2.2} decay={2} position={[0, 0.82, 0.38]} />
     </group>
   );
 }
