@@ -208,14 +208,26 @@ export default function Hero() {
         className="absolute inset-x-0 bottom-8 mx-auto flex w-fit flex-col items-center gap-1.5"
       >
         {/* Mouse body */}
-        <svg width="22" height="34" viewBox="0 0 22 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="1" y="1" width="20" height="32" rx="10" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
-          {/* Scroll wheel dot — bounces down */}
+        <svg width="24" height="38" viewBox="0 0 24 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="wheel-glow" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur stdDeviation="2.5" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
+          {/* Outer shell */}
+          <rect x="1" y="1" width="22" height="36" rx="11"
+            stroke="rgba(0,212,255,0.35)" strokeWidth="1.5" />
+          {/* Inner top half highlight */}
+          <rect x="1" y="1" width="22" height="18" rx="11"
+            fill="rgba(0,212,255,0.04)" />
+          {/* Scroll wheel — cyan glow + bounce + fade */}
           <motion.rect
-            x="9.5" y="6" width="3" height="6" rx="1.5"
-            fill="rgba(255,255,255,0.9)"
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+            x="10.5" y="7" width="3" height="7" rx="1.5"
+            fill="#00d4ff"
+            filter="url(#wheel-glow)"
+            animate={{ y: [0, 10, 0], opacity: [1, 0.2, 1] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: [0.4, 0, 0.6, 1] }}
           />
         </svg>
       </motion.div>
