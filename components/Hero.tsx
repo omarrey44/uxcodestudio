@@ -205,12 +205,19 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.4 }}
-        className="absolute inset-x-0 bottom-8 mx-auto flex w-fit flex-col items-center gap-2 text-[10px] uppercase tracking-[0.4em] text-white"
+        className="absolute inset-x-0 bottom-8 mx-auto flex w-fit flex-col items-center gap-1.5"
       >
-        <span>Scroll</span>
-        <span className="relative h-10 w-px overflow-hidden bg-white/10">
-          <span className="absolute inset-x-0 top-0 h-3 animate-[float_2.2s_ease-in-out_infinite] bg-gradient-to-b from-white to-transparent" />
-        </span>
+        {/* Mouse body */}
+        <svg width="22" height="34" viewBox="0 0 22 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="1" width="20" height="32" rx="10" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" />
+          {/* Scroll wheel dot — bounces down */}
+          <motion.rect
+            x="9.5" y="6" width="3" height="6" rx="1.5"
+            fill="rgba(255,255,255,0.9)"
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </svg>
       </motion.div>
     </section>
   );
