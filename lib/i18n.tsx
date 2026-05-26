@@ -7,8 +7,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 type Lang = "en" | "es";
 
 export type ServiceItem   = { title: string; description: string; tags: string[]; learnMore: string };
-export type StepMetric    = { value: string; label: string };
-export type StepItem      = { n: string; tag: string; title: string; body: string; output: string[]; metrics: StepMetric[] };
+export type StepItem      = { n: string; tag: string; title: string; body: string; output: string[] };
 export type StatItem      = { value: number; suffix: string; label: string; sub: string };
 export type PlanItem      = { name: string; price: string; cadence: string; description: string; features: string[]; cta: string; highlight: boolean };
 export type FaqItem       = { q: string; a: string };
@@ -167,21 +166,16 @@ const en: Translations = {
     headlineAccent:   "cinematic outcomes.",
     sub:              "Five tight phases — no fluff, no surprises.",
     steps: [
-      { n: "01", tag: "Research",     title: "Discover",       body: "Deep-dive workshops to align on business goals, audience and the moat we're building.",
-        output: ["Opportunity map", "UX audit", "Priority insights"],
-        metrics: [{ value: "12+", label: "Key insights" }, { value: "8", label: "Interviews" }, { value: "25+", label: "Metrics analyzed" }] },
-      { n: "02", tag: "Strategy",     title: "Define",         body: "Strategy, brand foundations, IA and motion principles documented as a living spec.",
-        output: ["Information architecture", "User flows", "Structural wireframes"],
-        metrics: [{ value: "IA", label: "Architecture" }, { value: "Flows", label: "User journeys" }, { value: "Specs", label: "Living doc" }] },
-      { n: "03", tag: "Design",       title: "Design",         body: "High-fidelity UI, prototyping and choreography mapped to real conversion targets.",
-        output: ["UI design", "Visual system", "Interactive prototype"],
-        metrics: [{ value: "120fps", label: "Motion" }, { value: "50+", label: "Interactions" }, { value: "98%", label: "Feedback" }] },
-      { n: "04", tag: "Development",  title: "Build",          body: "Production engineering with Next.js, TypeScript and a tested component system.",
-        output: ["Scalable components", "Optimized performance", "Pro codebase"],
-        metrics: [{ value: "0.8s", label: "LCP" }, { value: "0.01", label: "CLS" }, { value: "0.2s", label: "TTFB" }] },
-      { n: "05", tag: "Optimization", title: "Launch & Scale", body: "Analytics, experimentation and ongoing product partnership to compound results.",
-        output: ["Continuous experiments", "A/B testing", "Constant improvement"],
-        metrics: [{ value: "+32%", label: "Engagement" }, { value: "-24%", label: "Bounce rate" }, { value: "+18%", label: "Conversion" }] },
+      { n: "01", tag: "Discovery",    title: "We Talk",    body: "We listen first. Tell us about your idea, your audience and what success looks like for you — no forms, no pressure.",
+        output: ["Clear brief", "Timeline defined", "No surprises"] },
+      { n: "02", tag: "Strategy",     title: "We Plan",    body: "We map out what to build, how it looks and what features matter — all in a document you approve before we write a line of code.",
+        output: ["Site structure", "Feature list", "Action plan"] },
+      { n: "03", tag: "Design",       title: "We Design",  body: "Your product comes to life visually — clean, branded and built to impress from the first scroll.",
+        output: ["Unique design", "Mobile-first", "Ready to approve"] },
+      { n: "04", tag: "Development",  title: "We Build",   body: "We code your product fast, clean and tested — landing page, web app or mobile app, ready to ship.",
+        output: ["Clean code", "Fast & optimized", "Tested & stable"] },
+      { n: "05", tag: "Launch",       title: "We Launch",  body: "We go live, make sure everything runs perfectly and stay close for any tweaks you need after launch.",
+        output: ["Live product", "Post-launch support", "You stay in control"] },
     ],
     pills:              ["Clarity at every step", "Aligned with your goals", "Built for speed and quality"],
     pillDescs:          ["Align strategy, users and business goals.", "Iterate fast, validate and build without friction.", "Interaction, motion and detail at every touchpoint."],
@@ -352,21 +346,16 @@ const es: Translations = {
     headlineAccent:   "resultados cinematográficos.",
     sub:              "Cinco fases precisas — sin relleno, sin sorpresas.",
     steps: [
-      { n: "01", tag: "Investigación", title: "Descubrir",       body: "Talleres profundos para alinear objetivos de negocio, audiencia y la ventaja competitiva que estamos construyendo.",
-        output: ["Mapa de oportunidades", "Auditoría UX", "Insights prioritarios"],
-        metrics: [{ value: "12+", label: "Insights clave" }, { value: "8", label: "Entrevistas" }, { value: "25+", label: "Métricas analizadas" }] },
-      { n: "02", tag: "Estrategia",    title: "Definir",         body: "Estrategia, fundamentos de marca, IA y principios de movimiento documentados como especificación viva.",
-        output: ["Arquitectura de información", "Flujos de usuario", "Wireframes estructurales"],
-        metrics: [{ value: "IA", label: "Arquitectura" }, { value: "Flujos", label: "Recorridos" }, { value: "Specs", label: "Doc viva" }] },
-      { n: "03", tag: "Diseño",        title: "Diseñar",         body: "UI de alta fidelidad, prototipado y coreografía mapeada a objetivos de conversión reales.",
-        output: ["Diseño UI", "Sistema visual", "Prototipo interactivo"],
-        metrics: [{ value: "120fps", label: "Motion" }, { value: "50+", label: "Interacciones" }, { value: "98%", label: "Feedback positivo" }] },
-      { n: "04", tag: "Desarrollo",    title: "Construir",       body: "Ingeniería de producción con Next.js, TypeScript y un sistema de componentes probado.",
-        output: ["Componentes escalables", "Rendimiento optimizado", "Codebase profesional"],
-        metrics: [{ value: "0.8s", label: "LCP" }, { value: "0.01", label: "CLS" }, { value: "0.2s", label: "TTFB" }] },
-      { n: "05", tag: "Optimización",  title: "Lanzar & Escalar",body: "Analytics, experimentación y alianza continua de producto para multiplicar resultados.",
-        output: ["Experimentación continua", "A/B testing", "Mejora constante"],
-        metrics: [{ value: "+32%", label: "Engagement" }, { value: "-24%", label: "Bounce rate" }, { value: "+18%", label: "Conversión" }] },
+      { n: "01", tag: "Descubrimiento", title: "Hablamos",      body: "Primero escuchamos. Cuéntanos tu idea, tu audiencia y qué significa el éxito para ti — sin formularios, sin presión.",
+        output: ["Brief claro", "Timeline definido", "Sin sorpresas"] },
+      { n: "02", tag: "Estrategia",     title: "Planificamos",  body: "Mapeamos qué construir, cómo se verá y qué funcionalidades importan — en un documento que apruebas antes de escribir una línea de código.",
+        output: ["Estructura del sitio", "Lista de funciones", "Plan de acción"] },
+      { n: "03", tag: "Diseño",         title: "Diseñamos",     body: "Tu producto cobra vida visualmente — limpio, con tu marca y pensado para impresionar desde el primer scroll.",
+        output: ["Diseño único", "Mobile-first", "Listo para aprobar"] },
+      { n: "04", tag: "Desarrollo",     title: "Construimos",   body: "Codificamos tu producto rápido, limpio y probado — landing page, app web o app móvil, lista para lanzar.",
+        output: ["Código limpio", "Rápido y optimizado", "Probado y estable"] },
+      { n: "05", tag: "Lanzamiento",    title: "Lanzamos",      body: "Lo publicamos, nos aseguramos de que todo funcione perfecto y estamos cerca para cualquier ajuste que necesites.",
+        output: ["Producto en vivo", "Soporte post-lanzamiento", "Tú en control"] },
     ],
     pills:             ["Claridad en cada paso", "Alineado con tus metas", "Velocidad y calidad"],
     pillDescs:         ["Alineamos estrategia, usuarios y objetivos de negocio.", "Iteramos rápido, validamos y construimos sin fricción.", "Interacción, motion y detalle en cada punto de contacto."],

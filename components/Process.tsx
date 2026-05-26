@@ -192,19 +192,10 @@ export default function Process() {
                     <div className="mb-3 flex items-center gap-2.5">
                       <span className="text-[10px] font-medium uppercase tracking-[0.26em] text-accent-cyan/70">{s.tag}</span>
                       <span className="text-white">{STEP_ICONS[i]}</span>
-                      <h3 className="font-display text-[17px] font-bold tracking-tight text-white">{s.title}</h3>
+                      <h3 className="font-display text-[17px] font-bold tracking-tight text-blue-300">{s.title}</h3>
                     </div>
 
                     <p className="text-sm leading-relaxed text-white">{s.body}</p>
-
-                    <div className="mt-4 flex items-start divide-x divide-white/[0.06]">
-                      {s.metrics.map((m) => (
-                        <div key={m.label} className="px-4 first:pl-0 last:pr-0">
-                          <div className="text-sm font-bold tracking-tight text-accent-cyan">{m.value}</div>
-                          <div className="mt-0.5 whitespace-nowrap text-[9px] text-white">{m.label}</div>
-                        </div>
-                      ))}
-                    </div>
 
                     <div className="mt-4 border-l-2 border-accent-cyan/20 pl-3.5">
                       <div className="mb-1.5 text-[9px] font-semibold uppercase tracking-[0.32em] text-accent-cyan/60">Output</div>
