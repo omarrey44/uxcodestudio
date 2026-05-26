@@ -40,6 +40,7 @@ interface Translations {
     items: ServiceItem[];
   };
   process: {
+    eyebrow: string;
     headlinePart1: string;
     headlineEmphasis: string;
     headlinePart2: string;
@@ -93,6 +94,7 @@ interface Translations {
     items: FaqItem[];
   };
   cta: {
+    eyebrow: string;
     badge: string;
     headlinePart1: string;
     headlinePart2: string;
@@ -160,6 +162,7 @@ const en: Translations = {
     ],
   },
   process: {
+    eyebrow:           "Our Process",
     headlinePart1:    "A workflow",
     headlineEmphasis: "tuned",
     headlinePart2:    "for",
@@ -265,6 +268,7 @@ const en: Translations = {
     ],
   },
   cta: {
+    eyebrow:       "Contact",
     badge:         "Let's build",
     headlinePart1: "Ready to ship something",
     headlinePart2: "people screenshot?",
@@ -340,6 +344,7 @@ const es: Translations = {
     ],
   },
   process: {
+    eyebrow:           "Nuestro Proceso",
     headlinePart1:    "Un flujo de trabajo",
     headlineEmphasis: "afinado",
     headlinePart2:    "para",
@@ -445,6 +450,7 @@ const es: Translations = {
     ],
   },
   cta: {
+    eyebrow:       "Contacto",
     badge:         "Construyamos",
     headlinePart1: "¿Listo para lanzar algo",
     headlinePart2: "que la gente comparta?",
