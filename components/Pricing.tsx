@@ -232,7 +232,7 @@ function PricingCard({ plan, index, badge, sectionVisible }: { plan: Plan; index
           {/* Badge */}
           <div className="flex items-start justify-between">
             <span
-              className="text-[11px] font-semibold uppercase tracking-[0.2em]"
+              className="font-display text-2xl font-bold tracking-tight"
               style={{ color: isCenter ? "#7dd3fc" : "#ffffff" }}
             >
               {plan.name}
