@@ -256,7 +256,7 @@ const en: Translations = {
     titlePart1: "Everything you need",
     accent:     "to decide.",
     items: [
-      { q: "How long does a typical project take?",       a: "Landing pages launch in 5–7 days. Full marketing sites: 2–4 weeks. SaaS products: 8–16 weeks depending on scope. We always lock the timeline in writing before kickoff." },
+      { q: "How long does a typical project take?",       a: "Landing pages are ready in 3–5 days. E-commerce sites: 5–10 days. Full web apps and SaaS products: 8–16 weeks depending on scope. We always lock the timeline in writing before kickoff." },
       { q: "Do you work with our existing design or brand?", a: "Absolutely. We can pick up an existing system and elevate it, or build everything from scratch. We'll audit your brand in the discovery call and recommend the most efficient path." },
       { q: "What tech stack do you build on?",            a: "Our default stack is Next.js + TypeScript + Tailwind, with GSAP / Framer Motion / Three.js for motion. We also ship on Webflow, Shopify Hydrogen and headless CMS when it makes sense." },
       { q: "Can you take over an in-progress project?",   a: "Yes — about 30% of our work is rescues. We do a paid 1-week audit, give you a clear plan, and either ship it ourselves or coach your team to the finish line." },
@@ -280,7 +280,7 @@ const en: Translations = {
     contactTitle:  "Or reach us directly",
     contactMethods: [
       { icon: "✉", label: "Send an email", value: "info@uxcodestudio.com", href: "mailto:info@uxcodestudio.com", hint: "We reply within 24h" },
-      { icon: "✆", label: "Call us", value: "+1 562-269-5923", href: "tel:+15622695923", hint: "Mon–Fri · 9am–6pm" },
+      { icon: "✆", label: "Call us", value: "+1 562-269-5923", href: "tel:+15622695923", hint: "Sat–Sun · 9am–5pm" },
       { icon: "◈", label: "Book a meeting", value: "Schedule 30 min", href: "https://calendly.com/uxcodestudio", hint: "Free discovery call" },
     ],
   },
@@ -436,7 +436,7 @@ const es: Translations = {
     titlePart1: "Todo lo que necesitas",
     accent:     "para decidir.",
     items: [
-      { q: "¿Cuánto tiempo dura un proyecto típico?",        a: "Las landing pages se lanzan en 5–7 días. Sitios de marketing completos: 2–4 semanas. Productos SaaS: 8–16 semanas según el alcance. Siempre fijamos el plazo por escrito antes del inicio." },
+      { q: "¿Cuánto tiempo dura un proyecto típico?",        a: "Las landing pages están listas en 3–5 días. Sitios e-commerce: 5–10 días. Apps web y plataformas SaaS: 8–16 semanas según el alcance. Siempre fijamos el plazo por escrito antes de empezar." },
       { q: "¿Trabajan con nuestro diseño o marca existente?",a: "Absolutamente. Podemos tomar un sistema existente y elevarlo, o construir todo desde cero. Auditaremos tu marca en la llamada de discovery y recomendaremos el camino más eficiente." },
       { q: "¿Qué stack tecnológico usan?",                   a: "Nuestro stack principal es Next.js + TypeScript + Tailwind, con GSAP / Framer Motion / Three.js para motion. También trabajamos en Webflow, Shopify Hydrogen y CMS headless cuando tiene sentido." },
       { q: "¿Pueden tomar un proyecto en curso?",            a: "Sí — alrededor del 30% de nuestro trabajo son rescates. Hacemos una auditoría paga de 1 semana, te damos un plan claro, y o bien lo terminamos nosotros o asesoramos a tu equipo hasta la meta." },
@@ -460,7 +460,7 @@ const es: Translations = {
     contactTitle:  "O contáctanos directamente",
     contactMethods: [
       { icon: "✉", label: "Envíanos un email", value: "info@uxcodestudio.com", href: "mailto:info@uxcodestudio.com", hint: "Respondemos en 24h" },
-      { icon: "✆", label: "Llámanos", value: "+1 562-269-5923", href: "tel:+15622695923", hint: "Lun–Vie · 9am–6pm" },
+      { icon: "✆", label: "Llámanos", value: "+1 562-269-5923", href: "tel:+15622695923", hint: "Sáb–Dom · 9am–5pm" },
       { icon: "◈", label: "Agenda una cita", value: "Reservar 30 min", href: "https://calendly.com/uxcodestudio", hint: "Llamada de discovery gratis" },
     ],
   },

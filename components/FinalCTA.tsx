@@ -114,7 +114,12 @@ export default function FinalCTA() {
             <span className="text-white font-semibold">Contact</span>
           </div>
           <h2 className="font-display text-h2 font-bold text-white">
-            {`Let's `}<span className="text-gradient-accent">Build</span>
+            {(() => {
+              const words = t.cta.badge.split(" ");
+              const last = words.pop()!;
+              const rest = words.join(" ");
+              return <>{rest && `${rest} `}<span className="text-gradient-accent">{last}</span></>;
+            })()}
           </h2>
         </motion.div>
 
@@ -146,9 +151,6 @@ export default function FinalCTA() {
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
               <MagneticButton href="mailto:info@uxcodestudio.com" variant="primary">
                 {t.cta.cta1} <span aria-hidden>→</span>
-              </MagneticButton>
-              <MagneticButton href="#work" variant="secondary">
-                {t.cta.cta2}
               </MagneticButton>
             </div>
 
