@@ -656,26 +656,40 @@ export default function Services() {
           description={t.services.description}
         />
 
-        <div className="mt-20 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {services.map((s, i) => (
-            <ServiceCard
-              key={s.title}
-              index={i}
-              title={s.title}
-              description={s.description}
-              tags={s.tags}
-              learnMore={s.learnMore}
-              svgIcon={s.svgIcon}
-              bg={s.bg}
-              glow={s.glow}
-              glowBg={s.glowBg}
-              border={s.border}
-              detail={s.detail}
-              isActive={activeIdx === i}
-              isDimmed={activeIdx !== null && activeIdx !== i}
-              onClick={() => handleToggle(i)}
-            />
-          ))}
+        {/* 5 cards: row 1 → 3 cols; row 2 → 2 cols centered via col-start */}
+        <div className="mt-20 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-6">
+          {services.map((s, i) => {
+            const total = services.length;
+            const remainder = total % 3; // 5 % 3 = 2
+            const lastRowStart = total - remainder; // index where last partial row starts
+            const isLastRow = remainder > 0 && i >= lastRowStart;
+            // Center last 2 in a 6-col grid: positions 2-3 and 4-5 (col-span-2 each)
+            const colClass = isLastRow
+              ? i === lastRowStart
+                ? "lg:col-start-2 lg:col-span-2"
+                : "lg:col-start-4 lg:col-span-2"
+              : "lg:col-span-2";
+            return (
+              <div key={s.title} className={`md:col-span-1 ${colClass}`}>
+                <ServiceCard
+                  index={i}
+                  title={s.title}
+                  description={s.description}
+                  tags={s.tags}
+                  learnMore={s.learnMore}
+                  svgIcon={s.svgIcon}
+                  bg={s.bg}
+                  glow={s.glow}
+                  glowBg={s.glowBg}
+                  border={s.border}
+                  detail={s.detail}
+                  isActive={activeIdx === i}
+                  isDimmed={activeIdx !== null && activeIdx !== i}
+                  onClick={() => handleToggle(i)}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
 
