@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useSpring, useMotionValue, useTransform } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, useScroll, useSpring, useMotionValue, useTransform, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/lib/i18n";
 
 const STEP_ICONS = [
@@ -41,6 +41,116 @@ function SpotlightStepCard({ children, className = "" }: { children: React.React
       <motion.div className="pointer-events-none absolute -inset-2 rounded-2xl"
         style={{ background: spotlightBg, opacity: spotlightOpacity }} />
       {children}
+    </div>
+  );
+}
+
+function MobileStepCarousel({ steps }: { steps: { n: string; tag: string; title: string; body: string; output: string[] }[] }) {
+  const [active, setActive] = useState(0);
+  const dragX = useMotionValue(0);
+
+  function handleDragEnd(_: unknown, info: { offset: { x: number } }) {
+    if (info.offset.x < -40 && active < steps.length - 1) setActive(active + 1);
+    if (info.offset.x > 40 && active > 0) setActive(active - 1);
+  }
+
+  const s = steps[active];
+
+  return (
+    <div className="relative">
+      {/* Step counter */}
+      <div className="mb-4 flex items-center justify-between">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-cyan/60">
+          {active + 1} / {steps.length}
+        </span>
+        <div className="flex gap-1.5">
+          {steps.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActive(i)}
+              className="h-1.5 rounded-full transition-all duration-300"
+              style={{
+                width: i === active ? "24px" : "6px",
+                background: i === active ? "rgba(0,212,255,0.9)" : "rgba(255,255,255,0.2)",
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Drag card */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={active}
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.15}
+          onDragEnd={handleDragEnd}
+          style={{ x: dragX }}
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -40 }}
+          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          className="cursor-grab active:cursor-grabbing select-none rounded-2xl border border-white/[0.1] bg-white/[0.04] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm"
+        >
+          {/* Header */}
+          <div className="mb-4 flex items-center gap-3">
+            <div
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-accent-cyan/50 bg-[#050508] text-sm font-bold tabular-nums text-accent-cyan"
+              style={{ boxShadow: "0 0 12px rgba(0,212,255,0.35)" }}
+            >
+              {s.n}
+            </div>
+            <div>
+              <div className="text-[10px] font-medium uppercase tracking-[0.26em] text-accent-cyan/70">{s.tag}</div>
+              <h3 className="font-display text-base font-bold tracking-tight text-blue-300">{s.title}</h3>
+            </div>
+            <span className="ml-auto text-white">{STEP_ICONS[active]}</span>
+          </div>
+
+          <p className="text-sm leading-relaxed text-white/80">{s.body}</p>
+
+          <div className="mt-4 border-l-2 border-accent-cyan/20 pl-3.5">
+            <div className="mb-1.5 text-[9px] font-semibold uppercase tracking-[0.32em] text-accent-cyan/60">Output</div>
+            <div className="space-y-1.5">
+              {s.output.map((o) => (
+                <div key={o} className="flex items-center gap-2">
+                  <span className="h-px w-3 shrink-0 bg-accent-cyan/35" />
+                  <span className="text-[12px] leading-snug text-white/70">{o}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Swipe hint — only on first view */}
+      {active === 0 && (
+        <motion.p
+          className="mt-3 text-center text-[11px] text-white/30"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}
+        >
+          ← desliza para ver pasos →
+        </motion.p>
+      )}
+
+      {/* Prev / Next buttons */}
+      <div className="mt-4 flex justify-between gap-3">
+        <button
+          onClick={() => setActive((a) => Math.max(0, a - 1))}
+          disabled={active === 0}
+          className="flex-1 rounded-xl border border-white/10 py-2.5 text-sm text-white/50 transition-colors disabled:opacity-30 hover:border-white/20 hover:text-white"
+        >
+          ← Anterior
+        </button>
+        <button
+          onClick={() => setActive((a) => Math.min(steps.length - 1, a + 1))}
+          disabled={active === steps.length - 1}
+          className="flex-1 rounded-xl border border-accent-cyan/30 bg-accent-cyan/10 py-2.5 text-sm text-accent-cyan transition-colors disabled:opacity-30 hover:bg-accent-cyan/20"
+        >
+          Siguiente →
+        </button>
+      </div>
     </div>
   );
 }
@@ -152,8 +262,13 @@ export default function Process() {
             </motion.div>
           </motion.div>
 
-          {/* RIGHT — scroll-fill timeline */}
-          <div ref={stepsRef} className="relative">
+          {/* RIGHT — mobile carousel */}
+          <div className="block lg:hidden">
+            <MobileStepCarousel steps={t.process.steps} />
+          </div>
+
+          {/* RIGHT — desktop scroll-fill timeline */}
+          <div ref={stepsRef} className="relative hidden lg:block">
             {/* Background rail */}
             <div className="absolute left-[21px] top-6 bottom-6 w-[2px] rounded-full bg-white/[0.06]" />
             {/* Animated fill */}

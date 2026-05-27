@@ -256,11 +256,11 @@ function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
         {/* Two-column layout: image left | content right */}
         <div className="flex flex-col lg:flex-row" style={{ maxHeight: "92vh", minHeight: "min(92vh, 680px)" }}>
 
-          {/* ── Left: hero image (fixed, no scroll) ───────────────────────── */}
-          <div className="relative flex-none h-48 lg:h-auto lg:w-[340px]">
+          {/* ── Left: hero image — desktop only ───────────────────────── */}
+          <div className="relative flex-none hidden lg:block lg:w-[340px]">
             <ServicePanelHero idx={idx} detail={detail} />
 
-            {/* Close button */}
+            {/* Close button — desktop */}
             <button
               type="button"
               aria-label="Close"
@@ -273,10 +273,21 @@ function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
             </button>
           </div>
 
-          {/* ── Right: scrollable content ──────────────────────────────────── */}
-          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-6 md:p-8"
+          {/* ── Right: content ──────────────────────────────────── */}
+          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 md:p-6 lg:p-8"
             style={{ background: `linear-gradient(160deg, rgba(${detail.accentRgb},0.04) 0%, transparent 40%)` }}>
-            <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-6">
+            {/* Close button — mobile only */}
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={onClose}
+              className="lg:hidden absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.15] bg-black/50 text-white"
+            >
+              <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5">
+                <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+              </svg>
+            </button>
+            <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-4 md:space-y-6">
 
               {/* Title */}
               <motion.div variants={fadeUp}>
@@ -285,7 +296,7 @@ function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
                 <h2 className="mt-1 text-2xl font-bold text-white leading-tight">{title}</h2>
               </motion.div>
 
-              <motion.p variants={fadeUp} className="text-base leading-relaxed text-white/90">
+              <motion.p variants={fadeUp} className="text-sm md:text-base leading-relaxed text-white/90">
                 {copy.extendedDesc}
               </motion.p>
 

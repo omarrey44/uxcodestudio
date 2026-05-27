@@ -1,10 +1,38 @@
 "use client";
 
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { motion, useMotionValue, useTransform, useInView, type Variants, type TargetAndTransition } from "framer-motion";
 import MagneticButton from "./MagneticButton";
 import { useLanguage } from "@/lib/i18n";
 import { BookingModal } from "./BookingModal";
+
+function FlowConnector({ delay = 0 }: { delay?: number }) {
+  const id = `hg${delay * 10}`;
+  return (
+    <div className="hidden lg:flex flex-none w-12 items-center justify-center self-center">
+      <svg viewBox="0 0 48 20" fill="none" width="48" height="20" style={{ overflow: "visible" }}>
+        <defs>
+          <linearGradient id={id} x1="0" y1="0" x2="48" y2="0" gradientUnits="userSpaceOnUse">
+            <stop stopColor="rgba(255,255,255,0.12)" />
+            <stop offset="1" stopColor="rgba(255,255,255,0.45)" />
+          </linearGradient>
+        </defs>
+        {/* base line */}
+        <line x1="2" y1="10" x2="38" y2="10" stroke={`url(#${id})`} strokeWidth="1.5" strokeLinecap="round" />
+        {/* arrowhead */}
+        <path d="M32 4l8 6-8 6" stroke="rgba(255,255,255,0.5)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        {/* traveling glow dot */}
+        <motion.circle
+          r="3" cy="10"
+          animate={{ cx: [2, 38], opacity: [0, 1, 1, 0] }}
+          transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut", delay, repeatDelay: 1.2 }}
+          fill="white"
+          style={{ filter: "drop-shadow(0 0 5px rgba(255,255,255,0.9)) drop-shadow(0 0 10px rgba(200,220,255,0.6))" }}
+        />
+      </svg>
+    </div>
+  );
+}
 
 function ShimmerSpotlightCard({
   children, className = "", shimmerDelay = 0, href, target, rel, variants, whileHover, visible = true,
@@ -217,44 +245,45 @@ export default function FinalCTA() {
             {/* Divider */}
             <div className="my-10 h-px w-full bg-white/10" />
 
-            {/* Contact methods — integrated */}
+            {/* Contact methods — flex row with animated connectors */}
             <motion.div
-              className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
+              className="flex flex-col gap-3 lg:flex-row lg:items-stretch lg:gap-0"
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-40px" }}
-              variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07, delayChildren: 0.3 } } }}
+              variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08, delayChildren: 0.3 } } }}
             >
               {t.cta.contactMethods.map((m, i) => (
-                <ShimmerSpotlightCard
-                  key={m.label}
-                  href={m.href}
-                  target={m.href.startsWith("http") ? "_blank" : undefined}
-                  rel={m.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
-                  whileHover={{ y: -3 }}
-                  shimmerDelay={i * 0.6}
-                  visible={sectionVisible}
-                  className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-left transition-colors hover:border-white/20 hover:bg-white/[0.08]"
-                >
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/30 bg-black/40 text-base text-white transition-colors group-hover:border-accent-cyan/60 group-hover:bg-accent-cyan/20 group-hover:text-accent-cyan">
-                    {m.icon}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-[10px] uppercase tracking-[0.2em] text-muted-dim">{m.label}</div>
-                    <div className="mt-0.5 text-sm font-medium text-white">{m.value}</div>
-                    <div className="text-[10px] text-muted-dim">{m.hint}</div>
-                  </div>
-                  <span className="shrink-0 text-muted-dim transition-transform group-hover:translate-x-1 group-hover:text-accent-cyan">→</span>
-                </ShimmerSpotlightCard>
+                <React.Fragment key={i}>
+                  <ShimmerSpotlightCard
+                    href={m.href}
+                    target={m.href.startsWith("http") ? "_blank" : undefined}
+                    rel={m.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                    variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+                    whileHover={{ y: -3 }}
+                    shimmerDelay={i * 0.6}
+                    visible={sectionVisible}
+                    className="group flex flex-1 items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-left transition-colors hover:border-white/20 hover:bg-white/[0.08]"
+                  >
+                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/30 bg-black/40 text-base text-white transition-colors group-hover:border-accent-cyan/60 group-hover:bg-accent-cyan/20 group-hover:text-accent-cyan">
+                      {m.icon}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[10px] uppercase tracking-[0.2em] text-muted-dim">{m.label}</div>
+                      <div className="mt-0.5 text-sm font-medium text-white break-all leading-tight">{m.value}</div>
+                      <div className="text-[10px] text-muted-dim">{m.hint}</div>
+                    </div>
+                  </ShimmerSpotlightCard>
+                  <FlowConnector key={`fc-${i}`} delay={i * 0.5} />
+                </React.Fragment>
               ))}
 
-              {/* Video call card — book a call */}
+              {/* Video call card */}
               <ShimmerSpotlightCard
                 variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
                 shimmerDelay={1.8}
                 visible={sectionVisible}
-                className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 cursor-pointer group"
+                className="flex flex-1 flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 cursor-pointer group"
               >
                 <div className="flex items-center gap-3">
                   <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/30 bg-black/40 text-white transition-colors group-hover:border-accent-cyan/60 group-hover:bg-accent-cyan/20 group-hover:text-accent-cyan">
@@ -267,7 +296,6 @@ export default function FinalCTA() {
                     <div className="text-sm font-medium text-white">Zoom · Teams</div>
                     <div className="text-[10px] text-muted-dim">All days · 9am–6pm</div>
                   </div>
-                  <span className="shrink-0 text-muted-dim transition-transform group-hover:translate-x-1 group-hover:text-accent-cyan">→</span>
                 </div>
                 <button
                   type="button"

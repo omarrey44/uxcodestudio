@@ -7,7 +7,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import MagneticButton from "./MagneticButton";
-import { useTextScramble } from "@/lib/hooks/useTextScramble";
 import { useLanguage } from "@/lib/i18n";
 
 const HeroScene = dynamic(() => import("./three/HeroScene"), { ssr: false });
@@ -54,7 +53,6 @@ export default function Hero() {
   }, []);
 
   const { t } = useLanguage();
-  const scrambledHero = useTextScramble(t.hero.desc, 1600);
 
   useEffect(() => {
     // SSR-safe — runs only on client
@@ -168,8 +166,8 @@ export default function Hero() {
             </span>
           </h1>
 
-          <p className="hero-sub mt-8 min-h-[5rem] max-w-xl text-balance text-base text-muted-soft md:text-lg text-center md:text-left">
-            {scrambledHero}
+          <p className="hero-sub mt-8 max-w-xl text-balance text-base text-muted-soft md:text-lg text-center md:text-left">
+            {t.hero.desc}
           </p>
 
           <div className="hero-cta mt-10 flex justify-center md:justify-start">
@@ -200,14 +198,13 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll indicator — desktop mouse */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.4 }}
-        className="absolute inset-x-0 bottom-8 mx-auto flex w-fit flex-col items-center gap-1.5"
+        className="absolute inset-x-0 bottom-8 mx-auto hidden md:flex w-fit flex-col items-center gap-1.5"
       >
-        {/* Mouse body */}
         <svg width="24" height="38" viewBox="0 0 24 38" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <filter id="wheel-glow" x="-80%" y="-80%" width="260%" height="260%">
@@ -215,13 +212,10 @@ export default function Hero() {
               <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
             </filter>
           </defs>
-          {/* Outer shell */}
           <rect x="1" y="1" width="22" height="36" rx="11"
             stroke="rgba(0,212,255,0.35)" strokeWidth="1.5" />
-          {/* Inner top half highlight */}
           <rect x="1" y="1" width="22" height="18" rx="11"
             fill="rgba(0,212,255,0.04)" />
-          {/* Scroll wheel — cyan glow + bounce + fade */}
           <motion.rect
             x="10.5" y="7" width="3" height="7" rx="1.5"
             fill="#00d4ff"
@@ -229,6 +223,27 @@ export default function Hero() {
             animate={{ y: [0, 10, 0], opacity: [1, 0.2, 1] }}
             transition={{ duration: 1.8, repeat: Infinity, ease: [0.4, 0, 0.6, 1] }}
           />
+        </svg>
+      </motion.div>
+
+      {/* Scroll indicator — mobile swipe */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.4 }}
+        className="absolute inset-x-0 bottom-8 mx-auto flex md:hidden w-fit flex-col items-center gap-2"
+      >
+        {/* Finger icon */}
+        <svg width="20" height="28" viewBox="0 0 20 28" fill="none">
+          <rect x="7" y="0" width="6" height="14" rx="3" stroke="rgba(0,212,255,0.45)" strokeWidth="1.5" />
+          <rect x="7" y="0" width="6" height="7" rx="3" fill="rgba(0,212,255,0.08)" />
+          <motion.rect
+            x="9" y="2" width="2" height="5" rx="1"
+            fill="#00d4ff"
+            animate={{ y: [0, 6, 0], opacity: [1, 0.3, 1] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: [0.4, 0, 0.6, 1] }}
+          />
+          <path d="M4 13c0 3.5 1.5 8 6 8s6-4.5 6-8" stroke="rgba(0,212,255,0.25)" strokeWidth="1.2" strokeLinecap="round" />
         </svg>
       </motion.div>
     </section>

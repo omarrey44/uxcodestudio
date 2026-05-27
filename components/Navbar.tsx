@@ -85,19 +85,19 @@ export default function Navbar() {
         </div>
 
         {/* ── DESKTOP ────────────────────────────────────────── */}
-        <div className="hidden md:flex justify-center px-4 pt-4">
-          <a href="#top" className="absolute left-6 top-8 flex items-center">
-            <Image src="/logo.png" width={200} height={60} alt="UXCODESTUDIO" priority />
+        <div className="hidden md:flex justify-center px-4 pt-3">
+          <a href="#top" className="absolute left-6 top-3 flex items-center">
+            <Image src="/logo.png" width={155} height={46} alt="UXCODESTUDIO" priority />
           </a>
           <div className={cn(
-            "flex items-center gap-4 rounded-2xl px-5 py-3 transition-all duration-500 backdrop-blur-sm",
+            "flex items-center gap-3 rounded-2xl px-4 py-2 transition-all duration-500 backdrop-blur-sm",
             scrolled
               ? "bg-[#F0F0F0] shadow-[0_10px_60px_-20px_rgba(0,0,0,0.15)]"
               : "bg-[#B3B3B3]"
           )}>
             <nav className="flex items-center gap-1">
               {t.nav.links.map((l) => (
-                <a key={l.href} href={l.href} className="group relative rounded-lg px-3 py-2 text-sm text-[#111111]/60 transition-colors hover:text-[#111111]">
+                <a key={l.href} href={l.href} className="group relative rounded-lg px-2.5 py-1.5 text-sm text-[#111111]/60 transition-colors hover:text-[#111111]">
                   <span className="relative z-10">{l.label}</span>
                   <span className="absolute inset-0 -z-0 rounded-lg bg-black/0 transition-colors group-hover:bg-black/5" />
                 </a>
@@ -105,7 +105,7 @@ export default function Navbar() {
             </nav>
             <div className="h-4 w-px bg-black/10" />
             <LangToggle dark />
-            <a href="#contact" className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-white px-4 py-2 text-sm font-medium text-black transition-transform hover:scale-[1.03]">
+            <a href="#contact" className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-white px-3.5 py-1.5 text-sm font-medium text-black transition-transform hover:scale-[1.03]">
               <span>{t.nav.startProject}</span>
               <span aria-hidden className="transition-transform group-hover:translate-x-0.5">→</span>
             </a>
