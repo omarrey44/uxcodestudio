@@ -228,7 +228,7 @@ const en: Translations = {
   },
   pricing: {
     eyebrow:     "Pricing",
-    title:       "Transparent pricing.",
+    title:       "transparent.",
     accent:      "No surprises.",
     description: "Pick a plan, get a fixed quote within 24h, and lock your start date.",
     badge:       "Most popular",
@@ -409,7 +409,7 @@ const es: Translations = {
   },
   pricing: {
     eyebrow:     "Precios",
-    title:       "Precios transparentes.",
+    title:       "transparentes.",
     accent:      "Sin sorpresas.",
     description: "Elige un plan, obtén una cotización fija en 24h y bloquea tu fecha de inicio.",
     badge:       "Más popular",

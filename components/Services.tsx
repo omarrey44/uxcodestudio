@@ -595,19 +595,22 @@ export function SectionHeader({
 }) {
   return (
     <div className="mx-auto max-w-3xl text-center">
+      {/* Eyebrow — lines + title */}
       <motion.div
-        initial={{ y: 14 }}
-        whileInView={{ y: 0 }}
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-20px" }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="mb-6 inline-flex items-center gap-3 rounded-full border border-accent-cyan/25 bg-gradient-to-r from-accent-cyan/10 to-accent-blue/10 px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.22em]"
-        style={{ boxShadow: "0 0 24px rgba(0,212,255,0.12)" }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        className="mb-20 flex items-center justify-center gap-5"
       >
-        <span className="relative flex h-2 w-2">
-          <span className="absolute inset-0 animate-ping rounded-full bg-accent-cyan opacity-60" />
-          <span className="relative h-2 w-2 rounded-full bg-accent-cyan" style={{ boxShadow: "0 0 6px rgba(0,212,255,0.9)" }} />
+        <span className="h-px flex-1 max-w-[100px]" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3))" }} />
+        <span
+          className="text-3xl font-black uppercase tracking-[0.15em] sm:text-5xl md:text-6xl lg:text-7xl"
+          style={{ background: "linear-gradient(90deg, #00d4ff 0%, #7c5cfc 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
+        >
+          {eyebrow}
         </span>
-        <span className="text-white font-semibold">{eyebrow}</span>
+        <span className="h-px flex-1 max-w-[100px]" style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.3), transparent)" }} />
       </motion.div>
 
       <motion.h2
@@ -627,7 +630,7 @@ export function SectionHeader({
           whileInView={{ y: 0 }}
           viewport={{ once: true, margin: "-20px" }}
           transition={{ duration: 0.9, delay: 0.28, ease: "easeOut" }}
-          className="mx-auto mt-6 max-w-2xl text-balance text-white md:text-lg"
+          className="mx-auto mt-8 max-w-2xl text-balance text-white md:text-lg"
         >
           {description}
         </motion.p>

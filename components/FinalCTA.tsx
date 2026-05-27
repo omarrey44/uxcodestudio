@@ -134,23 +134,18 @@ export default function FinalCTA() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="mb-16 text-center"
         >
-          <div
-            className="mb-6 inline-flex items-center gap-3 rounded-full border border-accent-cyan/25 bg-gradient-to-r from-accent-cyan/10 to-accent-blue/10 px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.22em]"
-            style={{ boxShadow: "0 0 24px rgba(0,212,255,0.12)" }}
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inset-0 animate-ping rounded-full bg-accent-cyan opacity-60" />
-              <span className="relative h-2 w-2 rounded-full bg-accent-cyan" style={{ boxShadow: "0 0 6px rgba(0,212,255,0.9)" }} />
+          <div className="mb-20 flex items-center justify-center gap-5">
+            <span className="h-px flex-1 max-w-[100px]" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3))" }} />
+            <span
+              className="text-3xl font-black uppercase tracking-[0.15em] sm:text-5xl md:text-6xl lg:text-7xl"
+              style={{ background: "linear-gradient(90deg, #00d4ff 0%, #7c5cfc 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
+            >
+              {t.cta.eyebrow}
             </span>
-            <span className="text-white font-semibold">{t.cta.eyebrow}</span>
+            <span className="h-px flex-1 max-w-[100px]" style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.3), transparent)" }} />
           </div>
           <h2 className="font-display text-h2 font-bold text-white">
-            {(() => {
-              const words = t.cta.badge.split(" ");
-              const last = words.pop()!;
-              const rest = words.join(" ");
-              return <>{rest && `${rest} `}<span className="text-gradient-accent">{last}</span></>;
-            })()}
+            {t.cta.badge}
           </h2>
         </motion.div>
 
@@ -165,10 +160,6 @@ export default function FinalCTA() {
           <div className="absolute -inset-px rounded-[36px] bg-gradient-to-br from-accent-blue via-accent-cyan to-accent-violet [mask:linear-gradient(#000_0_0)_content-box,linear-gradient(#000_0_0)] [mask-composite:exclude] p-px opacity-60" />
 
           <div className="relative">
-            <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] uppercase tracking-[0.3em] text-muted">
-              <span className="h-1 w-1 rounded-full bg-accent-cyan" /> {t.cta.badge}
-            </div>
-
             <h2 className="font-display text-4xl font-bold leading-[1.05] text-balance text-white md:text-7xl">
               {t.cta.headlinePart1}
               <br />

@@ -68,7 +68,7 @@ export default function Navbar() {
           <div className={cn(
             "flex items-center gap-2 rounded-2xl px-3 py-2 transition-all duration-500 backdrop-blur-sm",
             scrolled
-              ? "bg-[#F0F0F0] shadow-[0_8px_40px_-16px_rgba(0,0,0,0.15)]"
+              ? "bg-[#B3B3B3] shadow-[0_8px_40px_-16px_rgba(0,0,0,0.15)]"
               : "bg-[#B3B3B3]"
           )}>
             <LangToggle dark />
@@ -92,7 +92,7 @@ export default function Navbar() {
           <div className={cn(
             "flex items-center gap-3 rounded-2xl px-4 py-2 transition-all duration-500 backdrop-blur-sm",
             scrolled
-              ? "bg-[#F0F0F0] shadow-[0_10px_60px_-20px_rgba(0,0,0,0.15)]"
+              ? "bg-[#B3B3B3] shadow-[0_10px_60px_-20px_rgba(0,0,0,0.15)]"
               : "bg-[#B3B3B3]"
           )}>
             <nav className="flex items-center gap-1">

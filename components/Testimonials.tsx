@@ -168,9 +168,15 @@ export default function Testimonials() {
           {/* ── Left: eyebrow + title + quote ── */}
           <div>
             {/* Eyebrow */}
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] uppercase tracking-[0.3em] text-muted-soft">
-              <span className="h-1 w-1 rounded-full bg-accent-cyan" />
-              {t.testimonials.eyebrow}
+            <div className="mb-20 flex items-center gap-5">
+              <span className="h-px flex-1 max-w-[100px]" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3))" }} />
+              <span
+                className="text-3xl font-black uppercase tracking-[0.15em] sm:text-5xl md:text-6xl lg:text-7xl"
+                style={{ background: "linear-gradient(90deg, #00d4ff 0%, #7c5cfc 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
+              >
+                {t.testimonials.eyebrow}
+              </span>
+              <span className="h-px flex-1 max-w-[100px]" style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.3), transparent)" }} />
             </div>
 
             {/* Title */}

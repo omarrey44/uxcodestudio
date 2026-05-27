@@ -176,6 +176,24 @@ export default function Process() {
       </div>
 
       <div className="container-x">
+        {/* Eyebrow — full width above grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-20px" }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-20 flex items-center justify-center gap-5"
+        >
+          <span className="h-px flex-1 max-w-[100px]" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3))" }} />
+          <span
+            className="text-3xl font-black uppercase tracking-[0.15em] sm:text-5xl md:text-6xl lg:text-7xl"
+            style={{ background: "linear-gradient(90deg, #00d4ff 0%, #7c5cfc 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
+          >
+            {t.process.eyebrow}
+          </span>
+          <span className="h-px flex-1 max-w-[100px]" style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.3), transparent)" }} />
+        </motion.div>
+
         <div className="grid grid-cols-1 gap-20 lg:grid-cols-[1fr_2.2fr] lg:gap-16">
 
           {/* LEFT */}
@@ -187,17 +205,6 @@ export default function Process() {
             variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }}
           >
             <div>
-              <motion.div
-                variants={{ hidden: { y: 10 }, visible: { y: 0, transition: { duration: 0.55 } } }}
-                className="mb-7 inline-flex items-center gap-3 rounded-full border border-accent-violet/30 bg-gradient-to-r from-accent-violet/10 to-accent-blue/10 px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.2em]"
-                style={{ boxShadow: "0 0 20px rgba(139,92,246,0.12)" }}
-              >
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inset-0 animate-ping rounded-full bg-accent-violet opacity-60" />
-                  <span className="relative h-2 w-2 rounded-full bg-accent-violet" style={{ boxShadow: "0 0 6px rgba(139,92,246,0.9)" }} />
-                </span>
-                <span className="text-white font-semibold">{t.process.eyebrow}</span>
-              </motion.div>
 
               <motion.h2
                 variants={{ hidden: { clipPath: "inset(100% 0 0% 0)" }, visible: { clipPath: "inset(0% 0 0% 0)", transition: { duration: 1.0, ease: [0.22, 1, 0.36, 1] } } }}

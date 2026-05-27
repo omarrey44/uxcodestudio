@@ -42,16 +42,25 @@ html.lenis body {
   color: #fff;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar — matches navbar pill theme */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #050508;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 8px;
+  background: #6b6b6b;
+  border-radius: 9999px;
+  transition: background 0.3s;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #D0D0D0;
+}
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #6b6b6b transparent;
 }
 
 @layer components {
