@@ -135,7 +135,7 @@ const en: Translations = {
   },
   hero: {
     badge:         "Booking new projects · Q3 2026",
-    headlinePart1: "We design &",
+    headlinePart1: "We design &",
     headlinePart2: "engineer",
     rotating:      ["Websites", "Landings", "Mobile Apps", "SaaS"],
     desc:          "UXCODESTUDIO is a digital product studio crafting cinematic interfaces and high-performing systems for ambitious teams that refuse to ship anything average.",
@@ -151,7 +151,7 @@ const en: Translations = {
     titlePart2:  "momentum,",
     closeLabel:  "Close",
     accent:      "designed for awe.",
-    description: "One studio. Six disciplines. A workflow optimized to ship measurable wins fast — without sacrificing craft.",
+    description: "One studio. Five disciplines. A workflow optimized to ship measurable wins fast — without sacrificing craft.",
     items: [
       { title: "E-commerce Websites",  description: "High-converting online stores built for sales, speed, and brand.",                          tags: ["Design", "Webflow", "Next.js"], learnMore: "Learn more" },
       { title: "Landing Pages",       description: "Systems and strategies to help companies understand and accelerate their growth.",          tags: ["CRO", "Analytics", "Next.js", "React", "Angular", "Python"], learnMore: "Learn more" },
@@ -316,7 +316,7 @@ const es: Translations = {
   },
   hero: {
     badge:         "Proyectos abiertos · Q3 2026",
-    headlinePart1: "Diseñamos &",
+    headlinePart1: "Diseñamos &",
     headlinePart2: "construimos",
     rotating:      ["Sitios Web", "Landings", "Mobile Apps", "SaaS"],
     desc:          "UXCODESTUDIO es un estudio de producto digital que crea interfaces cinematográficas y sistemas de alto rendimiento para equipos ambiciosos que se niegan a lanzar algo mediocre.",
@@ -332,7 +332,7 @@ const es: Translations = {
     titlePart2:   "el impulso,",
     closeLabel:   "Cerrar",
     accent:       "diseñado para asombrar.",
-    description:  "Un estudio. Seis disciplinas. Un flujo de trabajo optimizado para lanzar victorias medibles rápido — sin sacrificar la calidad.",
+    description:  "Un estudio. Cinco disciplinas. Un flujo de trabajo optimizado para lanzar victorias medibles rápido — sin sacrificar la calidad.",
     items: [
       { title: "Sitios de E-commerce", description: "Tiendas online de alto rendimiento construidas para vender, cargar rápido y posicionarse.",          tags: ["Diseño", "Webflow", "Next.js"], learnMore: "Saber más" },
       { title: "Landing Pages",       description: "Sistemas y estrategias para que empresas entiendan y aceleren su crecimiento.",                     tags: ["CRO", "Analytics", "Next.js", "React", "Angular", "Python"], learnMore: "Saber más" },

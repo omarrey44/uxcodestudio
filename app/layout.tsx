@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Syne, Barlow } from "next/font/google";
+import { Inter, DM_Sans, Barlow } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import { LanguageProvider } from "@/lib/i18n";
@@ -13,7 +13,7 @@ const inter = Inter({
   display: "swap",
 });
 
-const syne = Syne({
+const syne = DM_Sans({
   subsets: ["latin"],
   weight: ["500", "600", "700", "800"],
   variable: "--font-syne",

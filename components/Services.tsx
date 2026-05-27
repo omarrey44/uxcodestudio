@@ -6,44 +6,6 @@ import { useLanguage } from "@/lib/i18n";
 import { useState, useEffect, useRef } from "react";
 import React from "react";
 
-
-/* ── App-icon SVGs ──────────────────────────────────────────────────────────── */
-const SERVICE_ICONS = [
-  <svg key="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
-  <svg key="rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>,
-  <svg key="code" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>,
-  <svg key="layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>,
-  <svg key="fp" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4"/><path d="M5 19.5C5.5 18 6 15 6 12c0-1.7.4-3.2 1.1-4.6"/><path d="M22 12c0 4.7-1.3 7.5-3.4 9"/><path d="M9 12c0-1.66.67-3.16 1.75-4.25"/><path d="M14 12c0 .82-.09 1.61-.26 2.37"/><path d="M12 12c0 3-1 5.5-3 7.5"/><path d="M12 8a4 4 0 0 1 4 4"/></svg>,
-  <svg key="phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><path d="M12 18h.01"/></svg>,
-];
-
-/* ── Service hero images (panel top) ────────────────────────────────────────── */
-const SERVICE_HERO_IMAGES = [
-  // 0 Marketing — web design workspace
-  "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=900&q=80&fit=crop&auto=format",
-  // 1 Growth — analytics on laptop
-  "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&q=80&fit=crop&auto=format",
-  // 2 Web Apps — UI dashboard design
-  "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=900&q=80&fit=crop&auto=format",
-  // 3 SaaS — developer + platform
-  "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=900&q=80&fit=crop&auto=format",
-  // 4 Brand — logo / visual identity
-  "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=900&q=80&fit=crop&auto=format",
-  // 5 Mobile — app screens
-  "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=900&q=80&fit=crop&auto=format",
-];
-
-
-/* ── Card visual configs ────────────────────────────────────────────────────── */
-const VISUALS = [
-  { bg: "linear-gradient(135deg,#3b30cc 0%,#4f6ef7 100%)", glow: "rgba(79,110,247,0.55)",  glowBg: "rgba(79,110,247,0.10)",  border: "rgba(79,110,247,0.35)"  },
-  { bg: "linear-gradient(135deg,#0a9bd4 0%,#00d4ff 100%)", glow: "rgba(0,212,255,0.50)",   glowBg: "rgba(0,212,255,0.09)",   border: "rgba(0,212,255,0.35)"   },
-  { bg: "linear-gradient(135deg,#5b21b6 0%,#7c3aed 100%)", glow: "rgba(124,58,237,0.55)",  glowBg: "rgba(124,58,237,0.10)",  border: "rgba(124,58,237,0.35)"  },
-  { bg: "linear-gradient(135deg,#1d4ed8 0%,#3b82f6 100%)", glow: "rgba(59,130,246,0.50)",  glowBg: "rgba(59,130,246,0.09)",  border: "rgba(59,130,246,0.35)"  },
-  { bg: "linear-gradient(135deg,#6d28d9 0%,#a855f7 100%)", glow: "rgba(168,85,247,0.50)",  glowBg: "rgba(168,85,247,0.09)",  border: "rgba(168,85,247,0.35)"  },
-  { bg: "linear-gradient(135deg,#0284c7 0%,#06b6d4 100%)", glow: "rgba(6,182,212,0.50)",   glowBg: "rgba(6,182,212,0.09)",   border: "rgba(6,182,212,0.35)"   },
-];
-
 /* ── Tag icons ──────────────────────────────────────────────────────────────── */
 const TAG_ICONS: Record<string, React.ReactNode> = {
   "Design":       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>,
@@ -58,17 +20,16 @@ const TAG_ICONS: Record<string, React.ReactNode> = {
   "Stripe":       <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3"><path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.594-7.305h.003z" fill="#6772e5"/></svg>,
   "Auth":         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>,
   "AI":           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>,
-  "Logo":         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>,
-  "Motion":       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3"><path d="M5 12s2.3-1 4-1 4 2 6 2 4-1 4-1V3s-2.3 1-4 1-4-2-6-2-4 1-4 1z"/><path d="M5 19v-7"/></svg>,
-  "Tone":         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>,
-  "Tono":         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/></svg>,
-  "Angular":      <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3"><path d="M12 2.25L2.2 5.77l1.52 13.23L12 22.5l8.28-3.5L21.8 5.77 12 2.25zm0 2.19l7.34 2.56-1.17 10.19L12 19.72l-6.17-2.53L4.66 6.94 12 4.44zm0 3.06L7.2 16.5h1.93l.98-2.45h3.78l.98 2.45H16.8L12 7.5zm0 2.19l1.38 3.36H10.62L12 9.69z" fill="#DD0031"/></svg>,
-  "Python":       <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3"><path d="M11.914 0C5.82 0 6.2 2.656 6.2 2.656l.007 2.752h5.814v.826H3.9S0 5.789 0 11.969c0 6.18 3.403 5.96 3.403 5.96h2.03v-2.867s-.109-3.403 3.347-3.403h5.768s3.24.052 3.24-3.13V3.19S18.28 0 11.914 0zm-3.21 1.849a1.05 1.05 0 1 1 0 2.1 1.05 1.05 0 0 1 0-2.1zM12.086 24c6.094 0 5.714-2.656 5.714-2.656l-.007-2.752h-5.814v-.826h8.121S24 18.211 24 12.031c0-6.18-3.403-5.96-3.403-5.96h-2.03v2.867s.109 3.403-3.347 3.403h-5.768s-3.24-.052-3.24 3.13v5.339S5.72 24 12.086 24zm3.21-1.849a1.05 1.05 0 1 1 0-2.1 1.05 1.05 0 0 1 0 2.1z" fill="#3776AB"/></svg>,
   "React Native": <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-3 w-3"><circle cx="12" cy="12" r="2"/><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/></svg>,
   "Flutter":      <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3"><path d="M14.314 0L2.3 12 6 15.7 21.684 0h-7.37zm.014 11.072L7.857 17.53l6.47 6.47H21.7l-6.46-6.468 6.46-6.46h-7.37z" fill="#54C5F8"/></svg>,
   "iOS":          <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" fill="#555"/></svg>,
   "Android":      <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3"><path d="M17.523 15.341a1.046 1.046 0 0 1-1.045-1.044 1.046 1.046 0 0 1 1.045-1.045 1.046 1.046 0 0 1 1.045 1.045 1.046 1.046 0 0 1-1.045 1.044zm-11.046 0a1.046 1.046 0 0 1-1.045-1.044 1.046 1.046 0 0 1 1.045-1.045 1.046 1.046 0 0 1 1.044 1.045 1.046 1.046 0 0 1-1.044 1.044zm11.41-6.235l1.045-1.81a.218.218 0 0 0-.08-.297.218.218 0 0 0-.296.08l-1.058 1.832A6.762 6.762 0 0 0 12 8.276c-1.008 0-1.963.223-2.817.622L8.126 7.08a.217.217 0 0 0-.296-.08.218.218 0 0 0-.08.296L8.796 9.09C7.128 9.99 6 11.701 6 13.67h12c0-1.968-1.128-3.678-2.113-4.564z" fill="#3DDC84"/></svg>,
   "Diseño":       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>,
+  "Motion":       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3"><path d="M5 12s2.3-1 4-1 4 2 6 2 4-1 4-1V3s-2.3 1-4 1-4-2-6-2-4 1-4 1z"/><path d="M5 19v-7"/></svg>,
+  "Angular":      <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3"><path d="M12 2.25L2.2 5.77l1.52 13.23L12 22.5l8.28-3.5L21.8 5.77 12 2.25zm0 2.19l7.34 2.56-1.17 10.19L12 19.72l-6.17-2.53L4.66 6.94 12 4.44zm0 3.06L7.2 16.5h1.93l.98-2.45h3.78l.98 2.45H16.8L12 7.5zm0 2.19l1.38 3.36H10.62L12 9.69z" fill="#DD0031"/></svg>,
+  "Python":       <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3"><path d="M11.914 0C5.82 0 6.2 2.656 6.2 2.656l.007 2.752h5.814v.826H3.9S0 5.789 0 11.969c0 6.18 3.403 5.96 3.403 5.96h2.03v-2.867s-.109-3.403 3.347-3.403h5.768s3.24.052 3.24-3.13V3.19S18.28 0 11.914 0zm-3.21 1.849a1.05 1.05 0 1 1 0 2.1 1.05 1.05 0 0 1 0-2.1zM12.086 24c6.094 0 5.714-2.656 5.714-2.656l-.007-2.752h-5.814v-.826h8.121S24 18.211 24 12.031c0-6.18-3.403-5.96-3.403-5.96h-2.03v2.867s.109 3.403-3.347 3.403h-5.768s-3.24-.052-3.24 3.13v5.339S5.72 24 12.086 24zm3.21-1.849a1.05 1.05 0 1 1 0-2.1 1.05 1.05 0 0 1 0 2.1z" fill="#3776AB"/></svg>,
+  "Tono":         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/></svg>,
+  "Tone":         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>,
 };
 
 /* ── Extended service data ──────────────────────────────────────────────────── */
@@ -88,7 +49,7 @@ type ServiceDetail = DetailCopy & {
 
 const SERVICE_DETAILS: ServiceDetail[] = [
   {
-    eyebrow: "Marketing",
+    eyebrow: "E-commerce",
     extendedDesc: "We build your online store from scratch — ready to sell from day one. Your customers can browse products, add to cart, and pay securely. We make sure your store loads fast, looks great on any phone, and shows up on Google so new customers can find you.",
     includes: ["Custom website design", "Online store & product catalog", "Secure checkout & payments", "Google SEO setup", "Fast loading on all devices", "Easy to manage yourself"],
     idealFor: ["Local businesses", "Online stores", "Product launches", "Service providers"],
@@ -96,7 +57,7 @@ const SERVICE_DETAILS: ServiceDetail[] = [
     accentColor: "#4f6ef7", accentRgb: "79,110,247",
     heroBg: "linear-gradient(135deg,#0a0f2e 0%,#1a1060 60%,#0d1845 100%)",
     es: {
-      eyebrow: "Marketing",
+      eyebrow: "E-commerce",
       extendedDesc: "Construimos tu tienda en línea desde cero — lista para vender desde el primer día. Tus clientes pueden explorar productos, añadir al carrito y pagar de forma segura. Nos aseguramos de que cargue rápido, se vea bien en cualquier teléfono y aparezca en Google para que nuevos clientes te encuentren.",
       includes: ["Diseño web personalizado", "Tienda y catálogo de productos", "Checkout y pagos seguros", "Configuración SEO en Google", "Carga rápida en todos los dispositivos", "Fácil de administrar tú mismo"],
       idealFor: ["Negocios locales", "Tiendas en línea", "Lanzamientos de producto", "Proveedores de servicios"],
@@ -104,7 +65,7 @@ const SERVICE_DETAILS: ServiceDetail[] = [
     },
   },
   {
-    eyebrow: "Growth",
+    eyebrow: "Landing Pages",
     extendedDesc: "A landing page is a focused page designed to turn visitors into leads or paying customers. We design it to look great, load in under a second, and guide people toward taking action — whether that's filling out a form, calling you, or making a purchase. Simple, fast, and built to convert.",
     includes: ["One-page website design", "Clear sections that drive action", "Contact form & lead capture", "Super fast load times", "Ready to share on social & Google", "Visitor tracking so you see what works"],
     idealFor: ["New businesses", "Product launches", "Event promotions", "Service bookings"],
@@ -112,7 +73,7 @@ const SERVICE_DETAILS: ServiceDetail[] = [
     accentColor: "#00d4ff", accentRgb: "0,212,255",
     heroBg: "linear-gradient(135deg,#041824 0%,#083048 60%,#041824 100%)",
     es: {
-      eyebrow: "Crecimiento",
+      eyebrow: "Landing Pages",
       extendedDesc: "Una landing page es una página enfocada diseñada para convertir visitas en contactos o clientes. La diseñamos para que se vea increíble, cargue en menos de un segundo y guíe a las personas a tomar acción — ya sea llenar un formulario, llamarte o comprar. Sencilla, rápida y construida para convertir.",
       includes: ["Diseño de página única", "Secciones que impulsan la acción", "Formulario de contacto y captura de leads", "Tiempos de carga muy rápidos", "Lista para compartir en redes y Google", "Seguimiento de visitas para ver qué funciona"],
       idealFor: ["Negocios nuevos", "Lanzamientos de producto", "Promociones de eventos", "Reservas de servicios"],
@@ -169,7 +130,289 @@ const SERVICE_DETAILS: ServiceDetail[] = [
   },
 ];
 
-/* ── Check icon ─────────────────────────────────────────────────────────────── */
+/* ── SERVICE_HERO_IMAGES (used in panel) ─────────────────────────────────── */
+const SERVICE_HERO_IMAGES = [
+  "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=900&q=80&fit=crop&auto=format",
+  "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&q=80&fit=crop&auto=format",
+  "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=900&q=80&fit=crop&auto=format",
+  "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=900&q=80&fit=crop&auto=format",
+  "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=900&q=80&fit=crop&auto=format",
+];
+
+/* ── Bento card illustrations ────────────────────────────────────────────── */
+
+/** Shared shell: gradient bg + grid texture */
+function IlluShell({ gradient, children }: { gradient: string; children: React.ReactNode }) {
+  return (
+    <div className="relative w-full h-full overflow-hidden" style={{ background: gradient }}>
+      {/* subtle dot grid */}
+      <div className="absolute inset-0 opacity-[0.07]"
+        style={{ backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
+      {children}
+    </div>
+  );
+}
+
+/** 0 — E-commerce: product card grid */
+function EcomIllustration() {
+  return (
+    <IlluShell gradient="linear-gradient(145deg, #0c1240 0%, #1a1a6e 60%, #0c1240 100%)">
+      <div className="absolute inset-0 flex items-center justify-center p-5">
+        <div className="w-full grid grid-cols-2 gap-2.5">
+          {[
+            { accent: "rgba(79,110,247,0.5)", h: "h-12" },
+            { accent: "rgba(0,212,255,0.3)", h: "h-10" },
+            { accent: "rgba(79,110,247,0.3)", h: "h-11" },
+            { accent: "rgba(124,58,237,0.4)", h: "h-10" },
+          ].map((p, i) => (
+            <div key={i} className="rounded-xl border border-white/[0.09] bg-white/[0.04] p-2 flex flex-col gap-1.5"
+              style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)" }}>
+              <div className={`${p.h} w-full rounded-lg`} style={{ background: p.accent }} />
+              <div className="h-1.5 w-3/4 rounded-full bg-white/25" />
+              <div className="flex items-center justify-between">
+                <div className="h-1.5 w-1/3 rounded-full" style={{ background: "#4f6ef7" }} />
+                <div className="h-4 w-4 rounded-full bg-white/10 flex items-center justify-center">
+                  <div className="h-1.5 w-1.5 rounded-full bg-white/50" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* cart badge */}
+      <div className="absolute top-3 right-3 h-6 w-6 rounded-full flex items-center justify-center"
+        style={{ background: "#4f6ef7", boxShadow: "0 0 12px rgba(79,110,247,0.6)" }}>
+        <svg viewBox="0 0 12 12" fill="none" className="h-3.5 w-3.5 text-white">
+          <path d="M1 1.5h1.5l1.5 5h5l1-3.5H3.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+          <circle cx="5.5" cy="10" r="0.8" fill="currentColor"/>
+          <circle cx="9" cy="10" r="0.8" fill="currentColor"/>
+        </svg>
+      </div>
+    </IlluShell>
+  );
+}
+
+/** 1 — Landing Pages: conversion funnel + CTA hero */
+function LandingIllustration() {
+  return (
+    <IlluShell gradient="linear-gradient(145deg, #041a28 0%, #073854 60%, #041a28 100%)">
+      <div className="absolute inset-0 flex flex-col p-4 gap-2">
+        {/* Mini browser bar */}
+        <div className="flex items-center gap-1.5">
+          <div className="h-2 w-2 rounded-full bg-white/15" />
+          <div className="h-2 w-2 rounded-full bg-white/15" />
+          <div className="h-2 w-2 rounded-full bg-white/15" />
+          <div className="ml-2 flex-1 h-2 rounded-full bg-white/[0.07]" />
+        </div>
+        {/* Page mockup */}
+        <div className="flex-1 rounded-lg border border-white/[0.07] bg-white/[0.03] overflow-hidden flex flex-col">
+          {/* Nav */}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 border-b border-white/[0.05]">
+            <div className="h-2 w-8 rounded-full bg-white/30" />
+            <div className="ml-auto flex gap-1.5">
+              {[1,2,3].map(i => <div key={i} className="h-1.5 w-5 rounded-full bg-white/15" />)}
+            </div>
+          </div>
+          {/* Hero area */}
+          <div className="flex-1 flex flex-col items-center justify-center gap-2 px-4 py-2">
+            <div className="h-2 w-3/4 rounded-full bg-white/40" />
+            <div className="h-1.5 w-2/3 rounded-full bg-white/20" />
+            <div className="h-1.5 w-1/2 rounded-full bg-white/15" />
+            <div className="mt-1 h-5 w-20 rounded-lg flex items-center justify-center"
+              style={{ background: "rgba(0,212,255,0.7)" }}>
+              <div className="h-1.5 w-10 rounded-full bg-white/80" />
+            </div>
+          </div>
+          {/* Conversion stats */}
+          <div className="flex border-t border-white/[0.05]">
+            {["+47%", "+2.3×", "0.8s"].map((v, i) => (
+              <div key={i} className="flex-1 flex flex-col items-center py-1.5 border-r border-white/[0.05] last:border-r-0">
+                <span className="text-[7px] font-bold" style={{ color: "#00d4ff" }}>{v}</span>
+                <div className="mt-0.5 h-1 w-5 rounded-full bg-white/10" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </IlluShell>
+  );
+}
+
+/** 2 — Web Applications (featured): dashboard */
+function WebAppIllustration() {
+  return (
+    <IlluShell gradient="linear-gradient(145deg, #0d0822 0%, #1a0d4a 55%, #0d0822 100%)">
+      <div className="absolute inset-0 flex gap-0 overflow-hidden">
+        {/* Sidebar */}
+        <div className="w-10 flex-none border-r border-white/[0.07] bg-white/[0.02] flex flex-col items-center gap-2 py-3">
+          <div className="h-4 w-4 rounded-lg" style={{ background: "rgba(124,58,237,0.6)" }} />
+          <div className="mt-1 flex flex-col gap-1.5 items-center">
+            {[0.5,0.3,0.4,0.3,0.2].map((o, i) => (
+              <div key={i} className="h-3 w-5 rounded" style={{ background: `rgba(255,255,255,${o})` }} />
+            ))}
+          </div>
+          {/* avatar bottom */}
+          <div className="mt-auto h-4 w-4 rounded-full" style={{ background: "rgba(124,58,237,0.5)" }} />
+        </div>
+        {/* Main content */}
+        <div className="flex-1 flex flex-col p-2 gap-1.5">
+          {/* Top metrics row */}
+          <div className="grid grid-cols-3 gap-1.5">
+            {[
+              { v: "12.4k", c: "rgba(124,58,237,0.5)" },
+              { v: "$8.2k", c: "rgba(59,130,246,0.5)" },
+              { v: "94%",   c: "rgba(0,212,255,0.4)" },
+            ].map((m, i) => (
+              <div key={i} className="rounded-lg border border-white/[0.07] bg-white/[0.03] p-1.5"
+                style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)" }}>
+                <div className="h-1 w-4 rounded-full bg-white/20 mb-1" />
+                <span className="text-[7px] font-bold text-white/70">{m.v}</span>
+                <div className="mt-0.5 h-3 w-full rounded" style={{ background: m.c }} />
+              </div>
+            ))}
+          </div>
+          {/* Chart area */}
+          <div className="flex-1 rounded-lg border border-white/[0.07] bg-white/[0.02] p-1.5 flex flex-col">
+            <div className="h-1 w-8 rounded-full bg-white/20 mb-1.5" />
+            <div className="flex-1 flex items-end gap-0.5 px-1">
+              {[30,55,40,70,50,85,65,90,60,75,45,80].map((h, i) => (
+                <div key={i} className="flex-1 rounded-sm"
+                  style={{ height: `${h}%`, background: i === 7 ? "rgba(124,58,237,0.85)" : `rgba(124,58,237,${0.2 + i * 0.02})` }} />
+              ))}
+            </div>
+          </div>
+          {/* User list */}
+          <div className="flex items-center gap-1">
+            {[0,1,2,3].map(i => (
+              <div key={i} className="h-4 w-4 rounded-full border border-white/10"
+                style={{ background: `hsl(${200 + i * 40}, 70%, 40%)`, marginLeft: i > 0 ? "-6px" : "0" }} />
+            ))}
+            <div className="h-1.5 w-10 rounded-full bg-white/15 ml-1.5" />
+          </div>
+        </div>
+      </div>
+    </IlluShell>
+  );
+}
+
+/** 3 — SaaS: subscription plan cards */
+function SaaSIllustration() {
+  return (
+    <IlluShell gradient="linear-gradient(145deg, #030c22 0%, #0a1e5c 60%, #030c22 100%)">
+      <div className="absolute inset-0 flex items-center justify-center p-4">
+        <div className="w-full flex gap-1.5">
+          {[
+            { label: "Starter", price: "$29", color: "rgba(255,255,255,0.1)", accent: "rgba(255,255,255,0.3)", featured: false },
+            { label: "Pro",     price: "$79", color: "rgba(59,130,246,0.25)", accent: "#3b82f6",              featured: true  },
+            { label: "Scale",   price: "$149",color: "rgba(255,255,255,0.1)", accent: "rgba(255,255,255,0.3)", featured: false },
+          ].map((plan, i) => (
+            <div key={i} className={`flex-1 rounded-xl border p-2 flex flex-col gap-1 ${plan.featured ? "border-blue-500/50" : "border-white/[0.07]"}`}
+              style={{ background: plan.color, boxShadow: plan.featured ? "0 0 16px rgba(59,130,246,0.2)" : undefined }}>
+              <div className="h-1.5 w-full rounded-full" style={{ background: plan.accent, opacity: 0.5 }} />
+              <div className="h-1 w-5 rounded-full bg-white/30" />
+              <span className="text-[7px] font-bold" style={{ color: plan.featured ? "#3b82f6" : "rgba(255,255,255,0.5)" }}>{plan.price}</span>
+              <div className="flex flex-col gap-1 mt-0.5">
+                {[1,2,3].map(j => (
+                  <div key={j} className="flex items-center gap-0.5">
+                    <div className="h-1 w-1 rounded-full" style={{ background: plan.accent }} />
+                    <div className="h-1 flex-1 rounded-full bg-white/10" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Revenue chart at bottom */}
+      <div className="absolute inset-x-4 bottom-3 flex items-end gap-0.5 h-6">
+        {[20,40,35,60,45,75,55,80].map((h, i) => (
+          <div key={i} className="flex-1 rounded-sm"
+            style={{ height: `${h}%`, background: `rgba(59,130,246,${0.2 + i * 0.07})` }} />
+        ))}
+      </div>
+    </IlluShell>
+  );
+}
+
+/** 4 — Mobile Apps: phone with app UI */
+function MobileIllustration() {
+  return (
+    <IlluShell gradient="linear-gradient(145deg, #031218 0%, #062e3e 60%, #031218 100%)">
+      <div className="absolute inset-0 flex items-center justify-center">
+        {/* Phone frame */}
+        <div className="relative h-[88%] w-[42%] rounded-[16px] border-2 border-white/20 bg-black/60 flex flex-col overflow-hidden"
+          style={{ boxShadow: "0 0 30px rgba(6,182,212,0.15), inset 0 1px 0 rgba(255,255,255,0.1)" }}>
+          {/* Status bar */}
+          <div className="flex items-center justify-between px-2 py-1">
+            <span className="text-[5px] text-white/50">9:41</span>
+            <div className="flex gap-0.5">
+              {[1,2,3].map(i => <div key={i} className="h-1 w-0.5 rounded-full bg-white/40" />)}
+            </div>
+          </div>
+          {/* App content */}
+          <div className="flex-1 flex flex-col px-1.5 gap-1">
+            {/* Hero card */}
+            <div className="rounded-lg h-10 w-full" style={{ background: "rgba(6,182,212,0.25)" }}>
+              <div className="p-1.5 flex flex-col gap-0.5">
+                <div className="h-1 w-8 rounded-full bg-white/40" />
+                <div className="h-1 w-5 rounded-full bg-white/20" />
+              </div>
+            </div>
+            {/* List items */}
+            {[0,1,2].map(i => (
+              <div key={i} className="flex items-center gap-1 p-1 rounded bg-white/[0.04] border border-white/[0.06]">
+                <div className="h-4 w-4 rounded-full flex-none" style={{ background: `rgba(6,182,212,${0.3 + i*0.1})` }} />
+                <div className="flex-1 flex flex-col gap-0.5">
+                  <div className="h-1 w-full rounded-full bg-white/25" />
+                  <div className="h-0.5 w-2/3 rounded-full bg-white/10" />
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Bottom nav */}
+          <div className="flex items-center justify-around py-1.5 border-t border-white/[0.07]">
+            {[0,1,2,3].map(i => (
+              <div key={i} className={`h-3 w-3 rounded-sm ${i === 1 ? "bg-cyan-400/60" : "bg-white/10"}`} />
+            ))}
+          </div>
+        </div>
+        {/* Second phone peeking behind */}
+        <div className="absolute h-[70%] w-[38%] rounded-[14px] border border-white/10 bg-black/40"
+          style={{ right: "14%", top: "15%", transform: "rotate(8deg)", zIndex: 0 }} />
+      </div>
+    </IlluShell>
+  );
+}
+
+const ILLUSTRATIONS = [
+  EcomIllustration,
+  LandingIllustration,
+  WebAppIllustration,
+  SaaSIllustration,
+  MobileIllustration,
+];
+
+/* ── Bento grid layout config ────────────────────────────────────────────── */
+// Visual order: [Landing(1), WebApps(2 featured), SaaS(3)] / [Ecom(0), Mobile(4)]
+const BENTO: { dataIdx: number; col: string; row: string; featured?: boolean }[] = [
+  { dataIdx: 1, col: "lg:col-span-3",                  row: "lg:row-start-1" },
+  { dataIdx: 2, col: "lg:col-span-6",                  row: "lg:row-start-1", featured: true },
+  { dataIdx: 3, col: "lg:col-span-3",                  row: "lg:row-start-1" },
+  { dataIdx: 0, col: "lg:col-span-6",                  row: "lg:row-start-2" },
+  { dataIdx: 4, col: "lg:col-span-6",                  row: "lg:row-start-2" },
+];
+
+/* ── Card visual accent map ──────────────────────────────────────────────── */
+// Index aligned with SERVICE_DETAILS order (0=ecom,1=landing,2=webapps,3=saas,4=mobile)
+const ACCENTS = [
+  { border: "rgba(79,110,247,0.35)",  glow: "rgba(79,110,247,0.12)"  },
+  { border: "rgba(0,212,255,0.35)",   glow: "rgba(0,212,255,0.10)"   },
+  { border: "rgba(124,58,237,0.45)",  glow: "rgba(124,58,237,0.14)"  },
+  { border: "rgba(59,130,246,0.35)",  glow: "rgba(59,130,246,0.10)"  },
+  { border: "rgba(6,182,212,0.35)",   glow: "rgba(6,182,212,0.10)"   },
+];
+
+/* ── Check icon ──────────────────────────────────────────────────────────── */
 function CheckIcon({ color }: { color: string }) {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -179,37 +422,20 @@ function CheckIcon({ color }: { color: string }) {
   );
 }
 
-/* ── Panel hero visual — real photo per service ──────────────────────────────── */
+/* ── Panel hero visual ───────────────────────────────────────────────────── */
 function ServicePanelHero({ idx, detail }: { idx: number; detail: ServiceDetail }) {
   return (
     <div className="relative w-full h-full overflow-hidden">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={SERVICE_HERO_IMAGES[idx]}
-        alt={detail.eyebrow}
-        className="h-full w-full object-cover opacity-100"
-        loading="lazy"
-      />
+      <img src={SERVICE_HERO_IMAGES[idx]} alt={detail.eyebrow} className="h-full w-full object-cover" loading="lazy" />
       <div className="absolute inset-0" style={{ background: `linear-gradient(155deg, rgba(${detail.accentRgb},0.55) 0%, transparent 60%)` }} />
-      <div className="absolute inset-0" style={{ background: "rgba(6,7,14,0.10)" }} />
       <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-[#06070e] to-transparent" />
     </div>
   );
 }
 
-/* ── Examples gallery ──────────────────────────────────────────────────────── */
-
-
-
-/* ── Service panel (desktop side panel + mobile full-screen) ──────────────── */
-type PanelProps = {
-  idx: number;
-  title: string;
-  detail: ServiceDetail;
-  lang: "en" | "es";
-  onClose: () => void;
-};
-
+/* ── Service panel modal ─────────────────────────────────────────────────── */
+type PanelProps = { idx: number; title: string; detail: ServiceDetail; lang: "en" | "es"; onClose: () => void };
 const PANEL_LABELS = {
   en: { included: "What's Included", idealFor: "Perfect For" },
   es: { included: "Incluye",         idealFor: "Ideal Para"  },
@@ -218,19 +444,16 @@ const PANEL_LABELS = {
 function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
   const copy   = lang === "es" ? detail.es : detail;
   const labels = PANEL_LABELS[lang];
-
   const lastTapRef = useRef<number>(0);
   function handleDoubleTap() {
     const now = Date.now();
     if (now - lastTapRef.current < 300) onClose();
     lastTapRef.current = now;
   }
-
   const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.05 } } };
   const fadeUp  = { hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] as [number,number,number,number] } } };
 
   return (
-    /* Centered modal wrapper — fills viewport, flex centers the card */
     <motion.div
       className="fixed inset-0 flex items-center justify-center p-3 md:p-6"
       style={{ zIndex: 9001 }}
@@ -240,70 +463,37 @@ function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
       transition={{ type: "spring", stiffness: 340, damping: 32 }}
       onClick={onClose}
     >
-      {/* Modal card — stop propagation so clicks inside don't close */}
       <div
         className="relative w-full max-w-5xl overflow-hidden rounded-2xl md:rounded-3xl border"
         style={{ background: "rgba(6,7,18,0.97)", backdropFilter: "blur(32px)", maxHeight: "92vh", borderColor: detail.accentColor + "30" }}
         onClick={(e) => e.stopPropagation()}
         onTouchEnd={handleDoubleTap}
       >
-        {/* Accent ambient glow — top */}
         <div className="pointer-events-none absolute -top-32 left-1/2 h-64 w-[70%] -translate-x-1/2 rounded-full"
           style={{ background: `radial-gradient(ellipse at center, ${detail.accentColor}28 0%, transparent 70%)`, filter: "blur(24px)" }} />
-        {/* Accent top line */}
-        <div className="absolute inset-x-0 top-0 h-[1.5px]" style={{ background: `linear-gradient(90deg, transparent 5%, ${detail.accentColor}cc 40%, ${detail.accentColor} 50%, ${detail.accentColor}cc 60%, transparent 95%)` }} />
-
-        {/* Two-column layout: image left | content right */}
+        <div className="absolute inset-x-0 top-0 h-[1.5px]"
+          style={{ background: `linear-gradient(90deg, transparent 5%, ${detail.accentColor}cc 40%, ${detail.accentColor} 50%, ${detail.accentColor}cc 60%, transparent 95%)` }} />
         <div className="flex flex-col lg:flex-row" style={{ maxHeight: "92vh", minHeight: "min(92vh, 680px)" }}>
-
-          {/* ── Left: hero image — desktop only ───────────────────────── */}
           <div className="relative flex-none hidden lg:block lg:w-[340px]">
             <ServicePanelHero idx={idx} detail={detail} />
-
-            {/* Close button — desktop */}
-            <button
-              type="button"
-              aria-label="Close"
-              onClick={onClose}
-              className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.15] bg-black/50 text-white transition-colors hover:bg-white/[0.12]"
-            >
-              <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5">
-                <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-              </svg>
+            <button type="button" aria-label="Close" onClick={onClose}
+              className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.15] bg-black/50 text-white transition-colors hover:bg-white/[0.12]">
+              <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
             </button>
           </div>
-
-          {/* ── Right: content ──────────────────────────────────── */}
           <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 md:p-6 lg:p-8"
             style={{ background: `linear-gradient(160deg, rgba(${detail.accentRgb},0.04) 0%, transparent 40%)` }}>
-            {/* Close button — mobile only */}
-            <button
-              type="button"
-              aria-label="Close"
-              onClick={onClose}
-              className="lg:hidden absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.15] bg-black/50 text-white"
-            >
-              <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5">
-                <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-              </svg>
+            <button type="button" aria-label="Close" onClick={onClose}
+              className="lg:hidden absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.15] bg-black/50 text-white">
+              <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
             </button>
             <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-4 md:space-y-6">
-
-              {/* Title */}
               <motion.div variants={fadeUp}>
-                <span className="text-[10px] font-semibold uppercase tracking-[0.22em]"
-                  style={{ color: detail.accentColor }}>{copy.eyebrow}</span>
+                <span className="text-[10px] font-semibold uppercase tracking-[0.22em]" style={{ color: detail.accentColor }}>{copy.eyebrow}</span>
                 <h2 className="mt-1 text-2xl font-bold text-white leading-tight">{title}</h2>
               </motion.div>
-
-              <motion.p variants={fadeUp} className="text-sm md:text-base leading-relaxed text-white/90">
-                {copy.extendedDesc}
-              </motion.p>
-
-              {/* Divider */}
+              <motion.p variants={fadeUp} className="text-sm md:text-base leading-relaxed text-white/90">{copy.extendedDesc}</motion.p>
               <div className="h-px w-full" style={{ background: `linear-gradient(90deg, ${detail.accentColor}50, transparent)` }} />
-
-              {/* What's Included — full width */}
               <motion.div variants={fadeUp}>
                 <div className="mb-4 flex items-center gap-2">
                   <span className="h-1 w-4 rounded-full" style={{ background: detail.accentColor }} />
@@ -318,8 +508,6 @@ function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
                   ))}
                 </div>
               </motion.div>
-
-              {/* Ideal For */}
               {copy.idealFor && (
                 <>
                   <div className="h-px w-full" style={{ background: `linear-gradient(90deg, ${detail.accentColor}40, transparent)` }} />
@@ -339,17 +527,10 @@ function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
                   </motion.div>
                 </>
               )}
-
-              {/* CTA */}
               <motion.div variants={fadeUp} className="pb-1 pt-2">
-                <button
-                  type="button"
+                <button type="button"
                   className="group relative w-full overflow-hidden rounded-xl px-5 py-3.5 text-sm font-bold text-white transition-all duration-300"
-                  style={{
-                    background: `linear-gradient(135deg, rgba(${detail.accentRgb},0.85), rgba(${detail.accentRgb},1))`,
-                    boxShadow: `0 0 24px ${detail.accentColor}40, 0 4px 16px rgba(0,0,0,0.4)`,
-                  }}
-                >
+                  style={{ background: `linear-gradient(135deg, rgba(${detail.accentRgb},0.85), rgba(${detail.accentRgb},1))`, boxShadow: `0 0 24px ${detail.accentColor}40, 0 4px 16px rgba(0,0,0,0.4)` }}>
                   <span className="relative z-10 flex items-center justify-center gap-2">
                     {copy.cta}
                     <svg viewBox="0 0 16 16" fill="none" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1">
@@ -359,7 +540,6 @@ function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
                   <div className="absolute inset-0 bg-white/15 opacity-0 transition-opacity duration-300 group-hover:opacity-100"/>
                 </button>
               </motion.div>
-
             </motion.div>
           </div>
         </div>
@@ -368,107 +548,114 @@ function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
   );
 }
 
-/* ── Service card ───────────────────────────────────────────────────────────── */
-type ServiceCardProps = {
+/* ── Bento card ──────────────────────────────────────────────────────────── */
+type BentoCardProps = {
+  dataIdx: number;
   title: string;
   description: string;
   tags: string[];
   learnMore: string;
-  svgIcon: React.ReactNode;
-  bg: string;
-  glow: string;
-  glowBg: string;
-  border: string;
-  index: number;
   detail: ServiceDetail;
+  featured?: boolean;
   isActive: boolean;
   isDimmed: boolean;
+  animationIdx: number;
   onClick: () => void;
 };
 
-function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, glowBg, border, index, detail, isActive, isDimmed, onClick }: ServiceCardProps) {
+function BentoCard({ dataIdx, title, description, tags, learnMore, detail, featured, isActive, isDimmed, animationIdx, onClick }: BentoCardProps) {
+  const Illustration = ILLUSTRATIONS[dataIdx];
+  const accent = ACCENTS[dataIdx];
+  const illuHeight = featured ? "h-52" : "h-40";
+
   return (
     <motion.div
       layout
-      initial={{ y: 28 }}
-      whileInView={{ y: 0 }}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-20px" }}
-      transition={{ duration: 0.65, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
-      animate={{
-        opacity: isDimmed ? 0.38 : 1,
-        scale: isDimmed ? 0.985 : 1,
-      }}
+      transition={{ duration: 0.6, delay: animationIdx * 0.07, ease: [0.22, 1, 0.36, 1] }}
+      animate={{ opacity: isDimmed ? 0.38 : 1, scale: isDimmed ? 0.99 : 1 }}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onClick(); }}
-      className={`group relative flex flex-col overflow-hidden rounded-2xl border bg-[#09090f] transition-colors duration-300 cursor-pointer
-        ${isActive ? "border-white/[0.22]" : "border-white/[0.08] hover:border-white/[0.15]"}`}
-      style={isActive ? { boxShadow: `0 0 0 1px ${detail.accentColor}44, 0 8px 32px ${detail.accentColor}22` } : {}}
       onClick={onClick}
+      className="group relative flex flex-col overflow-hidden rounded-2xl border cursor-pointer transition-all duration-300"
+      style={{
+        background: "rgba(10,10,20,0.65)",
+        backdropFilter: "blur(12px)",
+        borderColor: isActive ? detail.accentColor + "60" : accent.border,
+        boxShadow: isActive
+          ? `0 0 0 1px ${detail.accentColor}30, 0 8px 40px ${detail.accentColor}18, inset 0 1px 0 rgba(255,255,255,0.07)`
+          : `inset 0 1px 0 rgba(255,255,255,0.05)`,
+      }}
     >
-      {/* Hover top glow line */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        style={{ background: `linear-gradient(90deg, transparent, ${border}, transparent)` }}/>
-
-      {/* Active top glow line */}
+      {/* Accent top line */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{ background: `linear-gradient(90deg, transparent, ${detail.accentColor}aa, transparent)` }} />
       {isActive && (
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
-          style={{ background: `linear-gradient(90deg, transparent, ${detail.accentColor}, transparent)` }}/>
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[1.5px]"
+          style={{ background: `linear-gradient(90deg, transparent, ${detail.accentColor}, transparent)` }} />
       )}
 
-      {/* Hover inner glow */}
-      <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        style={{ background: `radial-gradient(600px circle at 50% 0%, ${glowBg}, transparent 70%)` }}/>
+      {/* Hover glow */}
+      <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"
+        style={{ background: `radial-gradient(ellipse 80% 60% at 50% 0%, ${accent.glow}, transparent 70%)` }} />
 
-      <div className="p-7">
-        {/* Icon */}
-        <div className="relative mb-7 w-fit">
-          <div className="relative flex h-[72px] w-[72px] items-center justify-center overflow-hidden rounded-[18px] transition-transform duration-300 group-hover:scale-105"
-            style={{ background: bg, boxShadow: `0 0 0 1px ${border}, inset 0 1px 0 rgba(255,255,255,0.2)` }}>
-            <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-[18px] bg-gradient-to-b from-white/25 to-transparent"/>
-            {svgIcon}
+      {/* Illustration */}
+      <div className={`relative ${illuHeight} w-full shrink-0 overflow-hidden`}>
+        <Illustration />
+        {/* Fade to card bg */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16"
+          style={{ background: "linear-gradient(to top, rgba(10,10,20,0.95) 0%, transparent 100%)" }} />
+        {/* Featured badge */}
+        {featured && (
+          <div className="absolute top-3 right-3 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border"
+            style={{ color: detail.accentColor, borderColor: detail.accentColor + "60", background: detail.accentColor + "18", backdropFilter: "blur(8px)" }}>
+            Featured
           </div>
-          <div className="absolute -bottom-2 left-1/2 h-8 w-14 -translate-x-1/2 rounded-full blur-xl opacity-70"
-            style={{ background: glow }}/>
-        </div>
+        )}
+      </div>
 
-        {/* Text */}
-        <h3 className="font-display text-[22px] font-bold leading-tight text-white">{title}</h3>
-        <p className="mt-3 flex-1 text-sm leading-relaxed text-white">{description}</p>
+      {/* Content */}
+      <div className={`flex flex-col flex-1 ${featured ? "p-6" : "p-5"}`}>
+        <h3 className={`font-display font-bold text-white leading-tight ${featured ? "text-[22px]" : "text-[18px]"}`}>{title}</h3>
+        <p className="mt-2 flex-1 text-sm leading-relaxed text-white/70">{description}</p>
 
         {/* Tags */}
-        <div className="mt-6 flex flex-wrap gap-2">
+        <div className="mt-4 flex flex-wrap gap-1.5">
           {tags.map((tag) => (
             <span key={tag}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.09] bg-white/[0.04] px-3 py-1 text-[11px] font-medium text-white">
-              {TAG_ICONS[tag] && <span className="opacity-70">{TAG_ICONS[tag]}</span>}
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.09] bg-white/[0.04] px-2.5 py-0.5 text-[10px] font-medium text-white/70">
+              {TAG_ICONS[tag] && <span className="opacity-60">{TAG_ICONS[tag]}</span>}
               {tag}
             </span>
           ))}
         </div>
 
         {/* Learn more */}
-        <div className="mt-6 flex items-center gap-1.5 text-sm font-medium transition-colors duration-300"
-          style={{ color: isActive ? detail.accentColor : "#ffffff" }}>
-          <span>{learnMore}</span>
-          <span>→</span>
+        <div className="mt-4 flex items-center gap-1.5 text-sm font-semibold transition-colors duration-300"
+          style={{ color: isActive ? detail.accentColor : "rgba(255,255,255,0.55)" }}>
+          <span className="group-hover:text-white transition-colors duration-300">{learnMore}</span>
+          <motion.span
+            animate={{ x: isActive ? 4 : 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="group-hover:translate-x-1 transition-transform duration-300"
+          >→</motion.span>
         </div>
       </div>
     </motion.div>
   );
 }
 
-/* ── Main Services section ──────────────────────────────────────────────────── */
+/* ── Main Services section ───────────────────────────────────────────────── */
 export default function Services() {
   const { t, lang } = useLanguage();
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => { setMounted(true); }, []);
 
-  // ESC + body scroll lock — all screen sizes when modal is open
   useEffect(() => {
     if (activeIdx === null) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setActiveIdx(null); };
@@ -480,31 +667,19 @@ export default function Services() {
     };
   }, [activeIdx]);
 
-  const handleToggle = (i: number) => setActiveIdx((prev) => (prev === i ? null : i));
-  const handleClose  = () => setActiveIdx(null);
-
-  const services = t.services.items.map((item, i) => ({
-    ...item,
-    ...VISUALS[i],
-    svgIcon: SERVICE_ICONS[i],
-    detail: SERVICE_DETAILS[i],
-  }));
-
+  const handleClose = () => setActiveIdx(null);
   const showPanel = mounted && activeIdx !== null;
 
   return (
     <section id="services" className="section-separator relative isolate py-24 md:py-32">
       {/* Background */}
       <div className="pointer-events-none absolute inset-0">
-        {/* Dark site-palette gradient background */}
         <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, #050508 0%, #07091a 40%, #050810 70%, #050508 100%)" }} />
         <div className="absolute -left-60 top-1/4 h-[380px] w-[380px] rounded-full bg-accent-violet/[0.09] blur-[60px]" />
         <div className="absolute -right-40 bottom-1/3 h-[320px] w-[320px] rounded-full bg-accent-blue/[0.08] blur-[55px]" />
         <div className="absolute inset-0 grid-bg opacity-[0.12]" style={{ maskImage: "radial-gradient(ellipse 85% 70% at 50% 50%, black 10%, transparent 100%)" }} />
-        <div className="absolute inset-x-0 top-0 h-40"
-          style={{ background: "linear-gradient(to bottom, #050508 0%, transparent 100%)" }}/>
-        <div className="absolute inset-x-0 bottom-0 h-32"
-          style={{ background: "linear-gradient(to top, #080810 0%, transparent 100%)" }}/>
+        <div className="absolute inset-x-0 top-0 h-40" style={{ background: "linear-gradient(to bottom, #050508 0%, transparent 100%)" }}/>
+        <div className="absolute inset-x-0 bottom-0 h-32" style={{ background: "linear-gradient(to top, #080810 0%, transparent 100%)" }}/>
       </div>
 
       <div className="container-x relative z-10">
@@ -515,36 +690,25 @@ export default function Services() {
           description={t.services.description}
         />
 
-        {/* 5 cards: row 1 → 3 cols; row 2 → 2 cols centered via col-start */}
-        <div className="mt-20 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-6">
-          {services.map((s, i) => {
-            const total = services.length;
-            const remainder = total % 3; // 5 % 3 = 2
-            const lastRowStart = total - remainder; // index where last partial row starts
-            const isLastRow = remainder > 0 && i >= lastRowStart;
-            // Center last 2 in a 6-col grid: positions 2-3 and 4-5 (col-span-2 each)
-            const colClass = isLastRow
-              ? i === lastRowStart
-                ? "lg:col-start-2 lg:col-span-2"
-                : "lg:col-start-4 lg:col-span-2"
-              : "lg:col-span-2";
+        {/* Bento grid: 12 cols on lg, 2 cols on md, 1 col on mobile */}
+        <div className="mt-16 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-12 lg:grid-rows-2">
+          {BENTO.map(({ dataIdx, col, row, featured }, visualIdx) => {
+            const item = t.services.items[dataIdx];
+            const detail = SERVICE_DETAILS[dataIdx];
             return (
-              <div key={s.title} className={`md:col-span-1 ${colClass}`}>
-                <ServiceCard
-                  index={i}
-                  title={s.title}
-                  description={s.description}
-                  tags={s.tags}
-                  learnMore={s.learnMore}
-                  svgIcon={s.svgIcon}
-                  bg={s.bg}
-                  glow={s.glow}
-                  glowBg={s.glowBg}
-                  border={s.border}
-                  detail={s.detail}
-                  isActive={activeIdx === i}
-                  isDimmed={activeIdx !== null && activeIdx !== i}
-                  onClick={() => handleToggle(i)}
+              <div key={dataIdx} className={`${col} ${row} h-full`}>
+                <BentoCard
+                  dataIdx={dataIdx}
+                  title={item.title}
+                  description={item.description}
+                  tags={item.tags}
+                  learnMore={item.learnMore}
+                  detail={detail}
+                  featured={featured}
+                  isActive={activeIdx === dataIdx}
+                  isDimmed={activeIdx !== null && activeIdx !== dataIdx}
+                  animationIdx={visualIdx}
+                  onClick={() => setActiveIdx((prev) => (prev === dataIdx ? null : dataIdx))}
                 />
               </div>
             );
@@ -552,29 +716,21 @@ export default function Services() {
         </div>
       </div>
 
-      {/* Desktop: backdrop + panel rendered in document.body via portal to escape stacking context */}
+      {/* Portal: backdrop + modal panel */}
       {mounted && createPortal(
         <AnimatePresence>
           {showPanel && (
             <>
-              <motion.div
-                key="backdrop"
-                className="fixed inset-0"
-                style={{ zIndex: 9000, background: "rgba(3,4,10,0.6)", backdropFilter: "blur(4px)" }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.22 }}
-                onClick={handleClose}
-              />
-              <ServicePanel
-                key="panel"
+              <motion.div key="backdrop" className="fixed inset-0"
+                style={{ zIndex: 9000, background: "rgba(3,4,10,0.65)", backdropFilter: "blur(4px)" }}
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                transition={{ duration: 0.22 }} onClick={handleClose} />
+              <ServicePanel key="panel"
                 idx={activeIdx!}
-                title={services[activeIdx!].title}
-                detail={services[activeIdx!].detail}
+                title={t.services.items[activeIdx!].title}
+                detail={SERVICE_DETAILS[activeIdx!]}
                 lang={lang}
-                onClose={handleClose}
-              />
+                onClose={handleClose} />
             </>
           )}
         </AnimatePresence>,
@@ -584,7 +740,7 @@ export default function Services() {
   );
 }
 
-/* ── Section header (shared) ────────────────────────────────────────────────── */
+/* ── Section header (shared) ─────────────────────────────────────────────── */
 export function SectionHeader({
   eyebrow, title, accent, description,
 }: {
@@ -595,7 +751,6 @@ export function SectionHeader({
 }) {
   return (
     <div className="mx-auto max-w-3xl text-center">
-      {/* Eyebrow — lines + title */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         whileInView={{ opacity: 1, y: 0 }}
