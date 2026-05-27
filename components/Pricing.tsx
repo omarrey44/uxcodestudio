@@ -231,12 +231,15 @@ function PricingCard({ plan, index, badge, sectionVisible }: { plan: Plan; index
         <div className="relative z-10 flex h-full flex-col p-8">
           {/* Badge */}
           <div className="flex items-start justify-between">
-            <span
-              className="font-display text-2xl font-bold tracking-tight"
-              style={{ color: isCenter ? "#7dd3fc" : "#ffffff" }}
-            >
-              {plan.name}
-            </span>
+            {plan.price !== plan.name && (
+              <span
+                className="font-display text-2xl font-bold tracking-tight"
+                style={{ color: isCenter ? "#7dd3fc" : "#ffffff" }}
+              >
+                {plan.name}
+              </span>
+            )}
+            {plan.price === plan.name && <span />}
             {isCenter && (
               <motion.span
                 initial={{ opacity: 0, scale: 0.75 }}
