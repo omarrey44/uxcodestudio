@@ -603,18 +603,18 @@ export function SectionHeader({
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         className="mb-20 flex items-center justify-center gap-5"
       >
-        <span className="h-px w-10 shrink-0 sm:w-16" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.35))" }} />
+        <span className="h-px w-10 sm:w-16" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.35))" }} />
         <span
-          className="shrink font-black uppercase tracking-[0.1em] min-w-0"
+          className="shrink-0 font-black uppercase tracking-[0.1em] whitespace-nowrap"
           style={{
-            fontSize: "clamp(1.2rem, 5vw, 3.5rem)",
+            fontSize: "clamp(1.4rem, 5vw, 3.5rem)",
             background: "linear-gradient(90deg, #00d4ff 0%, #7c5cfc 100%)",
             WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
           }}
         >
           {eyebrow}
         </span>
-        <span className="h-px w-10 shrink-0 sm:w-16" style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.35), transparent)" }} />
+        <span className="h-px w-10 sm:w-16" style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.35), transparent)" }} />
       </motion.div>
 
       <motion.h2
