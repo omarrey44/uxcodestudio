@@ -135,14 +135,14 @@ export default function FinalCTA() {
           className="mb-16 text-center"
         >
           <div className="mb-20 flex items-center justify-center gap-5">
-            <span className="h-px w-10 sm:w-16" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.35))" }} />
+            <span className="h-px w-10 shrink-0 sm:w-16" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.45))" }} />
             <span
-              className="shrink-0 font-black uppercase tracking-[0.1em] whitespace-nowrap"
-              style={{ fontSize: "clamp(1.4rem, 5vw, 3.5rem)", background: "linear-gradient(90deg, #00d4ff 0%, #7c5cfc 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
+              className="shrink font-black uppercase tracking-[0.1em] min-w-0 text-center"
+              style={{ fontSize: "clamp(1.6rem, 5.5vw, 4.2rem)", background: "linear-gradient(90deg, #00d4ff 0%, #7c5cfc 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
             >
               {t.cta.eyebrow}
             </span>
-            <span className="h-px w-10 sm:w-16" style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.35), transparent)" }} />
+            <span className="h-px w-10 shrink-0 sm:w-16" style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.45), transparent)" }} />
           </div>
           <h2 className="font-display text-h2 font-bold text-white">
             {t.cta.badge}
