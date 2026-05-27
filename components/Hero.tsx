@@ -191,10 +191,10 @@ export default function Hero() {
               <HeroScene eyeColor={eyeColor} uxOn={uxOn} />
             </div>
 
+
             {/* Holographic floating cards */}
             <FloatingDashboard eyeColor={eyeColor} uxOn={uxOn} setUxOn={setUxOn} />
           </div>
-
         </div>
       </div>
 
@@ -400,4 +400,3 @@ function FloatingDashboard({ eyeColor, uxOn, setUxOn }: {
     </motion.div>
   );
 }
-
