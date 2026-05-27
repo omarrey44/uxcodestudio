@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { motion, useMotionValue, useTransform, useInView, type Variants, type TargetAndTransition } from "framer-motion";
 import MagneticButton from "./MagneticButton";
 import { useLanguage } from "@/lib/i18n";
+import { BookingModal } from "./BookingModal";
 
 function ShimmerSpotlightCard({
   children, className = "", shimmerDelay = 0, href, target, rel, variants, whileHover, visible = true,
@@ -59,13 +60,14 @@ function ShimmerSpotlightCard({
 }
 
 export default function FinalCTA() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
   const sectionVisible = useInView(sectionRef, { margin: "300px" });
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
+  const [bookingOpen, setBookingOpen] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -89,6 +91,7 @@ export default function FinalCTA() {
   }
 
   return (
+    <>
     <section id="contact" ref={sectionRef} className="section-deep relative overflow-hidden py-40 md:py-56">
       <div className="absolute inset-0 -z-10">
         <div className="aurora-layer opacity-90" />
@@ -246,53 +249,41 @@ export default function FinalCTA() {
                 </ShimmerSpotlightCard>
               ))}
 
-              {/* Video call card — Zoom + Teams */}
+              {/* Video call card — book a call */}
               <ShimmerSpotlightCard
                 variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
                 shimmerDelay={1.8}
                 visible={sectionVisible}
-                className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4"
+                className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 cursor-pointer group"
               >
                 <div className="flex items-center gap-3">
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/30 bg-black/40 text-white">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/30 bg-black/40 text-white transition-colors group-hover:border-accent-cyan/60 group-hover:bg-accent-cyan/20 group-hover:text-accent-cyan">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
-                      <path d="M15 10l4.55-2.73A1 1 0 0 1 21 8.13v7.74a1 1 0 0 1-1.45.9L15 14"/><rect x="1" y="6" width="14" height="12" rx="2"/>
+                      <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
                     </svg>
                   </span>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <div className="text-[10px] uppercase tracking-[0.2em] text-muted-dim">Video call</div>
-                    <div className="text-[10px] text-muted-dim">Pick your platform</div>
+                    <div className="text-sm font-medium text-white">Zoom · Teams</div>
+                    <div className="text-[10px] text-muted-dim">All days · 9am–6pm</div>
                   </div>
+                  <span className="shrink-0 text-muted-dim transition-transform group-hover:translate-x-1 group-hover:text-accent-cyan">→</span>
                 </div>
-                <div className="flex gap-2">
-                  <a
-                    href="https://zoom.us/my/uxcodestudio"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] py-2 text-xs font-medium text-white/60 transition-colors hover:border-accent-cyan/50 hover:bg-accent-cyan/10 hover:text-accent-cyan"
-                  >
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5 shrink-0">
-                      <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S.02 4.88.02 3.5 1.13 1 2.5 1s2.48 1.12 2.48 2.5zM.02 8h4.95v16H.02V8zm7.93 0h4.73v2.19h.07c.66-1.25 2.27-2.56 4.67-2.56 5 0 5.92 3.29 5.92 7.57V24h-4.95v-7.82c0-1.87-.03-4.27-2.6-4.27-2.61 0-3.01 2.04-3.01 4.14V24H7.95V8z"/>
-                    </svg>
-                    Zoom
-                  </a>
-                  <a
-                    href="https://teams.microsoft.com/l/meetup-join/uxcodestudio"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] py-2 text-xs font-medium text-white/60 transition-colors hover:border-accent-violet/50 hover:bg-accent-violet/10 hover:text-accent-violet"
-                  >
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5 shrink-0">
-                      <path d="M20.625 6.75h-4.5V3.375A1.125 1.125 0 0 0 15 2.25H9a1.125 1.125 0 0 0-1.125 1.125V6.75h-4.5A1.125 1.125 0 0 0 2.25 7.875v9A1.125 1.125 0 0 0 3.375 18h4.5v2.625A1.125 1.125 0 0 0 9 21.75h6a1.125 1.125 0 0 0 1.125-1.125V18h4.5a1.125 1.125 0 0 0 1.125-1.125v-9A1.125 1.125 0 0 0 20.625 6.75zM13.5 15.75h-3V9.75h3v6z"/>
-                    </svg>
-                    Teams
-                  </a>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setBookingOpen(true)}
+                  className="w-full rounded-xl border border-accent-cyan/30 bg-accent-cyan/10 py-2 text-xs font-semibold text-accent-cyan transition-all hover:bg-accent-cyan/20 active:scale-[0.98]"
+                >
+                  {lang === "es" ? "Agendar llamada →" : "Book a call →"}
+                </button>
               </ShimmerSpotlightCard>
             </motion.div>
           </div>
         </motion.div>
       </div>
     </section>
+
+    <BookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} />
+    </>
   );
 }

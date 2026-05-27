@@ -72,17 +72,11 @@ const TAG_ICONS: Record<string, React.ReactNode> = {
 };
 
 /* ── Extended service data ──────────────────────────────────────────────────── */
-type Metric   = { value: string; label: string };
 type DetailCopy = {
   eyebrow: string;
   extendedDesc: string;
   includes: string[];
-  metrics: Metric[];
   idealFor?: string[];
-  process?: string[];
-  features?: string[];
-  deliverables?: string[];
-  attributes?: string[];
   cta: string;
 };
 type ServiceDetail = DetailCopy & {
@@ -94,100 +88,82 @@ type ServiceDetail = DetailCopy & {
 
 const SERVICE_DETAILS: ServiceDetail[] = [
   {
-    eyebrow: "Marketing", extendedDesc: "High-converting e-commerce stores built for sales and growth. We combine product UX, payment engineering, and performance optimization to create stores that sell.",
-    includes: ["E-commerce websites", "Product catalog", "Shopping cart & checkout", "Payment integration", "SEO architecture", "Performance optimization"],
-    metrics: [{ value: "+58%", label: "Engagement" }, { value: "<1s", label: "Load speed" }, { value: "100", label: "SEO score" }],
-    idealFor: ["Startups", "SaaS companies", "Premium brands", "Product launches"],
-    cta: "Launch Your Brand Presence",
+    eyebrow: "Marketing",
+    extendedDesc: "We build your online store from scratch — ready to sell from day one. Your customers can browse products, add to cart, and pay securely. We make sure your store loads fast, looks great on any phone, and shows up on Google so new customers can find you.",
+    includes: ["Custom website design", "Online store & product catalog", "Secure checkout & payments", "Google SEO setup", "Fast loading on all devices", "Easy to manage yourself"],
+    idealFor: ["Local businesses", "Online stores", "Product launches", "Service providers"],
+    cta: "Launch Your Online Store",
     accentColor: "#4f6ef7", accentRgb: "79,110,247",
     heroBg: "linear-gradient(135deg,#0a0f2e 0%,#1a1060 60%,#0d1845 100%)",
     es: {
-      eyebrow: "Marketing", extendedDesc: "Tiendas de e-commerce de alta conversión construidas para vender y crecer. Combinamos UX de producto, ingeniería de pagos y optimización de rendimiento para crear tiendas que convierten.",
-      includes: ["Sitios de e-commerce", "Catálogo de productos", "Carrito y checkout", "Integración de pagos", "Arquitectura SEO", "Optimización de rendimiento"],
-      metrics: [{ value: "+58%", label: "Engagement" }, { value: "<1s", label: "Velocidad de carga" }, { value: "100", label: "Score SEO" }],
-      idealFor: ["Startups", "Empresas SaaS", "Marcas premium", "Lanzamientos de producto"],
-      cta: "Lanza tu Presencia de Marca",
+      eyebrow: "Marketing",
+      extendedDesc: "Construimos tu tienda en línea desde cero — lista para vender desde el primer día. Tus clientes pueden explorar productos, añadir al carrito y pagar de forma segura. Nos aseguramos de que cargue rápido, se vea bien en cualquier teléfono y aparezca en Google para que nuevos clientes te encuentren.",
+      includes: ["Diseño web personalizado", "Tienda y catálogo de productos", "Checkout y pagos seguros", "Configuración SEO en Google", "Carga rápida en todos los dispositivos", "Fácil de administrar tú mismo"],
+      idealFor: ["Negocios locales", "Tiendas en línea", "Lanzamientos de producto", "Proveedores de servicios"],
+      cta: "Lanza tu Tienda en Línea",
     },
   },
   {
-    eyebrow: "Growth", extendedDesc: "We equip companies with the systems and strategies to understand and accelerate their growth. CRO frameworks, analytics dashboards, and high-speed delivery — built with Next.js, React, Angular, and Python.",
-    includes: ["CRO strategy", "Analytics integration", "High-speed delivery", "Next.js & React", "Angular", "Python"],
-    metrics: [{ value: "+43%", label: "Conversion uplift" }, { value: "2x", label: "Qualified leads" }, { value: "↓ CAC", label: "Acquisition cost" }],
-    idealFor: ["Growing companies", "SaaS teams", "E-commerce", "Scale-ups"],
-    cta: "Start Growing Smarter",
+    eyebrow: "Growth",
+    extendedDesc: "A landing page is a focused page designed to turn visitors into leads or paying customers. We design it to look great, load in under a second, and guide people toward taking action — whether that's filling out a form, calling you, or making a purchase. Simple, fast, and built to convert.",
+    includes: ["One-page website design", "Clear sections that drive action", "Contact form & lead capture", "Super fast load times", "Ready to share on social & Google", "Visitor tracking so you see what works"],
+    idealFor: ["New businesses", "Product launches", "Event promotions", "Service bookings"],
+    cta: "Get Your Landing Page",
     accentColor: "#00d4ff", accentRgb: "0,212,255",
     heroBg: "linear-gradient(135deg,#041824 0%,#083048 60%,#041824 100%)",
     es: {
-      eyebrow: "Crecimiento", extendedDesc: "Equipamos a empresas con los sistemas y estrategias para entender y acelerar su crecimiento. Frameworks CRO, dashboards de analytics y entrega ultra-rápida — construidos con Next.js, React, Angular y Python.",
-      includes: ["Estrategia CRO", "Integración de analytics", "Entrega ultra-rápida", "Next.js & React", "Angular", "Python"],
-      metrics: [{ value: "+43%", label: "Aumento de conversión" }, { value: "2x", label: "Leads calificados" }, { value: "↓ CAC", label: "Costo de adquisición" }],
-      idealFor: ["Empresas en crecimiento", "Equipos SaaS", "E-commerce", "Scale-ups"],
-      cta: "Empieza a Crecer con Inteligencia",
+      eyebrow: "Crecimiento",
+      extendedDesc: "Una landing page es una página enfocada diseñada para convertir visitas en contactos o clientes. La diseñamos para que se vea increíble, cargue en menos de un segundo y guíe a las personas a tomar acción — ya sea llenar un formulario, llamarte o comprar. Sencilla, rápida y construida para convertir.",
+      includes: ["Diseño de página única", "Secciones que impulsan la acción", "Formulario de contacto y captura de leads", "Tiempos de carga muy rápidos", "Lista para compartir en redes y Google", "Seguimiento de visitas para ver qué funciona"],
+      idealFor: ["Negocios nuevos", "Lanzamientos de producto", "Promociones de eventos", "Reservas de servicios"],
+      cta: "Obtén tu Landing Page",
     },
   },
   {
-    eyebrow: "Engineering", extendedDesc: "Scalable web applications built with serious architecture. From admin dashboards to collaborative SaaS tools — production-grade systems designed for growth.",
-    includes: ["SaaS platforms", "Admin dashboards", "Authentication systems", "REST & GraphQL APIs", "Real-time features", "Team collaboration"],
-    metrics: [{ value: "99.9%", label: "Uptime SLA" }, { value: "<50ms", label: "API response" }, { value: "∞", label: "Scalable" }],
-    process: ["Frontend", "Backend", "Database", "APIs", "Deploy"],
-    cta: "Build Your Platform",
+    eyebrow: "Engineering",
+    extendedDesc: "We build web apps that your team and customers use every day. Think login systems, booking tools, management portals, internal dashboards — anything that needs user accounts, data, or live updates. Built to work reliably whether you have 10 or 10,000 users.",
+    includes: ["Custom web application", "User login & account management", "Admin dashboard & control panel", "Secure data storage", "Fast & reliable performance", "Hosted and ready to use online"],
+    idealFor: ["Small businesses", "Startups", "Internal tools", "Client portals"],
+    cta: "Build Your Web App",
     accentColor: "#7c3aed", accentRgb: "124,58,237",
     heroBg: "linear-gradient(135deg,#0d0820 0%,#1e0d4a 60%,#0d0820 100%)",
     es: {
-      eyebrow: "Ingeniería", extendedDesc: "Aplicaciones web escalables con arquitectura seria. Desde dashboards administrativos hasta herramientas SaaS colaborativas — sistemas de producción diseñados para crecer.",
-      includes: ["Plataformas SaaS", "Dashboards admin", "Sistemas de autenticación", "APIs REST & GraphQL", "Funciones en tiempo real", "Colaboración en equipo"],
-      metrics: [{ value: "99.9%", label: "Uptime SLA" }, { value: "<50ms", label: "Respuesta API" }, { value: "∞", label: "Escalable" }],
-      process: ["Frontend", "Backend", "Base de datos", "APIs", "Deploy"],
-      cta: "Construye tu Plataforma",
+      eyebrow: "Ingeniería",
+      extendedDesc: "Construimos aplicaciones web que tu equipo y clientes usan todos los días. Piensa en sistemas de login, herramientas de reserva, portales de gestión, paneles internos — cualquier cosa que necesite cuentas de usuario, datos o actualizaciones en vivo. Diseñadas para funcionar sin importar si tienes 10 o 10,000 usuarios.",
+      includes: ["Aplicación web a medida", "Login y gestión de cuentas", "Panel de administración", "Almacenamiento seguro de datos", "Rendimiento rápido y confiable", "Alojada y lista para usar en línea"],
+      idealFor: ["Pequeños negocios", "Startups", "Herramientas internas", "Portales para clientes"],
+      cta: "Construye tu App Web",
     },
   },
   {
-    eyebrow: "Product", extendedDesc: "Full SaaS systems — from onboarding to billing, permissions to analytics. Enterprise-ready architecture that scales with your MRR from day one.",
-    includes: ["Multi-tenant architecture", "Subscription billing", "Onboarding systems", "Team management", "Role permissions", "Usage analytics"],
-    metrics: [{ value: "MRR+", label: "Revenue ready" }, { value: "∞", label: "Multi-tenant" }, { value: "SOC2", label: "Enterprise-ready" }],
-    features: ["AI copilots", "Workflow automation", "Semantic search", "AI dashboards"],
-    cta: "Launch Your SaaS",
+    eyebrow: "Product",
+    extendedDesc: "We build complete software products that your customers subscribe to and pay for monthly. We handle everything from sign-up to billing, team management to notifications. You focus on growing your business while we build the product that makes it possible.",
+    includes: ["Full product development", "Monthly subscription & payments", "User sign-up & welcome flow", "Team & permission management", "Track how customers use the product", "Built to grow with your business"],
+    idealFor: ["Entrepreneurs", "SaaS startups", "Digital products", "Subscription businesses"],
+    cta: "Build Your SaaS Product",
     accentColor: "#3b82f6", accentRgb: "59,130,246",
     heroBg: "linear-gradient(135deg,#030d24 0%,#0a2060 60%,#030d24 100%)",
     es: {
-      eyebrow: "Producto", extendedDesc: "Sistemas SaaS completos — desde onboarding hasta billing, permisos hasta analytics. Arquitectura enterprise-ready que escala con tu MRR desde el día uno.",
-      includes: ["Arquitectura multi-tenant", "Billing por suscripción", "Sistemas de onboarding", "Gestión de equipos", "Permisos por roles", "Analytics de uso"],
-      metrics: [{ value: "MRR+", label: "Listo para ingresos" }, { value: "∞", label: "Multi-tenant" }, { value: "SOC2", label: "Enterprise-ready" }],
-      features: ["Copilotos IA", "Automatización de flujos", "Búsqueda semántica", "Dashboards IA"],
-      cta: "Lanza tu SaaS",
+      eyebrow: "Producto",
+      extendedDesc: "Construimos productos de software completos a los que tus clientes se suscriben y pagan mensualmente. Nos encargamos de todo: desde el registro hasta el cobro, la gestión de equipos y las notificaciones. Tú te enfocas en hacer crecer tu negocio mientras nosotros construimos el producto que lo hace posible.",
+      includes: ["Desarrollo completo del producto", "Suscripción mensual y cobros", "Registro y flujo de bienvenida", "Gestión de equipos y permisos", "Seguimiento de uso por clientes", "Diseñado para crecer con tu negocio"],
+      idealFor: ["Emprendedores", "Startups SaaS", "Productos digitales", "Negocios por suscripción"],
+      cta: "Construye tu Producto SaaS",
     },
   },
   {
-    eyebrow: "Creative", extendedDesc: "Visual identities with personality and longevity. We define how your brand looks, moves, speaks, and feels — across every touchpoint.",
-    includes: ["Visual identity system", "Brand guidelines", "Typography direction", "Motion language", "Verbal tone & voice", "UI aesthetic standards"],
-    metrics: [{ value: "∞", label: "Brand clarity" }, { value: "100%", label: "Custom-built" }, { value: "Full IP", label: "Ownership" }],
-    deliverables: ["Logo suite", "Brand guidelines", "Motion principles", "Asset library"],
-    attributes: ["Minimal", "Timeless", "Tech-first", "Cinematic"],
-    cta: "Define Your Brand",
-    accentColor: "#a855f7", accentRgb: "168,85,247",
-    heroBg: "linear-gradient(135deg,#130820 0%,#2d0d50 60%,#130820 100%)",
-    es: {
-      eyebrow: "Creativo", extendedDesc: "Identidades visuales con personalidad y longevidad. Definimos cómo tu marca se ve, se mueve, habla y se siente — en cada punto de contacto.",
-      includes: ["Sistema de identidad visual", "Manual de marca", "Dirección tipográfica", "Lenguaje de movimiento", "Tono y voz verbal", "Estándares de UI"],
-      metrics: [{ value: "∞", label: "Claridad de marca" }, { value: "100%", label: "A medida" }, { value: "IP total", label: "Propiedad" }],
-      deliverables: ["Suite de logos", "Manual de marca", "Principios de motion", "Librería de assets"],
-      attributes: ["Minimal", "Atemporal", "Tech-first", "Cinemático"],
-      cta: "Define tu Marca",
-    },
-  },
-  {
-    eyebrow: "Mobile", extendedDesc: "App Store-quality mobile experiences. Native performance, fluid interactions, and thoughtful UX — built for iOS and Android with no compromises.",
-    includes: ["iOS native apps", "Android apps", "Cross-platform (RN/Flutter)", "Native-feel UX", "Offline support", "Push notifications"],
-    metrics: [{ value: "60fps", label: "Animations" }, { value: "4.9★", label: "App Store" }, { value: "Native", label: "Interactions" }],
-    features: ["Onboarding flows", "Biometric auth", "In-app payments", "Realtime sync", "App analytics"],
+    eyebrow: "Mobile",
+    extendedDesc: "We build mobile apps for iPhone and Android that your customers will love using. Smooth, fast, and polished — ready to publish on the App Store and Google Play. Whether you need a simple companion app or a full-featured product, we deliver on time and within budget.",
+    includes: ["App for iPhone & Android", "Beautiful and easy-to-use design", "User login & profiles", "Push notifications", "Works offline too", "Published to App Store & Google Play"],
+    idealFor: ["Delivery services", "Booking apps", "Retail brands", "On-demand platforms"],
     cta: "Build Your Mobile App",
     accentColor: "#06b6d4", accentRgb: "6,182,212",
     heroBg: "linear-gradient(135deg,#031218 0%,#062836 60%,#031218 100%)",
     es: {
-      eyebrow: "Mobile", extendedDesc: "Experiencias móviles nivel App Store. Rendimiento nativo, interacciones fluidas y UX pensada — construida para iOS y Android sin compromisos.",
-      includes: ["Apps nativas iOS", "Apps Android", "Cross-platform (RN/Flutter)", "UX de sensación nativa", "Soporte offline", "Notificaciones push"],
-      metrics: [{ value: "60fps", label: "Animaciones" }, { value: "4.9★", label: "App Store" }, { value: "Nativo", label: "Interacciones" }],
-      features: ["Flujos de onboarding", "Autenticación biométrica", "Pagos in-app", "Sync en tiempo real", "Analytics de app"],
+      eyebrow: "Mobile",
+      extendedDesc: "Construimos apps móviles para iPhone y Android que tus clientes amarán usar. Fluidas, rápidas y pulidas — listas para publicarse en el App Store y Google Play. Ya sea que necesites una app sencilla o un producto completo, entregamos a tiempo y dentro del presupuesto.",
+      includes: ["App para iPhone y Android", "Diseño bonito y fácil de usar", "Login y perfiles de usuario", "Notificaciones push", "Funciona sin conexión también", "Publicada en App Store y Google Play"],
+      idealFor: ["Servicios de entrega", "Apps de reservas", "Marcas de retail", "Plataformas on-demand"],
       cta: "Construye tu App Móvil",
     },
   },
@@ -229,38 +205,17 @@ function ServicePanelHero({ idx, detail }: { idx: number; detail: ServiceDetail 
 type PanelProps = {
   idx: number;
   title: string;
-  tags: string[];
   detail: ServiceDetail;
   lang: "en" | "es";
   onClose: () => void;
 };
 
 const PANEL_LABELS = {
-  en: {
-    included:      "What's Included",
-    impact:        "Impact",
-    arch:          "Architecture",
-    stack:         "Tech Stack",
-    idealFor:      "Ideal For",
-    features:      "AI & Advanced Features",
-    deliver:       "Deliverables",
-    aesthetic:     "Aesthetic Direction",
-    workExamples:  "Work Examples",
-  },
-  es: {
-    included:      "Incluye",
-    impact:        "Impacto",
-    arch:          "Arquitectura",
-    stack:         "Stack Tecnológico",
-    idealFor:      "Ideal Para",
-    features:      "IA y Funciones Avanzadas",
-    deliver:       "Entregables",
-    aesthetic:     "Dirección Estética",
-    workExamples:  "Ejemplos de Trabajo",
-  },
+  en: { included: "What's Included", idealFor: "Perfect For" },
+  es: { included: "Incluye",         idealFor: "Ideal Para"  },
 };
 
-function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
+function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
   const copy   = lang === "es" ? detail.es : detail;
   const labels = PANEL_LABELS[lang];
 
@@ -299,18 +254,11 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
         <div className="absolute inset-x-0 top-0 h-[1.5px]" style={{ background: `linear-gradient(90deg, transparent 5%, ${detail.accentColor}cc 40%, ${detail.accentColor} 50%, ${detail.accentColor}cc 60%, transparent 95%)` }} />
 
         {/* Two-column layout: image left | content right */}
-        <div className="flex flex-col lg:flex-row" style={{ maxHeight: "92vh" }}>
+        <div className="flex flex-col lg:flex-row" style={{ maxHeight: "92vh", minHeight: "min(92vh, 680px)" }}>
 
           {/* ── Left: hero image (fixed, no scroll) ───────────────────────── */}
           <div className="relative flex-none h-48 lg:h-auto lg:w-[340px]">
             <ServicePanelHero idx={idx} detail={detail} />
-
-            {/* Title overlay at bottom of image */}
-            <div className="absolute inset-x-0 bottom-0 p-5 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
-              <span className="text-[10px] font-semibold uppercase tracking-[0.22em]"
-                style={{ color: detail.accentColor }}>{copy.eyebrow}</span>
-              <h2 className="mt-1 text-xl font-bold text-white leading-tight">{title}</h2>
-            </div>
 
             {/* Close button */}
             <button
@@ -330,6 +278,13 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
             style={{ background: `linear-gradient(160deg, rgba(${detail.accentRgb},0.04) 0%, transparent 40%)` }}>
             <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-6">
 
+              {/* Title */}
+              <motion.div variants={fadeUp}>
+                <span className="text-[10px] font-semibold uppercase tracking-[0.22em]"
+                  style={{ color: detail.accentColor }}>{copy.eyebrow}</span>
+                <h2 className="mt-1 text-2xl font-bold text-white leading-tight">{title}</h2>
+              </motion.div>
+
               <motion.p variants={fadeUp} className="text-base leading-relaxed text-white/90">
                 {copy.extendedDesc}
               </motion.p>
@@ -337,149 +292,42 @@ function ServicePanel({ idx, title, tags, detail, lang, onClose }: PanelProps) {
               {/* Divider */}
               <div className="h-px w-full" style={{ background: `linear-gradient(90deg, ${detail.accentColor}50, transparent)` }} />
 
-              {/* Included + Impact */}
-              <motion.div variants={fadeUp} className="grid grid-cols-2 gap-6">
-                <div>
-                  <div className="mb-3 flex items-center gap-2">
-                    <span className="h-1 w-4 rounded-full" style={{ background: detail.accentColor }} />
-                    <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: detail.accentColor }}>{labels.included}</span>
-                  </div>
-                  <div className="space-y-2">
-                    {copy.includes.map((item) => (
-                      <div key={item} className="flex items-start gap-2">
-                        <span className="flex-none mt-0.5"><CheckIcon color={detail.accentColor}/></span>
-                        <span className="text-[13px] text-white/85 leading-tight">{item}</span>
-                      </div>
-                    ))}
-                  </div>
+              {/* What's Included — full width */}
+              <motion.div variants={fadeUp}>
+                <div className="mb-4 flex items-center gap-2">
+                  <span className="h-1 w-4 rounded-full" style={{ background: detail.accentColor }} />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: detail.accentColor }}>{labels.included}</span>
                 </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <div className="mb-3 flex items-center gap-2">
-                      <span className="h-1 w-4 rounded-full" style={{ background: detail.accentColor }} />
-                      <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: detail.accentColor }}>{labels.impact}</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">
+                  {copy.includes.map((item) => (
+                    <div key={item} className="flex items-start gap-2.5">
+                      <span className="flex-none mt-0.5"><CheckIcon color={detail.accentColor}/></span>
+                      <span className="text-[13px] text-white/90 leading-snug">{item}</span>
                     </div>
-                    <div className="grid grid-cols-1 gap-2">
-                      {copy.metrics.map((m) => (
-                        <div key={m.label} className="rounded-xl border px-3 py-2.5 flex items-center gap-3"
-                          style={{ borderColor: detail.accentColor + "30", background: detail.accentColor + "0d" }}>
-                          <span className="text-base font-black leading-none tabular-nums" style={{ color: detail.accentColor }}>{m.value}</span>
-                          <span className="text-[11px] font-medium text-white/70">{m.label}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {copy.features && (
-                    <div>
-                      <div className="mb-2 flex items-center gap-2">
-                        <span className="h-1 w-4 rounded-full" style={{ background: detail.accentColor }} />
-                        <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: detail.accentColor }}>{labels.features}</span>
-                      </div>
-                      <div className="space-y-1.5">
-                        {copy.features.map((f) => (
-                          <div key={f} className="flex items-center gap-2">
-                            <span className="h-1.5 w-1.5 rounded-full flex-none" style={{ background: detail.accentColor, boxShadow: `0 0 5px ${detail.accentColor}` }}/>
-                            <span className="text-[12px] text-white/80">{f}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {copy.deliverables && (
-                    <div>
-                      <div className="mb-2 flex items-center gap-2">
-                        <span className="h-1 w-4 rounded-full" style={{ background: detail.accentColor }} />
-                        <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: detail.accentColor }}>{labels.deliver}</span>
-                      </div>
-                      <div className="space-y-1.5">
-                        {copy.deliverables.map((d) => (
-                          <div key={d} className="flex items-center gap-2">
-                            <CheckIcon color={detail.accentColor}/>
-                            <span className="text-[12px] text-white/80">{d}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {copy.attributes && (
-                    <div>
-                      <div className="mb-2 flex items-center gap-2">
-                        <span className="h-1 w-4 rounded-full" style={{ background: detail.accentColor }} />
-                        <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: detail.accentColor }}>{labels.aesthetic}</span>
-                      </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {copy.attributes.map((a) => (
-                          <span key={a} className="text-[11px] text-white/80 border rounded-full px-2.5 py-0.5"
-                            style={{ borderColor: detail.accentColor + "35", background: detail.accentColor + "0d" }}>{a}</span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                  ))}
                 </div>
               </motion.div>
 
-              {/* Divider */}
-              <div className="h-px w-full" style={{ background: `linear-gradient(90deg, ${detail.accentColor}40, transparent)` }} />
-
-              {/* Process flow */}
-              {copy.process && (
-                <motion.div variants={fadeUp}>
-                  <div className="mb-3 flex items-center gap-2">
-                    <span className="h-1 w-4 rounded-full" style={{ background: detail.accentColor }} />
-                    <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: detail.accentColor }}>{labels.arch}</span>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    {copy.process.map((step, i) => (
-                      <div key={step} className="flex items-center gap-1.5">
-                        <div className="rounded-lg border px-3 py-1.5 text-[11px] font-medium text-white"
-                          style={{ borderColor: detail.accentColor + "35", background: detail.accentColor + "0d" }}>{step}</div>
-                        {i < copy.process!.length - 1 && (
-                          <svg viewBox="0 0 16 16" fill="none" width="14" height="14" className="flex-none opacity-50">
-                            <path d="M3 8h10M9 4l4 4-4 4" stroke={detail.accentColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Tech stack + Ideal for */}
-              <motion.div variants={fadeUp} className="grid grid-cols-2 gap-4">
-                <div>
-                  <div className="mb-3 flex items-center gap-2">
-                    <span className="h-1 w-4 rounded-full" style={{ background: detail.accentColor }} />
-                    <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: detail.accentColor }}>{labels.stack}</span>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {tags.map((tag) => (
-                      <span key={tag}
-                        className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.12] bg-white/[0.05] px-2.5 py-1 text-[11px] font-medium text-white">
-                        {TAG_ICONS[tag] && <span className="opacity-80">{TAG_ICONS[tag]}</span>}
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                {copy.idealFor && (
-                  <div>
+              {/* Ideal For */}
+              {copy.idealFor && (
+                <>
+                  <div className="h-px w-full" style={{ background: `linear-gradient(90deg, ${detail.accentColor}40, transparent)` }} />
+                  <motion.div variants={fadeUp}>
                     <div className="mb-3 flex items-center gap-2">
                       <span className="h-1 w-4 rounded-full" style={{ background: detail.accentColor }} />
                       <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: detail.accentColor }}>{labels.idealFor}</span>
                     </div>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-2">
                       {copy.idealFor.map((item) => (
-                        <span key={item} className="rounded-full px-2.5 py-1 text-[11px] font-medium border"
+                        <span key={item} className="rounded-full px-3 py-1 text-[12px] font-medium border"
                           style={{ color: detail.accentColor, borderColor: detail.accentColor + "50", background: detail.accentColor + "15" }}>
                           {item}
                         </span>
                       ))}
                     </div>
-                  </div>
-                )}
-              </motion.div>
+                  </motion.div>
+                </>
+              )}
 
               {/* CTA */}
               <motion.div variants={fadeUp} className="pb-1 pt-2">
@@ -712,7 +560,6 @@ export default function Services() {
                 key="panel"
                 idx={activeIdx!}
                 title={services[activeIdx!].title}
-                tags={services[activeIdx!].tags}
                 detail={services[activeIdx!].detail}
                 lang={lang}
                 onClose={handleClose}
