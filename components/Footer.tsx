@@ -109,7 +109,28 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 text-xs text-muted-dim md:flex-row">
+        {/* Tech stack strip */}
+        <div className="mt-14 border-t border-white/5 pt-10">
+          <p className="mb-6 text-center text-[11px] uppercase tracking-[0.25em] text-muted-dim">Built with</p>
+          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+            {[
+              { name: "Next.js",    file: "nextjs"      },
+              { name: "React",      file: "react"       },
+              { name: "TypeScript", file: "typescript"  },
+              { name: "Tailwind",   file: "tailwind"    },
+              { name: "Vercel",     file: "vercel"      },
+              { name: "Framer",     file: "framer"      },
+            ].map(({ name, file }) => (
+              <div key={name} className="flex items-center gap-2.5 opacity-40 transition-opacity duration-300 hover:opacity-90">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={`/tech/${file}.svg`} alt={name} className="h-7 w-7 shrink-0" />
+                <span className="text-[15px] font-semibold tracking-tight text-white">{name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 text-xs text-muted-dim md:flex-row">
           <div>© {new Date().getFullYear()} UXCODESTUDIO. {t.footer.copyright}</div>
           <div className="flex items-center gap-6">
             <a href="#" className="hover:text-white">{t.footer.privacy}</a>
