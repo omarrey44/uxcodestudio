@@ -234,13 +234,13 @@ const en: Translations = {
     badge:       "Most popular",
     plans: [
       {
-        name: "Landing Page", price: "$100–$200", cadence: "/ project", highlight: false,
+        name: "Landing Page", price: "$150–$250", cadence: "/ project", highlight: false,
         description: "A professional page designed to showcase your business and turn visitors into customers — delivered in days.",
         features: ["Unique design tailored to your brand", "Works on phones, tablets & computers", "Smooth animations & visual effects", "Fast loading speed", "1 round of revisions included"],
         cta: "Start Landing Page",
       },
       {
-        name: "Webpage", price: "$350–$500", cadence: "/ project", highlight: true,
+        name: "Webpage", price: "$400–$550", cadence: "/ project", highlight: true,
         description: "A complete website or web app — designed, built and ready to run your business online from day one.",
         features: ["Everything in Landing Page", "User accounts & login system", "Contact forms & third-party connections", "Online payment ready", "Speed & performance optimized", "30-day post-launch support"],
         cta: "Start Webpage",
@@ -415,13 +415,13 @@ const es: Translations = {
     badge:       "Más popular",
     plans: [
       {
-        name: "Landing Page", price: "$100–$200", cadence: "/ proyecto", highlight: false,
+        name: "Landing Page", price: "$150–$250", cadence: "/ proyecto", highlight: false,
         description: "Una página profesional para mostrar tu negocio y convertir visitas en clientes — lista en días.",
         features: ["Diseño único adaptado a tu marca", "Funciona en celular, tablet y computadora", "Animaciones y efectos visuales", "Carga rápida", "1 ronda de revisiones incluida"],
         cta: "Comenzar Landing Page",
       },
       {
-        name: "Página Web", price: "$350–$500", cadence: "/ proyecto", highlight: true,
+        name: "Página Web", price: "$400–$550", cadence: "/ proyecto", highlight: true,
         description: "Un sitio web o app completa — diseñada, desarrollada y lista para hacer crecer tu negocio desde el día uno.",
         features: ["Todo lo de Landing Page", "Cuentas de usuario e inicio de sesión", "Formularios de contacto e integraciones", "Pagos en línea listos", "Velocidad y rendimiento optimizados", "30 días de soporte post-lanzamiento"],
         cta: "Comenzar Página Web",
