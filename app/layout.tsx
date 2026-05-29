@@ -4,7 +4,6 @@ import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import { LanguageProvider } from "@/lib/i18n";
 import Navbar from "@/components/Navbar";
-import CustomCursor from "@/components/CustomCursor";
 import PageLoader from "@/components/PageLoader";
 
 const inter = Inter({
@@ -54,7 +53,6 @@ export default function RootLayout({
         {/* Runs synchronously before React hydrates — prevents browser scroll restoration fighting Lenis */}
         <script dangerouslySetInnerHTML={{ __html: "if('scrollRestoration'in history){history.scrollRestoration='manual';}window.scrollTo(0,0);" }} />
         <PageLoader />
-        <CustomCursor />
         <LanguageProvider>
           <SmoothScroll>
             <Navbar />

@@ -283,7 +283,6 @@ const en: Translations = {
     contactTitle:  "Or reach us directly",
     contactMethods: [
       { icon: "✉", label: "Send an email", value: "info@uxcodestudio.com", href: "mailto:info@uxcodestudio.com", hint: "We reply within 24h" },
-      { icon: "✆", label: "Call us", value: "+1 562-269-5923", href: "tel:+15622695923", hint: "Sat–Sun · 9am–5pm" },
       { icon: "◈", label: "Book a meeting", value: "Schedule 30 min", href: "https://calendly.com/uxcodestudio", hint: "Free discovery call" },
     ],
   },
@@ -464,7 +463,6 @@ const es: Translations = {
     contactTitle:  "O contáctanos directamente",
     contactMethods: [
       { icon: "✉", label: "Envíanos un email", value: "info@uxcodestudio.com", href: "mailto:info@uxcodestudio.com", hint: "Respondemos en 24h" },
-      { icon: "✆", label: "Llámanos", value: "+1 562-269-5923", href: "tel:+15622695923", hint: "Sáb–Dom · 9am–5pm" },
       { icon: "◈", label: "Agenda una cita", value: "Reservar 30 min", href: "https://calendly.com/uxcodestudio", hint: "Llamada de discovery gratis" },
     ],
   },
