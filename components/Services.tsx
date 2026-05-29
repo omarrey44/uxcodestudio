@@ -342,9 +342,10 @@ function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
 
               {/* CTA */}
               <motion.div variants={fadeUp} className="pb-1 pt-2">
-                <button
-                  type="button"
-                  className="group relative w-full overflow-hidden rounded-xl px-5 py-3.5 text-sm font-bold text-white transition-all duration-300"
+                <a
+                  href="#contact"
+                  onClick={onClose}
+                  className="group relative block w-full overflow-hidden rounded-xl px-5 py-3.5 text-sm font-bold text-white transition-all duration-300 text-center"
                   style={{
                     background: `linear-gradient(135deg, rgba(${detail.accentRgb},0.85), rgba(${detail.accentRgb},1))`,
                     boxShadow: `0 0 24px ${detail.accentColor}40, 0 4px 16px rgba(0,0,0,0.4)`,
@@ -357,7 +358,7 @@ function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
                     </svg>
                   </span>
                   <div className="absolute inset-0 bg-white/15 opacity-0 transition-opacity duration-300 group-hover:opacity-100"/>
-                </button>
+                </a>
               </motion.div>
 
             </motion.div>
