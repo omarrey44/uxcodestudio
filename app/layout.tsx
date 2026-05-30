@@ -26,16 +26,76 @@ const barlow = Barlow({
   display: "swap",
 });
 
+const BASE_URL = "https://uxcodestudio.com";
+
 export const metadata: Metadata = {
-  title: "UXCODESTUDIO — Premium Digital Product Studio",
+  metadataBase: new URL(BASE_URL),
+  title: {
+    default: "UXCODESTUDIO — Web Design & Development Studio | Los Angeles",
+    template: "%s | UXCODESTUDIO",
+  },
   description:
-    "We design and engineer immersive websites, web apps and SaaS platforms for ambitious brands.",
-  metadataBase: new URL("https://uxcodestudio.com"),
+    "Professional web design and development studio in Los Angeles. We build landing pages, websites, web apps, SaaS platforms and mobile apps. Fast delivery, modern tech stack.",
+  keywords: [
+    "web design Los Angeles",
+    "web development studio",
+    "landing page design",
+    "web app development",
+    "SaaS development",
+    "mobile app development",
+    "Next.js developer",
+    "React developer",
+    "UI/UX design",
+    "UXCODESTUDIO",
+  ],
+  authors: [{ name: "UXCODESTUDIO", url: BASE_URL }],
+  creator: "UXCODESTUDIO",
+  publisher: "UXCODESTUDIO",
+  alternates: {
+    canonical: BASE_URL,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
-    title: "UXCODESTUDIO — Premium Digital Product Studio",
-    description:
-      "Award-winning websites, landing pages, web apps and SaaS platforms.",
     type: "website",
+    url: BASE_URL,
+    siteName: "UXCODESTUDIO",
+    title: "UXCODESTUDIO — Web Design & Development Studio",
+    description:
+      "Landing pages, websites, web apps, SaaS platforms and mobile apps. Built fast with Next.js, React and Tailwind.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "UXCODESTUDIO — Web Design & Development Studio",
+      },
+    ],
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "UXCODESTUDIO — Web Design & Development Studio",
+    description:
+      "Landing pages, websites, web apps and SaaS platforms. Built fast.",
+    images: ["/og-image.png"],
+    creator: "@uxcodestudio",
+  },
+  verification: {
+    google: "",
+  },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   },
 };
 
@@ -52,6 +112,31 @@ export default function RootLayout({
       <body className="bg-background text-white antialiased noise">
         {/* Runs synchronously before React hydrates — prevents browser scroll restoration fighting Lenis */}
         <script dangerouslySetInnerHTML={{ __html: "if('scrollRestoration'in history){history.scrollRestoration='manual';}window.scrollTo(0,0);" }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "ProfessionalService",
+              name: "UXCODESTUDIO",
+              url: "https://uxcodestudio.com",
+              email: "info@uxcodestudio.com",
+              description: "Web design and development studio specializing in landing pages, websites, web apps, SaaS platforms and mobile apps.",
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: "Los Angeles",
+                addressRegion: "CA",
+                addressCountry: "US",
+              },
+              areaServed: ["US", "MX", "CA"],
+              serviceType: ["Web Design", "Web Development", "Mobile App Development", "SaaS Development", "Landing Page Design"],
+              priceRange: "$$",
+              sameAs: [
+                "https://github.com/omarrey44",
+              ],
+            }),
+          }}
+        />
         <PageLoader />
         <LanguageProvider>
           <SmoothScroll>
