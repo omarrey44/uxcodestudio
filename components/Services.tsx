@@ -445,7 +445,6 @@ function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, g
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       className="group relative cursor-pointer"
-      style={{ perspective: 1500 }}
     >
       {/* Cinematic under-glow — blue + violet pooling beneath the slab */}
       <div
@@ -461,7 +460,7 @@ function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, g
       {/* 3D slab — static individual tilt, lifts + re-tilts on hover */}
       <motion.div
         className="relative will-change-transform"
-        style={{ rotateX: tilt.rx, rotateY: tilt.ry, transformStyle: "preserve-3d" }}
+        style={{ rotateX: tilt.rx, rotateY: tilt.ry }}
         whileHover={{ rotateX: 4, rotateY: -4, y: -12, scale: 1.02 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
       >
@@ -477,7 +476,6 @@ function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, g
               `0 26px 70px -34px ${glow}`,
               `inset 0 0 40px -24px ${glow}`,
             ].join(", "),
-            transformStyle: "preserve-3d",
           }}
         >
           {/* Top edge light reflection */}
@@ -491,7 +489,7 @@ function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, g
             style={{ boxShadow: `inset 0 0 0 1px ${detail.accentColor}55, inset 0 0 32px -8px ${glow}` }} />
 
           {/* Floating icon block */}
-          <div className="relative mb-6 w-fit" style={{ transform: "translateZ(42px)" }}>
+          <div className="relative mb-6 w-fit">
             <div className="relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl transition-transform duration-300 group-hover:scale-110"
               style={{ background: bg, boxShadow: `0 12px 26px -8px ${glow}, inset 0 1px 0 rgba(255,255,255,0.35)` }}>
               <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-2xl bg-gradient-to-b from-white/30 to-transparent" />
@@ -501,14 +499,13 @@ function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, g
 
           {/* Title + description */}
           <h3 className="font-display text-[21px] font-extrabold leading-tight" style={{
-            transform: "translateZ(28px)",
             background: `linear-gradient(95deg, #ffffff 0%, ${detail.accentColor} 120%)`,
             WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent",
           }}>{title}</h3>
-          <p className="mt-2.5 flex-1 text-[13px] leading-relaxed text-white" style={{ transform: "translateZ(20px)" }}>{description}</p>
+          <p className="mt-2.5 flex-1 text-[13px] leading-relaxed text-white">{description}</p>
 
           {/* Tags */}
-          <div className="mt-5 flex flex-wrap gap-2" style={{ transform: "translateZ(16px)" }}>
+          <div className="mt-5 flex flex-wrap gap-2">
             {tags.map((tag) => (
               <span key={tag}
                 className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.14] bg-white/[0.06] px-2.5 py-1 text-[11px] font-semibold text-white">
@@ -520,7 +517,7 @@ function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, g
 
           {/* Explore service */}
           <div className="mt-6 flex items-center gap-1.5 text-sm font-semibold transition-colors duration-300"
-            style={{ color: isActive || hovered ? detail.accentColor : "#ffffff", transform: "translateZ(22px)" }}>
+            style={{ color: isActive || hovered ? detail.accentColor : "#ffffff" }}>
             <span>{learnMore}</span>
             <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
           </div>
