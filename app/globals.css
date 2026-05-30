@@ -275,6 +275,18 @@ html.lenis body {
   to   { transform: rotate(360deg); }
 }
 
+/* Holographic scanline band travels top → bottom across the card (single pass) */
+@keyframes scanline {
+  0%   { transform: translateY(-120%); }
+  100% { transform: translateY(2200%); }
+}
+
+/* Scanlines get wiped from top → bottom as the band descends, leaving the card clean */
+@keyframes holoWipe {
+  0%   { clip-path: inset(0 0 0 0); }
+  100% { clip-path: inset(100% 0 0 0); }
+}
+
 @keyframes aurora-a {
   0%   { transform: translate(0%, 0%) scale(1); }
   100% { transform: translate(8%, 12%) scale(1.2); }

@@ -5,17 +5,30 @@ import { createPortal } from "react-dom";
 import { useLanguage } from "@/lib/i18n";
 import { useState, useEffect, useRef } from "react";
 import React from "react";
+import {
+  ShoppingBag, LayoutTemplate, Code2, Layers, Smartphone,
+  Zap, Gem, BarChart3, Handshake,
+} from "lucide-react";
 
 
-/* ── App-icon SVGs ──────────────────────────────────────────────────────────── */
+/* ── App icons (lucide-react) ────────────────────────────────────────────────── */
 const SERVICE_ICONS = [
-  <svg key="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
-  <svg key="rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>,
-  <svg key="code" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>,
-  <svg key="layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>,
-  <svg key="fp" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4"/><path d="M5 19.5C5.5 18 6 15 6 12c0-1.7.4-3.2 1.1-4.6"/><path d="M22 12c0 4.7-1.3 7.5-3.4 9"/><path d="M9 12c0-1.66.67-3.16 1.75-4.25"/><path d="M14 12c0 .82-.09 1.61-.26 2.37"/><path d="M12 12c0 3-1 5.5-3 7.5"/><path d="M12 8a4 4 0 0 1 4 4"/></svg>,
-  <svg key="phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-white"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><path d="M12 18h.01"/></svg>,
+  <ShoppingBag   key="cart"   className="h-7 w-7 text-white" strokeWidth={1.75} />,
+  <LayoutTemplate key="layout" className="h-7 w-7 text-white" strokeWidth={1.75} />,
+  <Code2         key="code"   className="h-7 w-7 text-white" strokeWidth={1.75} />,
+  <Layers        key="layers" className="h-7 w-7 text-white" strokeWidth={1.75} />,
+  <Smartphone    key="phone"  className="h-7 w-7 text-white" strokeWidth={1.75} />,
 ];
+
+/* ── Per-card static 3D tilt (mirrors the reference layout) ───────────────────── */
+const SERVICE_TILT = [
+  { rx: 7, ry: 9 },   // top-left  → faces right
+  { rx: 6, ry: 0 },   // top-center
+  { rx: 7, ry: -9 },  // top-right → faces left
+  { rx: 6, ry: 7 },   // bottom-left
+  { rx: 6, ry: -7 },  // bottom-right
+];
+const VIOLET = "#8b5cf6";
 
 /* ── Service hero images (panel top) ────────────────────────────────────────── */
 const SERVICE_HERO_IMAGES = [
@@ -157,7 +170,7 @@ const SERVICE_DETAILS: ServiceDetail[] = [
     includes: ["App for iPhone & Android", "Beautiful and easy-to-use design", "User login & profiles", "Push notifications", "Works offline too", "Published to App Store & Google Play"],
     idealFor: ["Delivery services", "Booking apps", "Retail brands", "On-demand platforms"],
     cta: "Build Your Mobile App",
-    accentColor: "#06b6d4", accentRgb: "6,182,212",
+    accentColor: "#a855f7", accentRgb: "168,85,247",
     heroBg: "linear-gradient(135deg,#031218 0%,#062836 60%,#031218 100%)",
     es: {
       eyebrow: "Mobile",
@@ -218,6 +231,8 @@ const PANEL_LABELS = {
 function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
   const copy   = lang === "es" ? detail.es : detail;
   const labels = PANEL_LABELS[lang];
+  // Brighter accent for small text on the dark panel — keeps labels legible
+  const accentText = `color-mix(in srgb, ${detail.accentColor} 58%, #ffffff)`;
 
   const lastTapRef = useRef<number>(0);
   function handleDoubleTap() {
@@ -260,6 +275,13 @@ function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
           <div className="relative flex-none hidden lg:block lg:w-[340px]">
             <ServicePanelHero idx={idx} detail={detail} />
 
+            {/* Service icon block — top-left over the image (matches reference) */}
+            <div className="absolute left-5 top-5 flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl"
+              style={{ background: VISUALS[idx].bg, boxShadow: `0 12px 28px -8px ${detail.accentColor}, inset 0 1px 0 rgba(255,255,255,0.35)` }}>
+              <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-2xl bg-gradient-to-b from-white/30 to-transparent" />
+              {SERVICE_ICONS[idx]}
+            </div>
+
             {/* Close button — desktop */}
             <button
               type="button"
@@ -289,11 +311,30 @@ function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
             </button>
             <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-4 md:space-y-6">
 
-              {/* Title */}
+              {/* Title — last word painted in the service accent (matches reference) */}
               <motion.div variants={fadeUp}>
-                <span className="text-[10px] font-semibold uppercase tracking-[0.22em]"
-                  style={{ color: detail.accentColor }}>{copy.eyebrow}</span>
-                <h2 className="mt-1 text-2xl font-bold text-white leading-tight">{title}</h2>
+                {/* Service icon — mobile only (desktop shows it over the image) */}
+                <div className="lg:hidden mb-3 flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl"
+                  style={{ background: VISUALS[idx].bg, boxShadow: `0 10px 24px -8px ${detail.accentColor}, inset 0 1px 0 rgba(255,255,255,0.35)` }}>
+                  {SERVICE_ICONS[idx]}
+                </div>
+                <span className="text-[11px] font-bold uppercase tracking-[0.24em]"
+                  style={{ color: accentText }}>{copy.eyebrow}</span>
+                <h2 className="mt-1.5 text-[28px] md:text-3xl font-bold leading-[1.1] tracking-tight text-white">
+                  {(() => {
+                    const words = title.trim().split(" ");
+                    const last = words.pop();
+                    return (
+                      <>
+                        {words.length > 0 && <span>{words.join(" ")} </span>}
+                        <span style={{
+                          background: `linear-gradient(100deg, color-mix(in srgb, ${detail.accentColor} 55%, #ffffff) 0%, ${detail.accentColor} 55%, color-mix(in srgb, ${detail.accentColor} 70%, #000000) 100%)`,
+                          WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent",
+                        }}>{last}</span>
+                      </>
+                    );
+                  })()}
+                </h2>
               </motion.div>
 
               <motion.p variants={fadeUp} className="text-sm md:text-base leading-relaxed text-white/90">
@@ -306,13 +347,13 @@ function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
               {/* What's Included — full width */}
               <motion.div variants={fadeUp}>
                 <div className="mb-4 flex items-center gap-2">
-                  <span className="h-1 w-4 rounded-full" style={{ background: detail.accentColor }} />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: detail.accentColor }}>{labels.included}</span>
+                  <span className="h-1 w-4 rounded-full" style={{ background: accentText }} />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: accentText }}>{labels.included}</span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">
                   {copy.includes.map((item) => (
                     <div key={item} className="flex items-start gap-2.5">
-                      <span className="flex-none mt-0.5"><CheckIcon color={detail.accentColor}/></span>
+                      <span className="flex-none mt-0.5"><CheckIcon color={accentText}/></span>
                       <span className="text-[13px] text-white/90 leading-snug">{item}</span>
                     </div>
                   ))}
@@ -325,13 +366,13 @@ function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
                   <div className="h-px w-full" style={{ background: `linear-gradient(90deg, ${detail.accentColor}40, transparent)` }} />
                   <motion.div variants={fadeUp}>
                     <div className="mb-3 flex items-center gap-2">
-                      <span className="h-1 w-4 rounded-full" style={{ background: detail.accentColor }} />
-                      <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: detail.accentColor }}>{labels.idealFor}</span>
+                      <span className="h-1 w-4 rounded-full" style={{ background: accentText }} />
+                      <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: accentText }}>{labels.idealFor}</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {copy.idealFor.map((item) => (
                         <span key={item} className="rounded-full px-3 py-1 text-[12px] font-medium border"
-                          style={{ color: detail.accentColor, borderColor: detail.accentColor + "50", background: detail.accentColor + "15" }}>
+                          style={{ color: accentText, borderColor: `color-mix(in srgb, ${detail.accentColor} 45%, transparent)`, background: `color-mix(in srgb, ${detail.accentColor} 14%, transparent)` }}>
                           {item}
                         </span>
                       ))}
@@ -347,7 +388,7 @@ function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
                   onClick={onClose}
                   className="group relative block w-full overflow-hidden rounded-xl px-5 py-3.5 text-sm font-bold text-white transition-all duration-300 text-center"
                   style={{
-                    background: `linear-gradient(135deg, rgba(${detail.accentRgb},0.85), rgba(${detail.accentRgb},1))`,
+                    background: `linear-gradient(135deg, ${detail.accentColor}, color-mix(in srgb, ${detail.accentColor} 65%, #ffffff))`,
                     boxShadow: `0 0 24px ${detail.accentColor}40, 0 4px 16px rgba(0,0,0,0.4)`,
                   }}
                 >
@@ -388,73 +429,133 @@ type ServiceCardProps = {
 };
 
 function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, glowBg, border, index, detail, isActive, isDimmed, onClick }: ServiceCardProps) {
+  const [hovered, setHovered] = useState(false);
+  const tilt = SERVICE_TILT[index % SERVICE_TILT.length];
+
   return (
     <motion.div
-      layout
-      initial={{ y: 28 }}
-      whileInView={{ y: 0 }}
-      viewport={{ once: true, margin: "-20px" }}
-      transition={{ duration: 0.65, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
-      animate={{
-        opacity: isDimmed ? 0.38 : 1,
-        scale: isDimmed ? 0.985 : 1,
-      }}
+      initial={{ opacity: 0, y: 38 }}
+      whileInView={{ opacity: isDimmed ? 0.4 : 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.7, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onClick(); }}
-      className={`group relative flex flex-col overflow-hidden rounded-2xl border bg-[#09090f] transition-colors duration-300 cursor-pointer
-        ${isActive ? "border-white/[0.22]" : "border-white/[0.08] hover:border-white/[0.15]"}`}
-      style={isActive ? { boxShadow: `0 0 0 1px ${detail.accentColor}44, 0 8px 32px ${detail.accentColor}22` } : {}}
       onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="group relative cursor-pointer"
+      style={{ perspective: 1500 }}
     >
-      {/* Hover top glow line */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        style={{ background: `linear-gradient(90deg, transparent, ${border}, transparent)` }}/>
+      {/* Cinematic under-glow — blue + violet pooling beneath the slab */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -inset-x-2 bottom-0 h-32 rounded-[50%] blur-3xl transition-all duration-500"
+        style={{
+          background: `radial-gradient(60% 100% at 28% 0%, ${detail.accentColor}, transparent 72%), radial-gradient(60% 100% at 74% 10%, ${VIOLET}, transparent 72%)`,
+          opacity: hovered ? 1 : 0.7,
+          transform: hovered ? "translateY(40px) scale(1.08)" : "translateY(34px)",
+        }}
+      />
 
-      {/* Active top glow line */}
-      {isActive && (
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px"
-          style={{ background: `linear-gradient(90deg, transparent, ${detail.accentColor}, transparent)` }}/>
-      )}
+      {/* 3D slab — static individual tilt, lifts + re-tilts on hover */}
+      <motion.div
+        className="relative will-change-transform"
+        style={{ rotateX: tilt.rx, rotateY: tilt.ry, transformStyle: "preserve-3d" }}
+        whileHover={{ rotateX: 4, rotateY: -4, y: -12, scale: 1.02 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+      >
+        {/* ── Front face ── */}
+        <div
+          className={`relative flex flex-col rounded-[22px] border p-7 transition-colors duration-300
+            ${isActive || hovered ? "border-white/25" : "border-white/[0.12]"}`}
+          style={{
+            background: "linear-gradient(180deg,#0e0e1a 0%,#09090f 60%,#070710 100%)",
+            boxShadow: [
+              "inset 0 1px 0 rgba(255,255,255,0.10)",
+              "0 30px 60px -28px rgba(0,0,0,0.85)",
+              `0 26px 70px -34px ${glow}`,
+              `inset 0 0 40px -24px ${glow}`,
+            ].join(", "),
+            transformStyle: "preserve-3d",
+          }}
+        >
+          {/* Top edge light reflection */}
+          <div className="pointer-events-none absolute inset-x-6 top-0 h-px"
+            style={{ background: `linear-gradient(90deg, transparent, ${detail.accentColor}aa, transparent)` }} />
+          {/* Left edge sheen */}
+          <div className="pointer-events-none absolute inset-y-6 left-0 w-px opacity-60"
+            style={{ background: `linear-gradient(180deg, transparent, ${detail.accentColor}55, transparent)` }} />
+          {/* Hover accent ring */}
+          <div className="pointer-events-none absolute inset-0 rounded-[22px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            style={{ boxShadow: `inset 0 0 0 1px ${detail.accentColor}55, inset 0 0 32px -8px ${glow}` }} />
 
-      {/* Hover inner glow */}
-      <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        style={{ background: `radial-gradient(600px circle at 50% 0%, ${glowBg}, transparent 70%)` }}/>
-
-      <div className="p-7">
-        {/* Icon */}
-        <div className="relative mb-7 w-fit">
-          <div className="relative flex h-[72px] w-[72px] items-center justify-center overflow-hidden rounded-[18px] transition-transform duration-300 group-hover:scale-105"
-            style={{ background: bg, boxShadow: `0 0 0 1px ${border}, inset 0 1px 0 rgba(255,255,255,0.2)` }}>
-            <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-[18px] bg-gradient-to-b from-white/25 to-transparent"/>
-            {svgIcon}
+          {/* Floating icon block */}
+          <div className="relative mb-6 w-fit" style={{ transform: "translateZ(42px)" }}>
+            <div className="relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl transition-transform duration-300 group-hover:scale-110"
+              style={{ background: bg, boxShadow: `0 12px 26px -8px ${glow}, inset 0 1px 0 rgba(255,255,255,0.35)` }}>
+              <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-2xl bg-gradient-to-b from-white/30 to-transparent" />
+              {svgIcon}
+            </div>
           </div>
-          <div className="absolute -bottom-2 left-1/2 h-8 w-14 -translate-x-1/2 rounded-full blur-xl opacity-70"
-            style={{ background: glow }}/>
-        </div>
 
-        {/* Text */}
-        <h3 className="font-display text-[22px] font-bold leading-tight text-white">{title}</h3>
-        <p className="mt-3 flex-1 text-sm leading-relaxed text-white">{description}</p>
+          {/* Title + description */}
+          <h3 className="font-display text-[21px] font-extrabold leading-tight" style={{
+            transform: "translateZ(28px)",
+            background: `linear-gradient(95deg, #ffffff 0%, ${detail.accentColor} 120%)`,
+            WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent",
+          }}>{title}</h3>
+          <p className="mt-2.5 flex-1 text-[13px] leading-relaxed text-white" style={{ transform: "translateZ(20px)" }}>{description}</p>
 
-        {/* Tags */}
-        <div className="mt-6 flex flex-wrap gap-2">
-          {tags.map((tag) => (
-            <span key={tag}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.09] bg-white/[0.04] px-3 py-1 text-[11px] font-medium text-white">
-              {TAG_ICONS[tag] && <span className="opacity-70">{TAG_ICONS[tag]}</span>}
-              {tag}
-            </span>
-          ))}
-        </div>
+          {/* Tags */}
+          <div className="mt-5 flex flex-wrap gap-2" style={{ transform: "translateZ(16px)" }}>
+            {tags.map((tag) => (
+              <span key={tag}
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.14] bg-white/[0.06] px-2.5 py-1 text-[11px] font-semibold text-white">
+                {TAG_ICONS[tag] && <span className="text-white">{TAG_ICONS[tag]}</span>}
+                {tag}
+              </span>
+            ))}
+          </div>
 
-        {/* Learn more */}
-        <div className="mt-6 flex items-center gap-1.5 text-sm font-medium transition-colors duration-300"
-          style={{ color: isActive ? detail.accentColor : "#ffffff" }}>
-          <span>{learnMore}</span>
-          <span>→</span>
+          {/* Explore service */}
+          <div className="mt-6 flex items-center gap-1.5 text-sm font-semibold transition-colors duration-300"
+            style={{ color: isActive || hovered ? detail.accentColor : "#ffffff", transform: "translateZ(22px)" }}>
+            <span>{learnMore}</span>
+            <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+          </div>
         </div>
-      </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+/* ── Trust feature strip (matches reference bottom row) ───────────────────────── */
+const FEATURES = [
+  { icon: Zap,        en: "Fast Delivery",      es: "Entrega Rápida" },
+  { icon: Gem,        en: "High Quality",       es: "Alta Calidad" },
+  { icon: BarChart3,  en: "Measurable Results", es: "Resultados Medibles" },
+  { icon: Handshake,  en: "Long-term Partner",  es: "Socio a Largo Plazo" },
+];
+
+function FeatureStrip({ lang }: { lang: "en" | "es" }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+      className="mx-auto mt-12 grid max-w-4xl grid-cols-2 gap-3 sm:grid-cols-4"
+    >
+      {FEATURES.map(({ icon: Icon, en, es }) => (
+        <div key={en}
+          className="flex items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5 backdrop-blur-sm transition-colors duration-300 hover:border-white/[0.16]">
+          <span className="grid h-9 w-9 flex-none place-items-center rounded-xl bg-gradient-to-br from-accent-blue/30 to-accent-violet/30 text-accent-cyan ring-1 ring-white/10">
+            <Icon className="h-4 w-4" strokeWidth={2} />
+          </span>
+          <span className="text-[13px] font-semibold text-white/85">{lang === "es" ? es : en}</span>
+        </div>
+      ))}
     </motion.div>
   );
 }
@@ -517,7 +618,7 @@ export default function Services() {
         />
 
         {/* 5 cards: row 1 → 3 cols; row 2 → 2 cols centered via col-start */}
-        <div className="mt-20 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-6">
+        <div className="mt-24 grid grid-cols-1 gap-x-5 gap-y-12 md:grid-cols-2 lg:grid-cols-6">
           {services.map((s, i) => {
             const total = services.length;
             const remainder = total % 3; // 5 % 3 = 2
@@ -551,6 +652,8 @@ export default function Services() {
             );
           })}
         </div>
+
+        <FeatureStrip lang={lang} />
       </div>
 
       {/* Desktop: backdrop + panel rendered in document.body via portal to escape stacking context */}
