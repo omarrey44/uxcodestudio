@@ -5,6 +5,18 @@ import { useRef, useState, useCallback } from "react";
 import React from "react";
 import { SectionHeader } from "./Services";
 import { useLanguage } from "@/lib/i18n";
+import { Monitor, Globe, ShoppingCart, CalendarCheck, PencilLine, Server, MessageSquare } from "lucide-react";
+
+/* ── Per-plan icon (index-aligned with pricing.plans) ──────────────────────── */
+const PLAN_ICONS = [
+  <Monitor       key="0" className="h-6 w-6" strokeWidth={1.6} />,
+  <Globe         key="1" className="h-6 w-6" strokeWidth={1.6} />,
+  <ShoppingCart  key="2" className="h-6 w-6" strokeWidth={1.6} />,
+  <CalendarCheck key="3" className="h-6 w-6" strokeWidth={1.6} />,
+  <PencilLine    key="4" className="h-6 w-6" strokeWidth={1.6} />,
+  <Server        key="5" className="h-6 w-6" strokeWidth={1.6} />,
+  <MessageSquare key="6" className="h-6 w-6" strokeWidth={1.6} />,
+];
 
 /* ── Ambient aurora background ─────────────────────────────────────────────── */
 
@@ -135,6 +147,7 @@ type Plan = {
   features: string[];
   cta: string;
   highlight: boolean;
+  legalNote?: string;
 };
 
 function PricingCard({ plan, index, badge, sectionVisible }: { plan: Plan; index: number; badge: string; sectionVisible: boolean }) {
@@ -228,18 +241,19 @@ function PricingCard({ plan, index, badge, sectionVisible }: { plan: Plan; index
           }}
         />
 
-        <div className="relative z-10 flex h-full flex-col p-8">
-          {/* Badge */}
-          <div className="flex items-start justify-between">
-            {plan.price !== plan.name && (
-              <span
-                className="font-display text-2xl font-bold tracking-tight"
-                style={{ color: isCenter ? "#7dd3fc" : "#ffffff" }}
-              >
-                {plan.name}
-              </span>
-            )}
-            {plan.price === plan.name && <span />}
+        <div className="relative z-10 flex h-full flex-col p-6">
+          {/* Icon + badge */}
+          <div className="mb-4 flex items-start justify-between">
+            <div
+              className="flex h-12 w-12 items-center justify-center rounded-xl"
+              style={{
+                background: isCenter ? "rgba(6,182,212,0.14)" : "rgba(255,255,255,0.05)",
+                border: isCenter ? "1px solid rgba(6,182,212,0.30)" : "1px solid rgba(255,255,255,0.08)",
+                color: isCenter ? "#22d3ee" : "#7dd3fc",
+              }}
+            >
+              {PLAN_ICONS[index]}
+            </div>
             {isCenter && (
               <motion.span
                 initial={{ opacity: 0, scale: 0.75 }}
@@ -262,33 +276,17 @@ function PricingCard({ plan, index, badge, sectionVisible }: { plan: Plan; index
             )}
           </div>
 
-          {/* Price */}
-          <div className="mt-6">
-            <motion.div
-              className="flex items-baseline gap-2 whitespace-nowrap"
-              initial={{ y: 10 }}
-              whileInView={{ y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.2 + index * 0.1 }}
-            >
-              <span className="font-display text-[2.6rem] font-bold leading-none tracking-tight text-white">
-                {plan.price}
-              </span>
-              {plan.price !== "Custom" && (
-                <span className="text-[10px] font-medium uppercase tracking-widest text-white">USD</span>
-              )}
-            </motion.div>
-            {plan.cadence && (
-              <div className="mt-1.5 text-sm text-white">{plan.cadence}</div>
-            )}
-          </div>
+          {/* Name */}
+          <h3 className="font-display text-xl font-bold tracking-tight" style={{ color: isCenter ? "#7dd3fc" : "#ffffff" }}>
+            {plan.name}
+          </h3>
 
           {/* Description */}
-          <p className="mt-5 text-sm leading-relaxed text-white">{plan.description}</p>
+          <p className="mt-2.5 text-[13px] leading-relaxed text-white">{plan.description}</p>
 
           {/* Divider */}
           <div
-            className="my-7 h-px flex-none"
+            className="my-5 h-px flex-none"
             style={{
               background: isCenter
                 ? "linear-gradient(90deg, transparent, rgba(6,182,212,0.18), rgba(99,102,241,0.14), transparent)"
@@ -296,8 +294,33 @@ function PricingCard({ plan, index, badge, sectionVisible }: { plan: Plan; index
             }}
           />
 
+          {/* Price */}
+          <div className="mb-5">
+            {(() => {
+              const m = plan.price.match(/^(Starting at|Desde)\s+(.+)$/);
+              const label = m ? m[1] : null;
+              const amount = m ? m[2] : plan.price;
+              return (
+                <>
+                  {label && <div className="mb-0.5 text-xs text-white/50">{label}</div>}
+                  <div className="flex items-baseline gap-2 whitespace-nowrap">
+                    <span className="font-display text-[2.4rem] font-bold leading-none tracking-tight text-white">
+                      {amount}
+                    </span>
+                    {plan.price !== "Custom" && (
+                      <span className="text-[10px] font-medium uppercase tracking-widest text-white/60">USD</span>
+                    )}
+                  </div>
+                </>
+              );
+            })()}
+            {plan.cadence && (
+              <div className="mt-1.5 text-xs text-white/60">{plan.cadence}</div>
+            )}
+          </div>
+
           {/* Features */}
-          <ul className="flex-1 space-y-3">
+          <ul className="flex-1 space-y-2.5">
             {plan.features.map((f, fi) => (
               <motion.li
                 key={f}
@@ -305,7 +328,7 @@ function PricingCard({ plan, index, badge, sectionVisible }: { plan: Plan; index
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: 0.25 + fi * 0.045 + index * 0.1 }}
-                className="flex items-start gap-3 text-sm text-white"
+                className="flex items-start gap-2.5 text-[13px] text-white"
               >
                 <span
                   className="mt-0.5 flex-none grid h-4 w-4 place-items-center rounded-full"
@@ -330,14 +353,71 @@ function PricingCard({ plan, index, badge, sectionVisible }: { plan: Plan; index
           </ul>
 
           {/* CTA */}
-          <div className="mt-8 flex-none">
+          <div className="mt-6 flex-none">
             <PremiumCTA href="#contact" highlight={isCenter}>
               {plan.cta}
             </PremiumCTA>
+            {plan.legalNote && (
+              <p className="mt-2.5 text-[9px] leading-relaxed text-white/30 text-center">{plan.legalNote}</p>
+            )}
           </div>
         </div>
       </div>
     </motion.div>
+  );
+}
+
+/* ── Compact pricing card (secondary plans) ───────────────────────────────── */
+function CompactPricingCard({ plan, index, baseIndex }: { plan: Plan; index: number; baseIndex: number }) {
+  const m = plan.price.match(/^(Starting at|Desde)\s+(.+)$/);
+  const label = m ? m[1] : null;
+  const amount = m ? m[2] : plan.price;
+
+  return (
+    <motion.a
+      href="#contact"
+      initial={{ y: 24, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      viewport={{ once: true, margin: "-40px" }}
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative flex items-start gap-4 overflow-hidden rounded-xl p-5"
+      style={{
+        border: "1px solid rgba(255,255,255,0.07)",
+        background: "rgba(255,255,255,0.018)",
+        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)",
+      }}
+    >
+      {/* Icon */}
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl [&>svg]:h-5 [&>svg]:w-5"
+        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "#7dd3fc" }}>
+        {PLAN_ICONS[baseIndex]}
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 min-w-0">
+        {/* Name on top */}
+        <h3 className="font-display text-base font-bold tracking-tight text-white leading-tight">{plan.name}</h3>
+
+        {/* Price + description + arrow */}
+        <div className="mt-2.5 flex items-start gap-4">
+          <div className="shrink-0">
+            {label && <div className="text-[10px] text-white/50">{label}</div>}
+            <div className="flex items-baseline gap-1">
+              <span className="font-display text-2xl font-bold leading-none tracking-tight text-white">{amount}</span>
+              {plan.price !== "Custom" && <span className="text-[9px] font-medium uppercase tracking-widest text-white/60">USD</span>}
+            </div>
+          </div>
+
+          <p className="flex-1 text-[11px] leading-relaxed text-white">{plan.description}</p>
+
+          <span className="mt-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm transition-colors duration-300 group-hover:bg-accent-cyan/15"
+            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "#fff" }}>
+            →
+          </span>
+        </div>
+      </div>
+    </motion.a>
   );
 }
 
@@ -379,8 +459,9 @@ export default function Pricing() {
           description={t.pricing.description}
         />
 
-        <div className="mt-20 grid grid-cols-1 gap-5 lg:grid-cols-3 lg:items-center">
-          {t.pricing.plans.map((p, i) => (
+        {/* Main 4 plans */}
+        <div className="mt-20 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:items-start">
+          {t.pricing.plans.slice(0, 4).map((p, i) => (
             <PricingCard
               key={p.name}
               plan={p}
@@ -390,6 +471,18 @@ export default function Pricing() {
             />
           ))}
         </div>
+
+        {/* Secondary 3 plans — compact */}
+        <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-3">
+          {t.pricing.plans.slice(4).map((p, i) => (
+            <CompactPricingCard key={p.name} plan={p} index={i} baseIndex={i + 4} />
+          ))}
+        </div>
+
+        {/* Section legal disclaimer */}
+        <p className="mt-10 text-center text-[10px] leading-relaxed text-white/25 max-w-3xl mx-auto">
+          {t.pricing.sectionLegal}
+        </p>
       </div>
     </section>
   );

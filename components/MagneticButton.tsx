@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 interface Props {
   children: ReactNode;
   className?: string;
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "filled";
   href?: string;
   onClick?: () => void;
 }
@@ -47,6 +47,8 @@ export default function MagneticButton({
         "group relative inline-flex cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full px-7 py-3.5 text-sm font-medium will-change-transform",
         variant === "primary"
           ? "bg-white text-black shadow-[0_10px_40px_-10px_rgba(255,255,255,0.4)] hover:shadow-[0_15px_60px_-10px_rgba(0,212,255,0.55)]"
+          : variant === "filled"
+          ? "bg-gradient-to-r from-accent-blue via-accent-cyan to-accent-violet text-white shadow-[0_10px_40px_-10px_rgba(0,212,255,0.5)] hover:shadow-[0_15px_60px_-10px_rgba(0,212,255,0.7)]"
           : "glass-strong text-white",
         className
       )}

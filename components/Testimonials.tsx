@@ -172,7 +172,7 @@ export default function Testimonials() {
               <span className="h-px w-10 shrink-0 sm:w-16" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.45))" }} />
               <span
                 className="shrink font-black uppercase tracking-[0.1em] min-w-0 text-center"
-                style={{ fontSize: "clamp(1.6rem, 5.5vw, 4.2rem)", background: "linear-gradient(90deg, #00d4ff 0%, #7c5cfc 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
+                style={{ fontSize: "clamp(1.6rem, 5.5vw, 4.2rem)", color: "#ffffff" }}
               >
                 {t.testimonials.eyebrow}
               </span>

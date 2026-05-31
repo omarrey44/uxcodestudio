@@ -134,19 +134,6 @@ className="relative isolate min-h-screen overflow-hidden pt-24 md:pt-36"
       <div ref={contentRef} className="container-x relative grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-8">
         {/* LEFT */}
         <div className="lg:col-span-6">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.8 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs text-muted backdrop-blur mx-auto md:mx-0 block w-fit"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inset-0 animate-ping rounded-full bg-accent-cyan opacity-75" />
-              <span className="relative h-2 w-2 rounded-full bg-accent-cyan" />
-            </span>
-            {t.hero.badge}
-          </motion.div>
-
           <h1
             ref={headlineRef}
             className="hero-headline font-hero font-black uppercase text-center md:text-left"
@@ -154,9 +141,6 @@ className="relative isolate min-h-screen overflow-hidden pt-24 md:pt-36"
           >
             <span className="block [clip-path:inset(0_-9999px)]">
               <span className="word inline-block" style={{ color: "#ffffff" }}>{t.hero.headlinePart1}</span>
-            </span>
-            <span className="block [clip-path:inset(0_-9999px)]">
-              <span className="word inline-block" style={{ color: "#60a5fa" }}>{t.hero.headlinePart2}</span>
             </span>
             <span className="block [clip-path:inset(0_-9999px)]">
               <span className="word block text-center md:text-left">
@@ -170,17 +154,28 @@ className="relative isolate min-h-screen overflow-hidden pt-24 md:pt-36"
           </p>
 
           <div className="hero-cta mt-10 flex justify-center md:justify-start">
-            <MagneticButton href="#contact" variant="primary" className="px-14 py-4 text-base">
+            <MagneticButton href="#contact" variant="filled" className="px-14 py-4 text-base">
               {t.hero.cta1} <span aria-hidden>→</span>
             </MagneticButton>
           </div>
 
-          <div className="hero-cta mt-14 flex items-center gap-6 justify-center md:justify-start">
-            <div>
-              <div className="font-display text-lg text-white">{t.hero.statsCount}</div>
-              <div className="text-xs text-muted-soft">{t.hero.statsRating}</div>
+          <motion.div
+            className="mt-10 rounded-2xl border border-white/10 bg-white/[0.04] px-6 py-5 backdrop-blur-sm"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2, duration: 0.7 }}
+          >
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+              {t.hero.features.map((feat) => (
+                <div key={feat} className="flex items-center gap-2.5">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full" style={{ background: "rgba(0,212,255,0.15)" }}>
+                    <svg viewBox="0 0 10 10" fill="none" className="h-3 w-3"><path d="M2 5l2 2 4-4" stroke="#00d4ff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  </span>
+                  <span className="text-sm font-medium text-white/85">{feat}</span>
+                </div>
+              ))}
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* RIGHT — 3D + Holographic UI */}

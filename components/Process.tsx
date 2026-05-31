@@ -101,11 +101,10 @@ function MobileStepCarousel({ steps }: { steps: { n: string; tag: string; title:
             >
               {s.n}
             </div>
-            <div>
-              <div className="text-[10px] font-medium uppercase tracking-[0.26em] text-accent-cyan/70">{s.tag}</div>
-              <h3 className="font-display text-base font-bold tracking-tight text-blue-300">{s.title}</h3>
+            <div className="flex items-center gap-2">
+              <span className="text-accent-cyan [&>svg]:h-5 [&>svg]:w-5">{STEP_ICONS[active]}</span>
+              <h3 className="font-display text-[18px] font-bold tracking-tight text-accent-cyan">{s.title}</h3>
             </div>
-            <span className="ml-auto text-white">{STEP_ICONS[active]}</span>
           </div>
 
           <p className="text-sm leading-relaxed text-white/80">{s.body}</p>
@@ -187,7 +186,7 @@ export default function Process() {
           <span className="h-px w-10 shrink-0 sm:w-16" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.45))" }} />
           <span
             className="shrink font-black uppercase tracking-[0.1em] min-w-0 text-center"
-            style={{ fontSize: "clamp(1.6rem, 5.5vw, 4.2rem)", background: "linear-gradient(90deg, #00d4ff 0%, #7c5cfc 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}
+            style={{ fontSize: "clamp(1.6rem, 5.5vw, 4.2rem)", color: "#ffffff" }}
           >
             {t.process.eyebrow}
           </span>
@@ -224,49 +223,7 @@ export default function Process() {
                 {t.process.sub}
               </motion.p>
 
-              <motion.div
-                variants={{ hidden: { y: 12 }, visible: { y: 0, transition: { duration: 0.7 } } }}
-                className="mt-10 space-y-6"
-              >
-                {t.process.pills.map((label, i) => (
-                  <div key={i} className="flex items-start gap-3.5">
-                    <div className="mt-0.5 shrink-0 text-white">{PILL_ICONS[i]}</div>
-                    <div>
-                      <div className="text-sm font-semibold tracking-tight text-white">{label}</div>
-                      <div className="mt-0.5 text-xs leading-relaxed text-white">{t.process.pillDescs[i]}</div>
-                    </div>
-                  </div>
-                ))}
-              </motion.div>
             </div>
-
-            <motion.div
-              variants={{ hidden: { y: 18 }, visible: { y: 0, transition: { type: "spring", stiffness: 280, damping: 26 } } }}
-              className="mt-12 overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.025] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.07)] backdrop-blur-sm"
-            >
-              <div className="flex items-start gap-3.5">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent-violet/15 text-accent-violet">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
-                    <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold tracking-tight text-white">{t.process.sidebarTagline}</p>
-                  <p className="mt-0.5 text-xs text-white">{t.process.sidebarSub}</p>
-                </div>
-              </div>
-              <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2">
-                {t.process.transparencyItems.map((item, i) => (
-                  <span key={item} className="flex items-center gap-1.5 text-[11px] text-white">
-                    {i > 0 && <span className="text-white">·</span>}
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3 w-3 text-accent-cyan/70">
-                      <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
-                    </svg>
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
           </motion.div>
 
           {/* RIGHT — mobile carousel */}
@@ -311,10 +268,9 @@ export default function Process() {
 
                   {/* B — spotlight hover wrapper */}
                   <SpotlightStepCard className="flex-1 pt-1">
-                    <div className="mb-3 flex items-center gap-2.5">
-                      <span className="text-[10px] font-medium uppercase tracking-[0.26em] text-accent-cyan/70">{s.tag}</span>
-                      <span className="text-white">{STEP_ICONS[i]}</span>
-                      <h3 className="font-display text-[17px] font-bold tracking-tight text-blue-300">{s.title}</h3>
+                    <div className="mb-3 flex items-center gap-3">
+                      <span className="text-accent-cyan [&>svg]:h-5 [&>svg]:w-5">{STEP_ICONS[i]}</span>
+                      <h3 className="font-display text-[20px] font-bold tracking-tight text-accent-cyan">{s.title}</h3>
                     </div>
 
                     <p className="text-sm leading-relaxed text-white">{s.body}</p>
