@@ -149,7 +149,9 @@ className="relative isolate min-h-screen overflow-hidden pt-24 md:pt-36"
             </span>
           </h1>
 
-          <HeroDesc descShort={t.hero.descShort} descFull={t.hero.desc} />
+          <p className="hero-sub mt-8 max-w-xl text-sm text-muted-soft md:text-base text-center md:text-left leading-relaxed">
+            {t.hero.descShort} {t.hero.desc}
+          </p>
 
           <div className="hero-cta mt-10 flex justify-center md:justify-start">
             <MagneticButton href="#contact" variant="filled" className="px-14 py-4 text-base">
@@ -242,43 +244,6 @@ className="relative isolate min-h-screen overflow-hidden pt-24 md:pt-36"
   );
 }
 
-function HeroDesc({ descShort, descFull }: { descShort: string; descFull: string }) {
-  const [expanded, setExpanded] = useState(false);
-  const lang = typeof window !== "undefined" && document.documentElement.lang === "es" ? "es" : "en";
-  const readMore = lang === "es" ? "Leer más ↓" : "Read more ↓";
-  const readLess = lang === "es" ? "Leer menos ↑" : "Read less ↑";
-
-  return (
-    <div className="hero-sub mt-8 max-w-xl text-center md:text-left">
-      <p className="text-base text-muted-soft md:text-lg">{descShort}</p>
-
-      <AnimatePresence initial={false}>
-        {expanded && (
-          <motion.p
-            key="expanded"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden mt-3 text-base text-muted-soft md:text-lg"
-          >
-            {descFull}
-          </motion.p>
-        )}
-      </AnimatePresence>
-
-      <button
-        type="button"
-        aria-expanded={expanded}
-        onClick={() => setExpanded((v) => !v)}
-        className="mt-3 flex items-center gap-1.5 text-xs font-semibold transition-all duration-200 hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-cyan/50 rounded"
-        style={{ color: "#00d4ff" }}
-      >
-        {expanded ? readLess : readMore}
-      </button>
-    </div>
-  );
-}
 
 function RotatingWord({ words }: { words: string[] }) {
   const [index, setIndex] = useState(0);
