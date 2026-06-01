@@ -24,6 +24,7 @@ interface Translations {
     headlinePart2: string;
     rotating: string[];
     desc: string;
+    descShort: string;
     cta1: string;
     cta2: string;
     statsCount: string;
@@ -144,7 +145,8 @@ const en: Translations = {
     headlinePart1: "We design affordable",
     headlinePart2: "",
     rotating:      ["WEBSITES", "LANDINGS", "MOBILE APPS", "AND MORE…"],
-    desc:          "Your customers are already searching online. When they need a local service, they check Google, Google Maps, and social media first. A professional website helps them find you, trust you, and choose your business. Don't miss potential customers. Let UXCODESTUDIO put your business where people are already looking.",
+    descShort:     "Customers often search for businesses directly from their phones through Google Maps, Apple Maps, Siri, social media, or local search before making a decision.",
+    desc:          "Your website gives your business a central place to build trust, show your services, display your products, share your contact information, and help customers understand what you do before they call, visit, book, or buy. That's where UXCODESTUDIO comes in, helping your business build a clear, professional online presence that customers can trust. Don't overthink it. Start today.",
     cta1:          "Start Now",
     cta2:          "View our work",
     statsCount:    "Personal projects → real results",
@@ -362,7 +364,8 @@ const es: Translations = {
     headlinePart1: "Diseñamos",
     headlinePart2: "",
     rotating:      ["SITIOS WEB", "LANDINGS", "APPS MÓVILES", "Y MÁS…"],
-    desc:          "Tus clientes ya están buscando en línea. Cuando necesitan un servicio local, primero revisan Google, Google Maps y redes sociales. Un sitio web profesional les ayuda a encontrarte, confiar en ti y elegir tu negocio. No pierdas clientes potenciales. Deja que UXCODESTUDIO ponga tu negocio donde la gente ya está buscando.",
+    descShort:     "Los clientes suelen buscar negocios directamente desde sus teléfonos a través de Google Maps, Apple Maps, Siri, redes sociales o búsqueda local antes de tomar una decisión.",
+    desc:          "Tu sitio web le da a tu negocio un lugar central para generar confianza, mostrar tus servicios, exhibir tus productos, compartir tu información de contacto y ayudar a los clientes a entender lo que haces antes de que llamen, visiten, reserven o compren. Ahí es donde entra UXCODESTUDIO, ayudando a tu negocio a construir una presencia en línea clara y profesional en la que los clientes puedan confiar. No lo pienses demasiado. Empieza hoy.",
     cta1:          "Empieza Ahora",
     cta2:          "Ver nuestro trabajo",
     statsCount:    "Proyectos personales → resultados reales",
