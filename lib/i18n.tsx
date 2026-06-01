@@ -334,9 +334,9 @@ const en: Translations = {
   footer: {
     description: "Downey, CA 90240",
     columns: [
-      { title: "Studio",    links: ["About", "Process", "Careers", "Contact"] },
-      { title: "Services",  links: ["Websites", "Landing Pages", "Web Apps", "SaaS Platforms"] },
-      { title: "Resources", links: ["Work", "Pricing", "FAQ", "Blog"] },
+      { title: "Studio",    links: ["About", "Process", "Contact"] },
+      { title: "Services",  links: ["Business Websites", "Landing Page", "Online Store", "Hosting & Management", "Booking & Contact", "Website Updates", "Mobile Apps"] },
+      { title: "Resources", links: ["Pricing", "FAQ", "Blog"] },
     ],
     copyright: "All rights reserved.",
     privacy:   "Privacy",
@@ -552,9 +552,9 @@ const es: Translations = {
   footer: {
     description: "Downey, CA 90240",
     columns: [
-      { title: "Estudio",   links: ["Acerca de", "Proceso", "Carreras", "Contacto"] },
-      { title: "Servicios", links: ["Sitios Web", "Landing Pages", "Apps Web", "Plataformas SaaS"] },
-      { title: "Recursos",  links: ["Trabajo", "Precios", "FAQ", "Blog"] },
+      { title: "Estudio",   links: ["Acerca de", "Proceso", "Contacto"] },
+      { title: "Servicios", links: ["Sitios Web de Negocio", "Landing Page", "Tienda en Línea", "Hosting y Gestión", "Reservas y Contacto", "Actualizaciones Web", "Apps Móviles"] },
+      { title: "Recursos",  links: ["Precios", "FAQ", "Blog"] },
     ],
     copyright: "Todos los derechos reservados.",
     privacy:   "Privacidad",

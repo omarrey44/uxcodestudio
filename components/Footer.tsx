@@ -6,15 +6,6 @@ import { useLanguage } from "@/lib/i18n";
 
 const SOCIALS = [
   {
-    label: "X / Twitter",
-    href: "#",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L2.07 2.25h6.97l4.261 5.635 5.942-5.635Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z" />
-      </svg>
-    ),
-  },
-  {
     label: "LinkedIn",
     href: "#",
     icon: (
@@ -32,22 +23,13 @@ const SOCIALS = [
       </svg>
     ),
   },
-  {
-    label: "TikTok",
-    href: "#",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.26 8.26 0 0 0 4.83 1.56V6.78a4.85 4.85 0 0 1-1.06-.09z" />
-      </svg>
-    ),
-  },
 ];
 
 // Column order: Studio, Services, Resources — same in EN and ES
 const COL_HREFS: string[][] = [
-  ["#top", "#process", "#contact", "#contact"],          // Studio
-  ["#services", "#services", "#services", "#services"],  // Services
-  ["#work", "#pricing", "#faq", "#"],                    // Resources
+  ["#top", "#process", "#contact"],                                                                        // Studio
+  ["#services", "#services", "#services", "#services", "#services", "#services", "#services"],             // Services
+  ["#pricing", "#faq", "#"],                                                                               // Resources
 ];
 
 export default function Footer() {
