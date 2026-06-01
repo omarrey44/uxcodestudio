@@ -329,11 +329,10 @@ const en: Translations = {
     contactTitle:  "Or reach us directly",
     contactMethods: [
       { icon: "✉", label: "Send an email", value: "info@uxcodestudio.com", href: "mailto:info@uxcodestudio.com", hint: "We reply within 24h" },
-      { icon: "◈", label: "Book a meeting", value: "Schedule 30 min", href: "https://calendly.com/uxcodestudio", hint: "Free discovery call" },
     ],
   },
   footer: {
-    description: "A premium digital product studio crafting cinematic interfaces for ambitious teams worldwide.",
+    description: "Downey, CA 90240",
     columns: [
       { title: "Studio",    links: ["About", "Process", "Careers", "Contact"] },
       { title: "Services",  links: ["Websites", "Landing Pages", "Web Apps", "SaaS Platforms"] },
@@ -548,11 +547,10 @@ const es: Translations = {
     contactTitle:  "O contáctanos directamente",
     contactMethods: [
       { icon: "✉", label: "Envíanos un email", value: "info@uxcodestudio.com", href: "mailto:info@uxcodestudio.com", hint: "Respondemos en 24h" },
-      { icon: "◈", label: "Agenda una cita", value: "Reservar 30 min", href: "https://calendly.com/uxcodestudio", hint: "Llamada de discovery gratis" },
     ],
   },
   footer: {
-    description: "Un estudio premium de producto digital creando interfaces cinematográficas para equipos ambiciosos en todo el mundo.",
+    description: "Downey, CA 90240",
     columns: [
       { title: "Estudio",   links: ["Acerca de", "Proceso", "Carreras", "Contacto"] },
       { title: "Servicios", links: ["Sitios Web", "Landing Pages", "Apps Web", "Plataformas SaaS"] },

@@ -136,7 +136,18 @@ function BookingModalInner({ onClose, initialService = "" }: { onClose: () => vo
 
   const [date,    setDate]    = useState<Date | null>(null);
   const [time,    setTime]    = useState<string | null>(null);
-  const [service, setService] = useState(initialService);
+
+  function matchService(name: string): string {
+    if (!name) return "";
+    if (name === "Custom") return "Other";
+    const opts = t.services.items.map(s => s.title);
+    const exact = opts.find(s => s === name);
+    if (exact) return exact;
+    const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+    return opts.find(s => norm(s).includes(norm(name)) || norm(name).includes(norm(s))) ?? "Other";
+  }
+
+  const [service, setService] = useState(() => matchService(initialService));
   const [name,    setName]    = useState("");
   const [email,   setEmail]   = useState("");
   const [message, setMessage] = useState("");
@@ -351,6 +362,7 @@ function BookingModalInner({ onClose, initialService = "" }: { onClose: () => vo
                         {serviceOptions.map(s => (
                           <option key={s} value={s} style={{ background: "#080d1c" }}>{s}</option>
                         ))}
+                        <option value="Other" style={{ background: "#080d1c" }}>{lang === "es" ? "Otros" : "Other"}</option>
                       </select>
                       <svg viewBox="0 0 16 16" fill="none" className="pointer-events-none absolute right-3.5 h-3.5 w-3.5" style={{ color: "rgba(255,255,255,0.35)" }}>
                         <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>

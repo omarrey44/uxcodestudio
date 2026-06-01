@@ -78,7 +78,8 @@ export default function Footer() {
             <div className="flex items-center">
               <Image src="/logo.png" width={160} height={48} alt="UXCODESTUDIO" />
             </div>
-            <p className="mt-4 max-w-xs text-sm text-muted-soft">{t.footer.description}</p>
+            <a href="mailto:info@uxcodestudio.com" className="mt-4 block text-sm text-muted-soft hover:text-white transition-colors">info@uxcodestudio.com</a>
+            <p className="mt-1 max-w-xs text-sm text-muted-soft">{t.footer.description}</p>
             <div className="mt-6 flex gap-3">
               {SOCIALS.map(({ label, href, icon }) => (
                 <a

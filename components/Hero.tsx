@@ -254,26 +254,16 @@ function HeroDesc({ descShort, descFull }: { descShort: string; descFull: string
 
       <AnimatePresence initial={false}>
         {expanded && (
-          <motion.div
+          <motion.p
             key="expanded"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden"
+            className="overflow-hidden mt-3 text-base text-muted-soft md:text-lg"
           >
-            <div
-              className="mt-3 rounded-xl px-4 py-4 text-sm text-muted-soft leading-relaxed"
-              style={{
-                background: "rgba(0,180,255,0.04)",
-                border: "1px solid rgba(0,212,255,0.12)",
-                backdropFilter: "blur(8px)",
-                boxShadow: "0 0 24px rgba(0,180,255,0.06), inset 0 1px 0 rgba(255,255,255,0.05)",
-              }}
-            >
-              {descFull}
-            </div>
-          </motion.div>
+            {descFull}
+          </motion.p>
         )}
       </AnimatePresence>
 

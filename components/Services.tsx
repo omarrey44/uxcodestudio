@@ -489,7 +489,10 @@ function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, g
             ${isActive || hovered ? "border-white/25" : "border-white/[0.12]"}`}
           style={{
             background: "linear-gradient(180deg,#0e0e1a 0%,#09090f 60%,#070710 100%)",
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.10), 0 20px 40px -20px rgba(0,0,0,0.7)",
+            boxShadow: hovered
+              ? `inset 0 1px 0 rgba(255,255,255,0.13), 0 20px 40px -20px rgba(0,0,0,0.7), 0 0 48px -8px ${detail.accentColor}44`
+              : "inset 0 1px 0 rgba(255,255,255,0.10), 0 20px 40px -20px rgba(0,0,0,0.7)",
+            transition: "box-shadow 0.35s ease",
           }}
         >
           {/* Most popular badge */}

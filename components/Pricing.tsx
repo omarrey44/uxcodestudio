@@ -5,6 +5,7 @@ import { useRef, useState, useCallback } from "react";
 import React from "react";
 import { SectionHeader } from "./Services";
 import { useLanguage } from "@/lib/i18n";
+import { BookingModal } from "./BookingModal";
 import { Monitor, Globe, ShoppingCart, CalendarCheck, PencilLine, Server, MessageSquare } from "lucide-react";
 
 /* ── Per-plan icon (index-aligned with pricing.plans) ──────────────────────── */
@@ -63,19 +64,20 @@ function BorderBeam() {
 }
 
 /* ── Premium CTA button ─────────────────────────────────────────────────────── */
-function PremiumCTA({ children, href, highlight }: { children: React.ReactNode; href: string; highlight: boolean }) {
+function PremiumCTA({ children, onClick, highlight }: { children: React.ReactNode; onClick: () => void; highlight: boolean }) {
   const [hovered, setHovered] = useState(false);
   const [shineX, setShineX] = useState(50);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
     const r = e.currentTarget.getBoundingClientRect();
     setShineX(((e.clientX - r.left) / r.width) * 100);
   };
 
   if (highlight) {
     return (
-      <motion.a
-        href={href}
+      <motion.button
+        type="button"
+        onClick={onClick}
         whileTap={{ scale: 0.975 }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
@@ -110,13 +112,14 @@ function PremiumCTA({ children, href, highlight }: { children: React.ReactNode; 
           {children}
           <motion.span animate={hovered ? { x: 4 } : { x: 0 }} transition={{ duration: 0.22 }}>→</motion.span>
         </span>
-      </motion.a>
+      </motion.button>
     );
   }
 
   return (
-    <motion.a
-      href={href}
+    <motion.button
+      type="button"
+      onClick={onClick}
       whileTap={{ scale: 0.975 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -134,7 +137,7 @@ function PremiumCTA({ children, href, highlight }: { children: React.ReactNode; 
         {children}
         <motion.span animate={hovered ? { x: 3 } : { x: 0 }} transition={{ duration: 0.22 }}>→</motion.span>
       </span>
-    </motion.a>
+    </motion.button>
   );
 }
 
@@ -150,17 +153,19 @@ type Plan = {
   legalNote?: string;
 };
 
-function PricingCard({ plan, index, badge, sectionVisible }: { plan: Plan; index: number; badge: string; sectionVisible: boolean }) {
+function PricingCard({ plan, index, badge, sectionVisible, onBook }: { plan: Plan; index: number; badge: string; sectionVisible: boolean; onBook: () => void }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [spot, setSpot] = useState({ x: 0, y: 0, on: false });
+  const [hovered, setHovered] = useState(false);
 
   const onMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const r = cardRef.current?.getBoundingClientRect();
     if (!r) return;
     setSpot({ x: e.clientX - r.left, y: e.clientY - r.top, on: true });
+    setHovered(true);
   }, []);
 
-  const onLeave = useCallback(() => setSpot(s => ({ ...s, on: false })), []);
+  const onLeave = useCallback(() => { setSpot(s => ({ ...s, on: false })); setHovered(false); }, []);
 
   const isCenter = plan.highlight;
 
@@ -199,12 +204,17 @@ function PricingCard({ plan, index, badge, sectionVisible }: { plan: Plan; index
           backgroundImage: "url('/fondopricing.png')",
           backgroundSize: "cover",
           backgroundPosition: "center",
+          transition: "box-shadow 0.35s ease, border-color 0.35s ease",
           ...(isCenter ? {
             border: "1px solid rgba(6,182,212,0.45)",
-            boxShadow: "0 0 0 1px rgba(6,182,212,0.25), 0 0 60px -10px rgba(6,182,212,0.30), 0 40px 80px -24px rgba(99,102,241,0.25), inset 0 1px 0 rgba(255,255,255,0.14)",
+            boxShadow: hovered
+              ? "0 0 0 1px rgba(6,182,212,0.35), 0 0 80px -6px rgba(6,182,212,0.45), 0 40px 80px -24px rgba(99,102,241,0.35), inset 0 1px 0 rgba(255,255,255,0.14)"
+              : "0 0 0 1px rgba(6,182,212,0.25), 0 0 60px -10px rgba(6,182,212,0.30), 0 40px 80px -24px rgba(99,102,241,0.25), inset 0 1px 0 rgba(255,255,255,0.14)",
           } : {
-            border: "1px solid rgba(255,255,255,0.07)",
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)",
+            border: `1px solid ${hovered ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.07)"}`,
+            boxShadow: hovered
+              ? "inset 0 1px 0 rgba(255,255,255,0.07), 0 0 48px -8px rgba(6,182,212,0.22)"
+              : "inset 0 1px 0 rgba(255,255,255,0.03)",
           }),
         }}
       >
@@ -354,7 +364,7 @@ function PricingCard({ plan, index, badge, sectionVisible }: { plan: Plan; index
 
           {/* CTA */}
           <div className="mt-6 flex-none">
-            <PremiumCTA href="#contact" highlight={isCenter}>
+            <PremiumCTA onClick={onBook} highlight={isCenter}>
               {plan.cta}
             </PremiumCTA>
             {plan.legalNote && (
@@ -368,20 +378,23 @@ function PricingCard({ plan, index, badge, sectionVisible }: { plan: Plan; index
 }
 
 /* ── Compact pricing card (secondary plans) ───────────────────────────────── */
-function CompactPricingCard({ plan, index, baseIndex }: { plan: Plan; index: number; baseIndex: number }) {
+function CompactPricingCard({ plan, index, baseIndex, onBook }: { plan: Plan; index: number; baseIndex: number; onBook: () => void }) {
   const m = plan.price.match(/^(Starting at|Desde)\s+(.+)$/);
   const label = m ? m[1] : null;
   const amount = m ? m[2] : plan.price;
 
   return (
-    <motion.a
-      href="#contact"
+    <motion.div
+      role="button"
+      tabIndex={0}
+      onClick={onBook}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onBook(); }}
       initial={{ y: 24, opacity: 0 }}
       whileInView={{ y: 0, opacity: 1 }}
       viewport={{ once: true, margin: "-40px" }}
       whileHover={{ y: -4 }}
       transition={{ duration: 0.6, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative flex items-start gap-4 overflow-hidden rounded-xl p-5"
+      className="group relative flex cursor-pointer items-start gap-4 overflow-hidden rounded-xl p-5"
       style={{
         border: "1px solid rgba(255,255,255,0.07)",
         background: "rgba(255,255,255,0.018)",
@@ -417,7 +430,7 @@ function CompactPricingCard({ plan, index, baseIndex }: { plan: Plan; index: num
           </span>
         </div>
       </div>
-    </motion.a>
+    </motion.div>
   );
 }
 
@@ -426,6 +439,7 @@ export default function Pricing() {
   const { t } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
   const sectionVisible = useInView(sectionRef, { margin: "200px" });
+  const [bookingService, setBookingService] = useState<string | null>(null);
 
   return (
     <section
@@ -468,6 +482,7 @@ export default function Pricing() {
               index={i}
               badge={t.pricing.badge}
               sectionVisible={sectionVisible}
+              onBook={() => setBookingService(p.name)}
             />
           ))}
         </div>
@@ -475,7 +490,7 @@ export default function Pricing() {
         {/* Secondary 3 plans — compact */}
         <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-3">
           {t.pricing.plans.slice(4).map((p, i) => (
-            <CompactPricingCard key={p.name} plan={p} index={i} baseIndex={i + 4} />
+            <CompactPricingCard key={p.name} plan={p} index={i} baseIndex={i + 4} onBook={() => setBookingService(p.name)} />
           ))}
         </div>
 
@@ -484,6 +499,11 @@ export default function Pricing() {
           {t.pricing.sectionLegal}
         </p>
       </div>
+      <BookingModal
+        open={bookingService !== null}
+        onClose={() => setBookingService(null)}
+        initialService={bookingService ?? ""}
+      />
     </section>
   );
 }
