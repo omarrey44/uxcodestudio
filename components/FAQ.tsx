@@ -10,10 +10,11 @@ export default function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="section-deep section-separator relative py-20 md:py-28">
+    <section id="faq" className="relative py-20 md:py-28" style={{ background: "#0d0d0f" }}>
+      {/* top accent border */}
+      <div className="absolute inset-x-0 top-0 h-px" style={{ background: "linear-gradient(90deg, transparent 0%, #3b82f6 30%, #8b5cf6 70%, transparent 100%)" }} />
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -bottom-24 left-1/2 h-[400px] w-[600px] -translate-x-1/2 rounded-full bg-accent-cyan/[0.12] blur-[60px]" />
-        <div className="absolute -top-10 right-1/4 h-[280px] w-[320px] rounded-full bg-accent-violet/[0.09] blur-[50px]" />
+        <div className="absolute bottom-0 left-1/2 h-[300px] w-[500px] -translate-x-1/2 rounded-full bg-accent-violet/[0.07] blur-[80px]" />
       </div>
       <div className="container-x relative z-10">
         <SectionHeader
@@ -22,8 +23,32 @@ export default function FAQ() {
           accent={t.faq.accent}
         />
 
+        {/* Why Choose block */}
         <motion.div
-          className="mx-auto mt-16 max-w-3xl space-y-3"
+          className="mx-auto mt-16 max-w-3xl overflow-hidden rounded-3xl border border-white/10 bg-white/[0.025] p-8 md:p-10"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)" }}
+        >
+          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-cyan">{t.faq.whyTitle}</span>
+          <h3 className="mt-3 font-display text-2xl font-bold leading-tight text-white md:text-3xl">{t.faq.whyHeadline}</h3>
+          <p className="mt-4 text-sm leading-relaxed text-white md:text-base">{t.faq.whyDesc}</p>
+          <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {t.faq.whyFeatures.map((feat) => (
+              <div key={feat} className="flex items-center gap-2.5">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full" style={{ background: "rgba(0,212,255,0.15)" }}>
+                  <svg viewBox="0 0 10 10" fill="none" className="h-3 w-3"><path d="M2 5l2 2 4-4" stroke="#00d4ff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </span>
+                <span className="text-sm font-medium text-white">{feat}</span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        <motion.div
+          className="mx-auto mt-6 max-w-3xl space-y-3"
           initial={{ y: 24 }}
           whileInView={{ y: 0 }}
           viewport={{ once: true, margin: "-60px" }}

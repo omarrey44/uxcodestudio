@@ -423,7 +423,7 @@ function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
                   }}
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
-                    {copy.cta}
+                    {lang === "es" ? "Empieza Ahora" : "Start Now"}
                     <svg viewBox="0 0 16 16" fill="none" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1">
                       <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>

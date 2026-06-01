@@ -93,6 +93,10 @@ interface Translations {
     eyebrow: string;
     titlePart1: string;
     accent: string;
+    whyTitle: string;
+    whyHeadline: string;
+    whyDesc: string;
+    whyFeatures: string[];
     items: FaqItem[];
   };
   cta: {
@@ -129,10 +133,10 @@ const en: Translations = {
     startProject: "Start Now",
     links: [
       { label: "Services", href: "#services" },
-      { label: "Process", href: "#process" },
+      { label: "Process",  href: "#process"  },
       { label: "Pricing",  href: "#pricing"  },
-      { label: "FAQ",      href: "#faq"      },
       { label: "Contact",  href: "#contact"  },
+      { label: "FAQ",      href: "#faq"      },
     ],
   },
   hero: {
@@ -293,6 +297,10 @@ const en: Translations = {
     eyebrow:    "FAQ",
     titlePart1: "Everything you need",
     accent:     "to decide.",
+    whyTitle:    "Why Choose UXCODESTUDIO",
+    whyHeadline: "Professional websites without the complicated process.",
+    whyDesc:     "We help businesses move online with clear design, simple communication, and practical digital solutions. Whether you are starting small, growing locally, or building a more premium presence, your website should match your next level.",
+    whyFeatures: ["Clear pricing", "Fast communication", "Professional design", "Bilingual support", "Mobile-first experience", "Built for the U.S. market"],
     items: [
       { q: "How long does a typical project take?",       a: "Landing pages are ready in 3–5 days. E-commerce sites: 5–10 days. Full web apps and SaaS products: 8–16 weeks depending on scope. We always lock the timeline in writing before kickoff." },
       { q: "Do you work with our existing design or brand?", a: "Absolutely. We can pick up an existing system and elevate it, or build everything from scratch. We'll audit your brand in the discovery call and recommend the most efficient path." },
@@ -304,13 +312,13 @@ const en: Translations = {
   },
   cta: {
     eyebrow:       "Contact",
-    badge:         "Let's build",
-    headlinePart1: "Ready to ship something",
-    headlinePart2: "people screenshot?",
-    description:   "Book a 30-minute call. Walk out with a clear scope, a fixed quote and an honest opinion on whether we're the right fit.",
+    badge:         "LET'S BUILD",
+    headlinePart1: "Ready to build your next",
+    headlinePart2: "online presence?",
+    description:   "Tell us about your business and what you need. We will review your project and send you a clear quote.",
     cta1:          "Book a discovery call",
     cta2:          "Or browse the work",
-    features:      ["Fixed quote in 24h", "NDA on request", "Remote-first · Worldwide"],
+    features:      ["Fixed quote in 24h", "We support small businesses", "Remote-first · Worldwide"],
     formName:      "Your name",
     formEmail:     "Your email",
     formMessage:   "Tell us about your project…",
@@ -345,8 +353,8 @@ const es: Translations = {
       { label: "Servicios", href: "#services" },
       { label: "Proceso",   href: "#process"  },
       { label: "Precios",   href: "#pricing"  },
-      { label: "FAQ",       href: "#faq"      },
       { label: "Contacto",  href: "#contact"  },
+      { label: "FAQ",       href: "#faq"      },
     ],
   },
   hero: {
@@ -507,6 +515,10 @@ const es: Translations = {
     eyebrow:    "Preguntas frecuentes",
     titlePart1: "Todo lo que necesitas",
     accent:     "para decidir.",
+    whyTitle:    "Por qué elegir UXCODESTUDIO",
+    whyHeadline: "Sitios web profesionales sin el proceso complicado.",
+    whyDesc:     "Ayudamos a los negocios a estar en línea con un diseño claro, comunicación sencilla y soluciones digitales prácticas. Ya sea que estés empezando, creciendo localmente o construyendo una presencia más premium, tu sitio web debe estar a la altura de tu siguiente nivel.",
+    whyFeatures: ["Precios claros", "Comunicación rápida", "Diseño profesional", "Soporte bilingüe", "Experiencia mobile-first", "Hecho para el mercado de EE.UU."],
     items: [
       { q: "¿Cuánto tiempo dura un proyecto típico?",        a: "Las landing pages están listas en 3–5 días. Sitios e-commerce: 5–10 días. Apps web y plataformas SaaS: 8–16 semanas según el alcance. Siempre fijamos el plazo por escrito antes de empezar." },
       { q: "¿Trabajan con nuestro diseño o marca existente?",a: "Absolutamente. Podemos tomar un sistema existente y elevarlo, o construir todo desde cero. Auditaremos tu marca en la llamada de discovery y recomendaremos el camino más eficiente." },
@@ -518,13 +530,13 @@ const es: Translations = {
   },
   cta: {
     eyebrow:       "Contacto",
-    badge:         "Construyamos",
-    headlinePart1: "¿Listo para lanzar algo",
-    headlinePart2: "que la gente comparta?",
-    description:   "Reserva una llamada de 30 minutos. Sal con un alcance claro, una cotización fija y una opinión honesta sobre si somos el equipo ideal para ti.",
+    badge:         "CONSTRUYAMOS",
+    headlinePart1: "¿Listo para construir tu",
+    headlinePart2: "presencia en línea?",
+    description:   "Cuéntanos sobre tu negocio y lo que necesitas. Revisaremos tu proyecto y te enviaremos una cotización clara.",
     cta1:          "Reserva una llamada",
     cta2:          "O ve nuestro trabajo",
-    features:      ["Cotización fija en 24h", "NDA bajo solicitud", "Remoto primero · Mundial"],
+    features:      ["Cotización fija en 24h", "Apoyamos pequeños negocios", "Remoto · Para EE.UU."],
     formName:      "Tu nombre",
     formEmail:     "Tu email",
     formMessage:   "Cuéntanos sobre tu proyecto…",

@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import { motion, useMotionValue, useTransform, useInView, type Variants, type TargetAndTransition } from "framer-motion";
-import MagneticButton from "./MagneticButton";
+
 import { useLanguage } from "@/lib/i18n";
 import { BookingModal } from "./BookingModal";
 
@@ -144,7 +144,10 @@ export default function FinalCTA() {
             </span>
             <span className="h-px w-10 shrink-0 sm:w-16" style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.45), transparent)" }} />
           </div>
-          <h2 className="font-display text-h2 font-bold text-white">
+          <h2
+            className="font-display text-h2 font-bold"
+            style={{ background: "linear-gradient(90deg, #3b82f6 0%, #00d4ff 45%, #a78bfa 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent", color: "transparent" }}
+          >
             {t.cta.badge}
           </h2>
         </motion.div>
@@ -170,15 +173,7 @@ export default function FinalCTA() {
               {t.cta.description}
             </p>
 
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <MagneticButton href="mailto:info@uxcodestudio.com" variant="primary">
-                {t.cta.cta1} <span aria-hidden>→</span>
-              </MagneticButton>
-            </div>
 
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs text-muted-dim">
-              {t.cta.features.map((f) => <span key={f}>✦ {f}</span>)}
-            </div>
 
             {/* Contact form */}
             <form onSubmit={handleSubmit} className="mt-10 mx-auto max-w-xl text-left space-y-3">

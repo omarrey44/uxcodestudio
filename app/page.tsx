@@ -17,8 +17,8 @@ export default function HomePage() {
       <Services />
       <Process />
       <Pricing />
-      <FAQ />
       <FinalCTA />
+      <FAQ />
       <Footer />
     </main>
   );
