@@ -149,7 +149,7 @@ className="relative isolate min-h-screen overflow-hidden pt-24 md:pt-36"
             </span>
           </h1>
 
-          <p className="hero-sub mt-8 max-w-xl text-sm text-muted-soft md:text-base text-center md:text-left leading-relaxed">
+          <p className="hero-sub mt-8 max-w-xl text-sm text-muted-soft md:text-base leading-relaxed" style={{ textAlign: "justify" }}>
             {t.hero.descShort} {t.hero.desc}
           </p>
 

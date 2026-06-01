@@ -362,7 +362,7 @@ const es: Translations = {
     badge:         "Proyectos abiertos · Q3 2026",
     headlinePart1: "Diseñamos",
     headlinePart2: "",
-    rotating:      ["SITIOS WEB", "LANDINGS", "APPS MÓVILES", "Y MÁS…"],
+    rotating:      ["SITIOS WEB", "LANDINGS", "MOBILE APPS", "Y MÁS…"],
     descShort:     "Los clientes suelen buscar negocios directamente desde sus teléfonos a través de Google Maps, Apple Maps, Siri, redes sociales o búsqueda local antes de tomar una decisión.",
     desc:          "Tu sitio web le da a tu negocio un lugar central para generar confianza, mostrar tus servicios, exhibir tus productos, compartir tu información de contacto y ayudar a los clientes a entender lo que haces antes de que llamen, visiten, reserven o compren. Ahí es donde entra UXCODESTUDIO, ayudando a tu negocio a construir una presencia en línea clara y profesional en la que los clientes puedan confiar. No lo pienses demasiado. Empieza hoy.",
     cta1:          "Empieza Ahora",

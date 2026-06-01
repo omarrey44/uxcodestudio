@@ -109,17 +109,6 @@ function MobileStepCarousel({ steps }: { steps: { n: string; tag: string; title:
 
           <p className="text-sm leading-relaxed text-white/80">{s.body}</p>
 
-          <div className="mt-4 border-l-2 border-accent-cyan/20 pl-3.5">
-            <div className="mb-1.5 text-[9px] font-semibold uppercase tracking-[0.32em] text-accent-cyan/60">Output</div>
-            <div className="space-y-1.5">
-              {s.output.map((o) => (
-                <div key={o} className="flex items-center gap-2">
-                  <span className="h-px w-3 shrink-0 bg-accent-cyan/35" />
-                  <span className="text-[12px] leading-snug text-white/70">{o}</span>
-                </div>
-              ))}
-            </div>
-          </div>
         </motion.div>
       </AnimatePresence>
 
@@ -275,25 +264,6 @@ export default function Process() {
 
                     <p className="text-sm leading-relaxed text-white">{s.body}</p>
 
-                    <div className="mt-4 border-l-2 border-accent-cyan/20 pl-3.5">
-                      <div className="mb-1.5 text-[9px] font-semibold uppercase tracking-[0.32em] text-accent-cyan/60">Output</div>
-                      <div className="space-y-1.5">
-                        {s.output.map((o, oi) => (
-                          <div key={o} className="flex items-center gap-2">
-                            {/* C — output line draw */}
-                            <motion.span
-                              className="h-px w-3 shrink-0 bg-accent-cyan/35"
-                              initial={{ scaleX: 0 }}
-                              whileInView={{ scaleX: 1 }}
-                              viewport={{ once: true, margin: "-20px" }}
-                              transition={{ duration: 0.4, ease: "easeOut", delay: oi * 0.08 }}
-                              style={{ originX: "left" }}
-                            />
-                            <span className="text-[12px] leading-snug text-white">{o}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
                   </SpotlightStepCard>
                 </motion.div>
               ))}
