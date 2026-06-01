@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createSupabaseServer } from "@/lib/supabase";
+import { createSupabaseAnon } from "@/lib/supabase";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid date format" }, { status: 400 });
   }
 
-  const supabase = createSupabaseServer();
+  const supabase = createSupabaseAnon();
 
   const { error } = await supabase
     .from("bookings")
