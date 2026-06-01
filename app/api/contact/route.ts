@@ -4,24 +4,30 @@ import { NextRequest, NextResponse } from "next/server";
 const esc = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
+/** Strip CR/LF to prevent SMTP header injection in subject/replyTo fields */
+const hdr = (s: string) => s.replace(/[\r\n]/g, " ").trim();
+
 export async function POST(req: NextRequest) {
   const resend = new Resend(process.env.RESEND_API_KEY);
   try {
-    const { name, email, message } = await req.json();
+    const body = await req.json();
+    const name    = typeof body.name    === "string" ? body.name.slice(0, 200)    : "";
+    const email   = typeof body.email   === "string" ? body.email.slice(0, 254)   : "";
+    const message = typeof body.message === "string" ? body.message.slice(0, 5000): "";
 
     if (!name || !email || !message) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
-    const safeName    = esc(String(name));
-    const safeEmail   = esc(String(email));
-    const safeMessage = esc(String(message));
+    const safeName    = esc(name);
+    const safeEmail   = esc(email);
+    const safeMessage = esc(message);
 
     await resend.emails.send({
       from: "UX Code Studio <onboarding@resend.dev>",
       to: "uxcodestudio@outlook.com",
-      replyTo: safeEmail,
-      subject: `New inquiry from ${safeName}`,
+      replyTo: hdr(email),
+      subject: `New inquiry from ${hdr(name)}`,
       html: `
         <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
           <h2 style="color:#111;margin-bottom:4px">New project inquiry</h2>
