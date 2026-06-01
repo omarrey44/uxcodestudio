@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
 import { useLanguage } from "@/lib/i18n";
+import { BookingModal } from "./BookingModal";
 import { useState, useEffect, useRef } from "react";
 import React from "react";
 import {
@@ -251,6 +252,7 @@ type PanelProps = {
   detail: ServiceDetail;
   lang: "en" | "es";
   onClose: () => void;
+  onBooking: (serviceName: string) => void;
 };
 
 const PANEL_LABELS = {
@@ -258,7 +260,7 @@ const PANEL_LABELS = {
   es: { included: "Incluye",         idealFor: "Ideal Para"  },
 };
 
-function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
+function ServicePanel({ idx, title, detail, lang, onClose, onBooking }: PanelProps) {
   const copy   = lang === "es" ? detail.es : detail;
   const labels = PANEL_LABELS[lang];
   // Brighter accent for small text on the dark panel — keeps labels legible
@@ -413,9 +415,9 @@ function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
 
               {/* CTA */}
               <motion.div variants={fadeUp} className="pb-1 pt-2">
-                <a
-                  href="#contact"
-                  onClick={onClose}
+                <button
+                  type="button"
+                  onClick={() => { onClose(); onBooking(title); }}
                   className="group relative block w-full overflow-hidden rounded-xl px-5 py-3.5 text-sm font-bold text-white transition-all duration-300 text-center"
                   style={{
                     background: `linear-gradient(135deg, ${detail.accentColor}, color-mix(in srgb, ${detail.accentColor} 65%, #ffffff))`,
@@ -429,7 +431,7 @@ function ServicePanel({ idx, title, detail, lang, onClose }: PanelProps) {
                     </svg>
                   </span>
                   <div className="absolute inset-0 bg-white/15 opacity-0 transition-opacity duration-300 group-hover:opacity-100"/>
-                </a>
+                </button>
               </motion.div>
 
             </motion.div>
@@ -578,6 +580,7 @@ export default function Services() {
   const { t, lang } = useLanguage();
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [bookingService, setBookingService] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -713,12 +716,18 @@ export default function Services() {
                 detail={services[activeIdx!].detail}
                 lang={lang}
                 onClose={handleClose}
+                onBooking={(name) => { handleClose(); setBookingService(name); }}
               />
             </>
           )}
         </AnimatePresence>,
         document.body
       )}
+      <BookingModal
+        open={bookingService !== null}
+        onClose={() => setBookingService(null)}
+        initialService={bookingService ?? ""}
+      />
     </section>
   );
 }

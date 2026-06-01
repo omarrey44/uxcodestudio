@@ -131,12 +131,12 @@ function MiniCalendar({ selected, onSelect, lang }: {
   );
 }
 
-function BookingModalInner({ onClose }: { onClose: () => void }) {
+function BookingModalInner({ onClose, initialService = "" }: { onClose: () => void; initialService?: string }) {
   const { t, lang } = useLanguage();
 
   const [date,    setDate]    = useState<Date | null>(null);
   const [time,    setTime]    = useState<string | null>(null);
-  const [service, setService] = useState("");
+  const [service, setService] = useState(initialService);
   const [name,    setName]    = useState("");
   const [email,   setEmail]   = useState("");
   const [message, setMessage] = useState("");
@@ -431,11 +431,11 @@ function BookingModalInner({ onClose }: { onClose: () => void }) {
   );
 }
 
-export function BookingModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function BookingModal({ open, onClose, initialService = "" }: { open: boolean; onClose: () => void; initialService?: string }) {
   if (typeof window === "undefined") return null;
   return createPortal(
     <AnimatePresence>
-      {open && <BookingModalInner onClose={onClose} />}
+      {open && <BookingModalInner onClose={onClose} initialService={initialService} />}
     </AnimatePresence>,
     document.body,
   );
