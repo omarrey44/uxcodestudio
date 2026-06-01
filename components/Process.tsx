@@ -102,8 +102,7 @@ function MobileStepCarousel({ steps }: { steps: { n: string; tag: string; title:
               {s.n}
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-accent-cyan [&>svg]:h-5 [&>svg]:w-5">{STEP_ICONS[active]}</span>
-              <h3 className="font-display text-[18px] font-bold tracking-tight text-accent-cyan">{s.title}</h3>
+              <h3 className="font-display text-[26px] font-bold tracking-tight text-accent-cyan">{s.title}</h3>
             </div>
           </div>
 
@@ -258,8 +257,7 @@ export default function Process() {
                   {/* B — spotlight hover wrapper */}
                   <SpotlightStepCard className="flex-1 pt-1">
                     <div className="mb-3 flex items-center gap-3">
-                      <span className="text-accent-cyan [&>svg]:h-5 [&>svg]:w-5">{STEP_ICONS[i]}</span>
-                      <h3 className="font-display text-[20px] font-bold tracking-tight text-accent-cyan">{s.title}</h3>
+                      <h3 className="font-display text-[28px] font-bold tracking-tight text-accent-cyan">{s.title}</h3>
                     </div>
 
                     <p className="text-sm leading-relaxed text-white">{s.body}</p>
