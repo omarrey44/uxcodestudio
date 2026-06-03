@@ -278,11 +278,6 @@ function RotatingWord({ words }: { words: string[] }) {
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         >
           <span className="relative inline-block">
-            {/* Glow bloom behind */}
-            <span aria-hidden className="pointer-events-none select-none absolute inset-0"
-              style={{ ...gradStyle, WebkitTextStroke: "0px", filter: "blur(14px)", opacity: 0.65, transform: "scale(1.04)" }}>
-              {word}
-            </span>
             {/* Depth shadow */}
             <span aria-hidden className="pointer-events-none select-none absolute inset-0"
               style={{ color: "rgba(0,120,255,0.25)", filter: "blur(6px)", transform: "translate(1px,5px)" }}>
