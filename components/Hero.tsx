@@ -257,46 +257,24 @@ function RotatingWord({ words }: { words: string[] }) {
     return () => clearInterval(id);
   }, [words]);
 
-  const word = words[index];
-  const gradStyle: React.CSSProperties = {
-    background: "linear-gradient(90deg, #818cf8 0%, #22d3ee 45%, #60a5fa 100%)",
-    WebkitBackgroundClip: "text",
-    backgroundClip: "text",
-    color: "transparent",
-    WebkitTextStroke: "1px rgba(125,240,255,0.5)",
-  };
-
   return (
     <span className="relative block h-[1.05em] [clip-path:inset(0_-9999px)]">
       <AnimatePresence mode="popLayout">
         <motion.span
-          key={word}
+          key={words[index]}
           className="absolute inset-x-0 text-center md:text-left whitespace-nowrap"
           initial={{ y: "110%", opacity: 0 }}
           animate={{ y: "0%", opacity: 1 }}
           exit={{ y: "-110%", opacity: 0 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          style={{
+            background: "linear-gradient(90deg, #818cf8 0%, #22d3ee 45%, #60a5fa 100%)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            color: "transparent",
+          }}
         >
-          <span className="relative inline-block">
-            {/* Depth shadow */}
-            <span aria-hidden className="pointer-events-none select-none absolute inset-0"
-              style={{ color: "rgba(0,120,255,0.25)", filter: "blur(6px)", transform: "translate(1px,5px)" }}>
-              {word}
-            </span>
-            {/* Main gradient + stroke */}
-            <span style={gradStyle}>{word}</span>
-            {/* Diagonal shine */}
-            <span aria-hidden className="pointer-events-none select-none absolute inset-0"
-              style={{
-                background: "linear-gradient(135deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.08) 35%, transparent 55%)",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                color: "transparent",
-                mixBlendMode: "screen",
-              }}>
-              {word}
-            </span>
-          </span>
+          {words[index]}
         </motion.span>
       </AnimatePresence>
     </span>
