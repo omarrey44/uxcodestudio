@@ -137,7 +137,7 @@ className="relative isolate min-h-screen overflow-hidden pt-24 md:pt-36"
           <h1
             ref={headlineRef}
             className="hero-headline font-hero font-black uppercase text-center md:text-left"
-            style={{ fontSize: "clamp(2.2rem, 5.6vw, 6rem)", lineHeight: "0.93", letterSpacing: "-0.01em" }}
+            style={{ fontSize: "clamp(2.2rem, 5.6vw, 6rem)", lineHeight: "0.97", letterSpacing: "-0.01em" }}
           >
             <span className="block [clip-path:inset(0_-9999px)]">
               <span className="word inline-block" style={{ color: "#ffffff" }}>{t.hero.headlinePart1}</span>
@@ -149,7 +149,7 @@ className="relative isolate min-h-screen overflow-hidden pt-24 md:pt-36"
             </span>
           </h1>
 
-          <p className="hero-sub mt-8 max-w-xl text-sm text-muted-soft md:text-base leading-relaxed" style={{ textAlign: "justify" }}>
+          <p className="hero-sub mt-8 max-w-xl text-sm text-muted-soft md:text-base leading-relaxed" style={{ textAlign: "justify", hyphens: "auto" }}>
             {t.hero.descShort} {t.hero.desc}
           </p>
 

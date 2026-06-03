@@ -12,9 +12,9 @@ const config: Config = {
         background: "#050508",
         ink: "#0a0a12",
         muted: {
-          DEFAULT: "#FFFFFF",
-          soft: "#FFFFFF",
-          dim: "#FFFFFF",
+          DEFAULT: "rgba(255,255,255,0.65)",
+          soft:    "rgba(255,255,255,0.50)",
+          dim:     "rgba(255,255,255,0.28)",
         },
         accent: {
           blue: "#4f6ef7",
