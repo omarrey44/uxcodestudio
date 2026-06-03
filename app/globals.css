@@ -114,8 +114,7 @@ html.lenis body {
   }
 
   .text-gradient-accent {
-    background: linear-gradient(90deg, #a8c4ff 0%, #00eaff 40%, #c084fc 100%);
-    background-size: 200% auto;
+    background: linear-gradient(90deg, #6b8eff 0%, #00e5ff 50%, #a67ef7 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
