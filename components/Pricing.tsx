@@ -287,7 +287,7 @@ function PricingCard({ plan, index, badge, sectionVisible, onBook }: { plan: Pla
           </div>
 
           {/* Name */}
-          <h3 className="font-display text-xl font-bold tracking-tight" style={{ color: isCenter ? "#7dd3fc" : "#ffffff" }}>
+          <h3 className="font-display text-xl font-bold tracking-tight" style={{ color: isCenter ? "#22d3ee" : "#7dd3fc" }}>
             {plan.name}
           </h3>
 
@@ -410,16 +410,18 @@ function CompactPricingCard({ plan, index, baseIndex, onBook }: { plan: Plan; in
       {/* Content */}
       <div className="flex-1 min-w-0">
         {/* Name on top */}
-        <h3 className="font-display text-base font-bold tracking-tight text-white leading-tight">{plan.name}</h3>
+        <h3 className="font-display text-base font-bold tracking-tight leading-tight" style={{ color: "#7dd3fc" }}>{plan.name}</h3>
 
         {/* Price + description + arrow */}
         <div className="mt-2.5 flex items-start gap-4">
           <div className="shrink-0">
             {label && <div className="text-[10px] text-white/50">{label}</div>}
-            <div className="flex items-baseline gap-1">
-              <span className="font-display text-2xl font-bold leading-none tracking-tight text-white">{amount}</span>
-              {plan.price !== "Custom" && <span className="text-[9px] font-medium uppercase tracking-widest text-white/60">USD</span>}
-            </div>
+            {plan.price !== "Custom" && (
+              <div className="flex items-baseline gap-1">
+                <span className="font-display text-2xl font-bold leading-none tracking-tight text-white">{amount}</span>
+                <span className="text-[9px] font-medium uppercase tracking-widest text-white/60">USD</span>
+              </div>
+            )}
           </div>
 
           <p className="flex-1 text-[11px] leading-relaxed text-white">{plan.description}</p>
