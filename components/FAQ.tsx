@@ -34,14 +34,14 @@ export default function FAQ() {
         >
           <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-cyan">{t.faq.whyTitle}</span>
           <h3 className="mt-3 font-display text-2xl font-bold leading-tight text-white md:text-3xl">{t.faq.whyHeadline}</h3>
-          <p className="mt-4 text-sm leading-relaxed text-white md:text-base">{t.faq.whyDesc}</p>
+          <p className="mt-4 text-sm leading-relaxed text-white/65 md:text-base">{t.faq.whyDesc}</p>
           <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2">
             {t.faq.whyFeatures.map((feat) => (
               <div key={feat} className="flex items-center gap-2.5">
                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full" style={{ background: "rgba(0,212,255,0.15)" }}>
                   <svg viewBox="0 0 10 10" fill="none" className="h-3 w-3"><path d="M2 5l2 2 4-4" stroke="#00d4ff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </span>
-                <span className="text-sm font-medium text-white">{feat}</span>
+                <span className="text-sm font-semibold text-white">{feat}</span>
               </div>
             ))}
           </div>

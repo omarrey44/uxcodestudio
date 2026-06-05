@@ -177,17 +177,22 @@ const en: Translations = {
     headlineEmphasis: "to online",
     headlinePart2:    "",
     headlineAccent:   "in 5 steps.",
-    sub:              "Building a website does not have to feel complicated. We guide you through each step so your business can go from idea to online presence with clarity, direction, and professional results.",
+    sub:              "Building a website does not have to feel complicated. We guide you through each step, keep you updated, and make sure you always know what is happening next. No jargon. No surprises. Just results.",
     steps: [
-      { n: "01", tag: "Discovery",  title: "Discovery",  body: "We start by learning about your business, your services, your customers, and what you want your website to achieve. This helps us understand what your website needs to communicate and what actions your customers should take.",
+      { n: "01", tag: "Discovery",  title: "Discovery",  body: "You tell us about your business, your customers, and what you want your website to do for you. You walk away from this step with a clear direction, a defined goal, and confidence that we understand your business.",
+
         output: ["Business goals defined", "Target audience clear", "Project direction set"] },
-      { n: "02", tag: "Planning",   title: "Planning",   body: "Before designing, we organize the structure of your website. We define the main sections, content, features, buttons, contact options, and the most important information your customers need to see.",
+      { n: "02", tag: "Planning",   title: "Planning",   body: "We organize your website before building a single pixel. You will see exactly what sections, content, and features your site will have — so there are no surprises during design or build.",
+
         output: ["Site structure", "Sections & features", "Content outline"] },
-      { n: "03", tag: "Design",     title: "Design",     body: "We create a clean and professional design that matches your business and makes your information easy to understand. Your website is designed to look good on phones, tablets, and computers.",
+      { n: "03", tag: "Design",     title: "Design",     body: "You get a professional design built around your brand. Before we write a single line of code, you see and approve the look — so the final website matches your expectations, not just ours.",
+
         output: ["Professional design", "Mobile-first", "Ready to approve"] },
-      { n: "04", tag: "Build",      title: "Build",      body: "Once the direction is clear, we build the website and connect the important parts. This can include contact forms, call buttons, booking links, maps, social media links, service sections, and other features your business needs.",
+      { n: "04", tag: "Build",      title: "Build",      body: "We build your website and connect every feature your customers need — forms, call buttons, maps, booking links, and more. You can follow progress and ask questions at any point.",
+
         output: ["Website built", "All features connected", "Tested & working"] },
-      { n: "05", tag: "Launch",     title: "Launch",     body: "Before your website goes live, we review the pages, test the buttons, check the mobile version, and make sure everything works properly. After launch, your business has a professional online presence ready for customers to visit, contact, book, or buy.",
+      { n: "05", tag: "Launch",     title: "Launch",     body: "Before going live, we test every page, button, and mobile view. After launch, your business has a professional online presence — and you know exactly how to use it.",
+
         output: ["Website live", "Mobile tested", "Ready for customers"] },
     ],
     pills:              [],
@@ -304,12 +309,13 @@ const en: Translations = {
     whyDesc:     "We help businesses move online with clear design, simple communication, and practical digital solutions. Whether you are starting small, growing locally, or building a more premium presence, your website should match your next level.",
     whyFeatures: ["Clear pricing", "Fast communication", "Professional design", "Bilingual support", "Mobile-first experience", "Built for the U.S. market"],
     items: [
-      { q: "How long does a typical project take?",       a: "Landing pages are ready in 3–5 days. E-commerce sites: 5–10 days. Full web apps and SaaS products: 8–16 weeks depending on scope. We always lock the timeline in writing before kickoff." },
+      { q: "How long does a typical project take?",       a: "Landing pages are ready in 3–5 business days. Business websites: 1–2 weeks. Online stores: 2–3 weeks. Larger or custom projects are quoted individually. We always confirm the exact timeline in writing before we start." },
       { q: "Do you work with our existing design or brand?", a: "Absolutely. We can pick up an existing system and elevate it, or build everything from scratch. We'll audit your brand in the discovery call and recommend the most efficient path." },
-      { q: "What tech stack do you build on?",            a: "Our default stack is Next.js + TypeScript + Tailwind, with GSAP / Framer Motion / Three.js for motion. We also ship on Webflow, Shopify Hydrogen and headless CMS when it makes sense." },
+      { q: "What tech stack do you build on?",            a: "We build with Next.js, React, and Tailwind CSS — modern tools that result in fast, clean, and reliable websites. For online stores, we connect Shopify or WooCommerce. We recommend the right tool for your budget and goals, not the most complex one." },
       { q: "Can you improve or redesign an existing website?", a: "Yes. If you already have a website or online system but it feels outdated, slow, or unprofessional, we can help. We review what you have, identify what needs to change, and deliver a cleaner, more effective result — whether that means a full redesign or targeted improvements." },
       { q: "Do you offer ongoing retainers?",             a: "Yes. After launch, most clients move to a monthly partnership for iteration and new features. Contact us for details." },
-      { q: "How do payments work?",                       a: "50% to lock your start date, 50% on launch for fixed-scope projects. Retainers are billed monthly in advance. We invoice in USD via Stripe / wire." },
+      { q: "Do I need to provide content?",               a: "We can work with whatever you have. If you already have text, photos, or a logo, we will use them. If you do not have content yet, we will guide you on what we need and help structure it during the project." },
+      { q: "How do payments work?",                       a: "50% upfront to confirm your start date, 50% on delivery. Every project includes a fixed quote before we begin — no surprises. We invoice in USD." },
     ],
   },
   cta: {
@@ -323,12 +329,13 @@ const en: Translations = {
     features:      ["Fixed quote in 24h", "We support small businesses", "Remote-first · Worldwide"],
     formName:      "Your name",
     formEmail:     "Your email",
-    formMessage:   "Tell us about your project…",
+    formMessage:   "E.g. I need a website for my business in Downey, CA. Currently I have no website and I want to start attracting more customers online.",
     formSubmit:    "Send message",
     formSent:      "Message sent!",
     contactTitle:  "Or reach us directly",
     contactMethods: [
       { icon: "✉", label: "Send an email", value: "info@uxcodestudio.com", href: "mailto:info@uxcodestudio.com", hint: "We reply within 24h" },
+      { icon: "💬", label: "WhatsApp / Text", value: "+1 562-269-5923", href: "https://wa.me/15622695923", hint: "Quick reply via WhatsApp" },
     ],
   },
   footer: {
@@ -522,7 +529,7 @@ const es: Translations = {
     whyDesc:     "Ayudamos a los negocios a estar en línea con un diseño claro, comunicación sencilla y soluciones digitales prácticas. Ya sea que estés empezando, creciendo localmente o construyendo una presencia más premium, tu sitio web debe estar a la altura de tu siguiente nivel.",
     whyFeatures: ["Precios claros", "Comunicación rápida", "Diseño profesional", "Soporte bilingüe", "Experiencia mobile-first", "Hecho para el mercado de EE.UU."],
     items: [
-      { q: "¿Cuánto tiempo dura un proyecto típico?",        a: "Las landing pages están listas en 3–5 días. Sitios e-commerce: 5–10 días. Apps web y plataformas SaaS: 8–16 semanas según el alcance. Siempre fijamos el plazo por escrito antes de empezar." },
+      { q: "¿Cuánto tiempo tarda un proyecto típico?",        a: "Las landing pages están listas en 3–5 días hábiles. Sitios web de negocio: 1–2 semanas. Tiendas en línea: 2–3 semanas. Proyectos más grandes se cotizan de forma individual. Siempre confirmamos el plazo exacto por escrito antes de comenzar." },
       { q: "¿Trabajan con nuestro diseño o marca existente?",a: "Absolutamente. Podemos tomar un sistema existente y elevarlo, o construir todo desde cero. Auditaremos tu marca en la llamada de discovery y recomendaremos el camino más eficiente." },
       { q: "¿Qué stack tecnológico usan?",                   a: "Nuestro stack principal es Next.js + TypeScript + Tailwind, con GSAP / Framer Motion / Three.js para motion. También trabajamos en Webflow, Shopify Hydrogen y CMS headless cuando tiene sentido." },
       { q: "¿Pueden mejorar o rediseñar un sitio web existente?", a: "Sí. Si ya tienes un sitio web o sistema en línea pero se ve desactualizado, lento o poco profesional, podemos ayudarte. Revisamos lo que tienes, identificamos qué debe cambiar y entregamos un resultado más limpio y efectivo — ya sea un rediseño completo o mejoras específicas." },
@@ -541,12 +548,13 @@ const es: Translations = {
     features:      ["Cotización fija en 24h", "Apoyamos pequeños negocios", "Remoto · Para EE.UU."],
     formName:      "Tu nombre",
     formEmail:     "Tu email",
-    formMessage:   "Cuéntanos sobre tu proyecto…",
+    formMessage:   "Ej. Necesito un sitio web para mi negocio en Downey, CA. Actualmente no tengo sitio web y quiero empezar a atraer más clientes en línea.",
     formSubmit:    "Enviar mensaje",
     formSent:      "¡Mensaje enviado!",
     contactTitle:  "O contáctanos directamente",
     contactMethods: [
       { icon: "✉", label: "Envíanos un email", value: "info@uxcodestudio.com", href: "mailto:info@uxcodestudio.com", hint: "Respondemos en 24h" },
+      { icon: "💬", label: "WhatsApp / Texto", value: "+1 562-269-5923", href: "https://wa.me/15622695923", hint: "Respuesta rápida por WhatsApp" },
     ],
   },
   footer: {

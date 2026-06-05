@@ -102,7 +102,7 @@ const SERVICE_DETAILS: ServiceDetail[] = [
   {
     eyebrow: "Most Popular",
     extendedDesc: "A business website is your company's main online home. It gives customers a clear place to learn who you are, what you offer, where you are located, and how to contact you.\n\nIt is perfect for businesses that need to look more professional, build trust, explain their services, and make it easier for customers to call, visit, book, or request a quote.\n\nWith a business website, your company can create a stronger first impression, support your Google and Apple Maps presence, and give customers the information they need before making a decision.",
-    includes: ["Professional design tailored to your brand", "Mobile-friendly on all devices", "Contact form & click-to-call button", "Google Maps & location integration", "Fast loading speed", "Easy to update yourself"],
+    includes: ["Professional design tailored to your brand", "Mobile-friendly on all devices", "Contact form & click-to-call button", "Google Maps & location integration", "Core Web Vitals optimized", "Basic SEO setup", "Analytics integration (Google Analytics)", "Easy to update yourself"],
     idealFor: ["Local businesses", "Service providers", "Restaurants & retail", "Contractors & freelancers"],
     cta: "Get Your Business Website",
     accentColor: "#00d4ff", accentRgb: "0,212,255",
@@ -110,7 +110,7 @@ const SERVICE_DETAILS: ServiceDetail[] = [
     es: {
       eyebrow: "Más Popular",
       extendedDesc: "Un sitio web de negocio es el hogar principal de tu empresa en línea. Les da a los clientes un lugar claro para conocer quién eres, qué ofreces, dónde estás ubicado y cómo contactarte.\n\nEs perfecto para negocios que necesitan verse más profesionales, generar confianza, explicar sus servicios y facilitar que los clientes llamen, visiten, reserven o soliciten una cotización.\n\nCon un sitio web de negocio, tu empresa puede causar una mejor primera impresión, reforzar tu presencia en Google y Apple Maps, y darle a los clientes la información que necesitan antes de tomar una decisión.",
-      includes: ["Diseño profesional para tu marca", "Compatible con celular y tablet", "Formulario de contacto y botón de llamada", "Integración con Google Maps", "Carga rápida", "Fácil de actualizar"],
+      includes: ["Diseño profesional para tu marca", "Compatible con celular y tablet", "Formulario de contacto y botón de llamada", "Integración con Google Maps", "Core Web Vitals optimizado", "SEO básico configurado", "Integración con Analytics (Google Analytics)", "Fácil de actualizar"],
       idealFor: ["Negocios locales", "Proveedores de servicios", "Restaurantes y tiendas", "Contratistas y freelancers"],
       cta: "Obtén tu Sitio Web",
     },
@@ -118,7 +118,7 @@ const SERVICE_DETAILS: ServiceDetail[] = [
   {
     eyebrow: "Landing Page",
     extendedDesc: "A landing page is a focused one-page website designed for a specific goal: promote a service, present an offer, collect leads, receive calls, or guide customers to take action.\n\nIt is perfect for businesses that want to advertise one main service, launch a promotion, test a new idea, or create a simple online presence without needing a full website.\n\nWith a landing page, your business can give customers the key information they need quickly, clearly, and professionally. No distractions. Just one clear message and one clear action.",
-    includes: ["One professional page", "Clear headline and message", "Service or offer section", "Benefits and key information", "Contact form or call button", "Mobile-friendly design", "Basic SEO setup", "Social media links", "Clear call to action"],
+    includes: ["One professional page", "Clear headline and message", "Service or offer section", "Benefits and key information", "Contact form or call button", "Mobile-friendly design", "Core Web Vitals optimized", "Basic SEO setup", "Analytics integration", "Social media links", "Clear call to action"],
     idealFor: ["New businesses", "Service promotions", "Campaign launches", "Simple online presence"],
     cta: "Get Your Landing Page",
     accentColor: "#4f6ef7", accentRgb: "79,110,247",
@@ -126,7 +126,7 @@ const SERVICE_DETAILS: ServiceDetail[] = [
     es: {
       eyebrow: "Landing Page",
       extendedDesc: "Una landing page es un sitio web de una sola página diseñado para un objetivo específico: promover un servicio, presentar una oferta, capturar leads, recibir llamadas o guiar a los clientes a tomar acción.\n\nEs perfecta para negocios que quieren publicitar un servicio principal, lanzar una promoción, probar una nueva idea o crear una presencia en línea simple sin necesitar un sitio web completo.\n\nCon una landing page, tu negocio puede dar a los clientes la información clave que necesitan de manera rápida, clara y profesional. Sin distracciones. Solo un mensaje claro y una acción clara.",
-      includes: ["Una página profesional", "Encabezado y mensaje claro", "Sección de servicio u oferta", "Beneficios e información clave", "Formulario de contacto o botón de llamada", "Diseño compatible con móvil", "Configuración básica de SEO", "Links a redes sociales", "Llamada a la acción clara"],
+      includes: ["Una página profesional", "Encabezado y mensaje claro", "Sección de servicio u oferta", "Beneficios e información clave", "Formulario de contacto o botón de llamada", "Diseño compatible con móvil", "Core Web Vitals optimizado", "Configuración básica de SEO", "Integración con Analytics", "Links a redes sociales", "Llamada a la acción clara"],
       idealFor: ["Negocios nuevos", "Promociones de servicios", "Lanzamientos de campaña", "Presencia en línea simple"],
       cta: "Obtén tu Landing Page",
     },
@@ -485,10 +485,10 @@ function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, g
       >
         {/* ── Front face ── */}
         <div
-          className={`relative flex flex-col rounded-[22px] border p-7 transition-colors duration-300
+          className={`relative flex flex-col rounded-[22px] border p-7 transition-colors duration-300 min-h-[300px]
             ${isActive || hovered ? "border-white/25" : "border-white/[0.12]"}`}
           style={{
-            background: "linear-gradient(180deg,#0e0e1a 0%,#09090f 60%,#070710 100%)",
+            background: `radial-gradient(ellipse at top left, ${detail.accentColor}10 0%, transparent 55%), linear-gradient(180deg,#0e0e1a 0%,#09090f 60%,#070710 100%)`,
             boxShadow: hovered
               ? `inset 0 1px 0 rgba(255,255,255,0.13), 0 20px 40px -20px rgba(0,0,0,0.7), 0 0 48px -8px ${detail.accentColor}44`
               : "inset 0 1px 0 rgba(255,255,255,0.10), 0 20px 40px -20px rgba(0,0,0,0.7)",
@@ -511,7 +511,7 @@ function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, g
 
           {/* Floating icon block */}
           <div className="relative mb-6 w-fit">
-            <div className="relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl transition-transform duration-300 group-hover:scale-110"
+            <div className="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl transition-transform duration-300 group-hover:scale-110"
               style={{ background: bg, boxShadow: `0 12px 26px -8px ${glow}, inset 0 1px 0 rgba(255,255,255,0.35)` }}>
               <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-2xl bg-gradient-to-b from-white/30 to-transparent" />
               {svgIcon}
@@ -523,24 +523,33 @@ function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, g
             background: `linear-gradient(95deg, #ffffff 0%, ${detail.accentColor} 120%)`,
             WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent",
           }}>{title}</h3>
-          <p className="mt-2.5 flex-1 text-[13px] leading-relaxed text-white">{description}</p>
+          <p className="mt-2.5 flex-1 text-[13px] leading-relaxed text-white/65">{description}</p>
 
-          {/* Tags */}
-          <div className="mt-5 flex flex-wrap gap-2">
-            {tags.map((tag) => (
-              <span key={tag}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.14] bg-white/[0.06] px-2.5 py-1 text-[11px] font-semibold text-white">
-                {TAG_ICONS[tag] && <span className="text-white">{TAG_ICONS[tag]}</span>}
-                {tag}
-              </span>
-            ))}
-          </div>
+          {tags.length > 0 && (
+            <div className="mt-5 flex flex-wrap gap-2">
+              {tags.map((tag) => (
+                <span key={tag}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.14] bg-white/[0.06] px-2.5 py-1 text-[11px] font-semibold text-white">
+                  {TAG_ICONS[tag] && <span className="text-white">{TAG_ICONS[tag]}</span>}
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
 
-          {/* Explore service */}
-          <div className="mt-6 flex items-center gap-1.5 text-sm font-semibold transition-colors duration-300"
-            style={{ color: isActive || hovered ? detail.accentColor : "#ffffff" }}>
-            <span>{learnMore}</span>
-            <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+          {/* Explore service — micro-button */}
+          <div className="mt-6">
+            <span
+              className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[12px] font-semibold transition-all duration-300"
+              style={{
+                background: hovered ? `${detail.accentColor}22` : "rgba(255,255,255,0.05)",
+                border: `1px solid ${hovered ? detail.accentColor + "60" : "rgba(255,255,255,0.12)"}`,
+                color: hovered ? detail.accentColor : "rgba(255,255,255,0.7)",
+              }}
+            >
+              {learnMore}
+              <span className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+            </span>
           </div>
         </div>
       </motion.div>
@@ -663,34 +672,39 @@ export default function Services() {
           })}
         </div>
 
-        {/* Advanced services — text only */}
+        {/* Advanced services */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-20px" }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-14 border-t border-white/[0.07] pt-10 text-center"
+          className="mt-14 rounded-2xl border border-white/[0.08] bg-white/[0.02] px-8 py-8 text-center"
         >
-          <p className="text-xs uppercase tracking-[0.25em] text-white/30 mb-4">
-            {lang === "es" ? "También trabajamos en" : "We also build"}
+          <p className="text-xs uppercase tracking-[0.25em] text-accent-cyan/60 mb-2">
+            {lang === "es" ? "Proyectos avanzados" : "Advanced projects"}
           </p>
-          <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm text-white/50">
+          <p className="mb-6 text-base font-medium text-white/70">
+            {lang === "es"
+              ? "¿Necesitas algo más que un sitio web?"
+              : "Need something beyond a website?"}
+          </p>
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm text-white/55">
             {(lang === "es"
-              ? ["Aplicaciones Web personalizadas", "Plataformas SaaS", "Dashboards internos", "Portales de clientes", "Integraciones de API"]
-              : ["Custom Web Applications", "SaaS Platforms", "Internal Dashboards", "Client Portals", "API Integrations"]
+              ? ["Aplicaciones Web personalizadas", "Plataformas SaaS", "Marketplaces", "Dashboards internos", "Portales de clientes", "Integraciones de API e IA"]
+              : ["Custom Web Applications", "SaaS Platforms", "Marketplaces", "Internal Dashboards", "Client Portals", "AI & API Integrations"]
             ).map((item) => (
-              <span key={item} className="flex items-center gap-1.5">
-                <span className="h-1 w-1 rounded-full bg-white/20" />
+              <span key={item} className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-accent-cyan/40" />
                 {item}
               </span>
             ))}
           </div>
-          <p className="mt-4 text-xs text-white/30">
+          <p className="mt-6 text-sm text-white/40">
             {lang === "es"
-              ? "¿Tienes un proyecto más avanzado? "
-              : "Have a more advanced project? "}
-            <a href="#contact" className="text-accent-cyan hover:underline">
-              {lang === "es" ? "Contáctanos." : "Contact us."}
+              ? "Estos proyectos requieren una cotización personalizada. "
+              : "These projects require a custom quote. "}
+            <a href="#contact" className="text-accent-cyan hover:underline font-medium">
+              {lang === "es" ? "Platiquemos →" : "Let's talk →"}
             </a>
           </p>
         </motion.div>
