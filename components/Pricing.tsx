@@ -422,7 +422,7 @@ function CompactPricingCard({ plan, index, baseIndex, onBook }: { plan: Plan; in
             </div>
           </div>
 
-          <p className="flex-1 text-[11px] leading-relaxed text-white/60">{plan.description}</p>
+          <p className="flex-1 text-[11px] leading-relaxed text-white">{plan.description}</p>
 
           <span className="mt-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm transition-colors duration-300 group-hover:bg-accent-cyan/15"
             style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "#fff" }}>

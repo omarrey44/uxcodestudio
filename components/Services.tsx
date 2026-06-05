@@ -105,8 +105,8 @@ const SERVICE_DETAILS: ServiceDetail[] = [
     includes: ["Professional design tailored to your brand", "Mobile-friendly on all devices", "Contact form & click-to-call button", "Google Maps & location integration", "Core Web Vitals optimized", "Basic SEO setup", "Analytics integration (Google Analytics)", "Easy to update yourself"],
     idealFor: ["Local businesses", "Service providers", "Restaurants & retail", "Contractors & freelancers"],
     cta: "Get Your Business Website",
-    accentColor: "#00d4ff", accentRgb: "0,212,255",
-    heroBg: "linear-gradient(135deg,#041824 0%,#083048 60%,#041824 100%)",
+    accentColor: "#4f6ef7", accentRgb: "79,110,247",
+    heroBg: "linear-gradient(135deg,#0a0f2e 0%,#1a1060 60%,#0d1845 100%)",
     es: {
       eyebrow: "Más Popular",
       extendedDesc: "Un sitio web de negocio es el hogar principal de tu empresa en línea. Les da a los clientes un lugar claro para conocer quién eres, qué ofreces, dónde estás ubicado y cómo contactarte.\n\nEs perfecto para negocios que necesitan verse más profesionales, generar confianza, explicar sus servicios y facilitar que los clientes llamen, visiten, reserven o soliciten una cotización.\n\nCon un sitio web de negocio, tu empresa puede causar una mejor primera impresión, reforzar tu presencia en Google y Apple Maps, y darle a los clientes la información que necesitan antes de tomar una decisión.",
@@ -121,8 +121,8 @@ const SERVICE_DETAILS: ServiceDetail[] = [
     includes: ["One professional page", "Clear headline and message", "Service or offer section", "Benefits and key information", "Contact form or call button", "Mobile-friendly design", "Core Web Vitals optimized", "Basic SEO setup", "Analytics integration", "Social media links", "Clear call to action"],
     idealFor: ["New businesses", "Service promotions", "Campaign launches", "Simple online presence"],
     cta: "Get Your Landing Page",
-    accentColor: "#4f6ef7", accentRgb: "79,110,247",
-    heroBg: "linear-gradient(135deg,#0a0f2e 0%,#1a1060 60%,#0d1845 100%)",
+    accentColor: "#00d4ff", accentRgb: "0,212,255",
+    heroBg: "linear-gradient(135deg,#041824 0%,#083048 60%,#041824 100%)",
     es: {
       eyebrow: "Landing Page",
       extendedDesc: "Una landing page es un sitio web de una sola página diseñado para un objetivo específico: promover un servicio, presentar una oferta, capturar leads, recibir llamadas o guiar a los clientes a tomar acción.\n\nEs perfecta para negocios que quieren publicitar un servicio principal, lanzar una promoción, probar una nueva idea o crear una presencia en línea simple sin necesitar un sitio web completo.\n\nCon una landing page, tu negocio puede dar a los clientes la información clave que necesitan de manera rápida, clara y profesional. Sin distracciones. Solo un mensaje claro y una acción clara.",
@@ -523,7 +523,7 @@ function ServiceCard({ title, description, svgIcon, tags, learnMore, bg, glow, g
             background: `linear-gradient(95deg, #ffffff 0%, ${detail.accentColor} 120%)`,
             WebkitBackgroundClip: "text", backgroundClip: "text", WebkitTextFillColor: "transparent",
           }}>{title}</h3>
-          <p className="mt-2.5 flex-1 text-[13px] leading-relaxed text-white/65">{description}</p>
+          <p className="mt-2.5 flex-1 text-[13px] leading-relaxed text-white">{description}</p>
 
           {tags.length > 0 && (
             <div className="mt-5 flex flex-wrap gap-2">
