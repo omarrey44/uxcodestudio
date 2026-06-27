@@ -124,8 +124,9 @@ export default function RootLayout({
               description: "Web design and development studio specializing in landing pages, websites, web apps, SaaS platforms and mobile apps.",
               address: {
                 "@type": "PostalAddress",
-                addressLocality: "Los Angeles",
+                addressLocality: "Downey",
                 addressRegion: "CA",
+                postalCode: "90240",
                 addressCountry: "US",
               },
               areaServed: ["US", "MX", "CA"],

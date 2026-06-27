@@ -30,6 +30,7 @@ interface Translations {
     statsCount: string;
     statsRating: string;
     features: string[];
+    guarantee: string;
   };
   services: {
     eyebrow: string;
@@ -54,6 +55,7 @@ interface Translations {
     sidebarTagline: string;
     sidebarSub: string;
     transparencyItems: string[];
+    guarantee: string;
   };
   why: {
     eyebrow: string;
@@ -87,6 +89,7 @@ interface Translations {
     accent: string;
     description: string;
     badge: string;
+    guarantee: string;
     sectionLegal: string;
     plans: PlanItem[];
   };
@@ -152,6 +155,7 @@ const en: Translations = {
     statsCount:    "Personal projects → real results",
     statsRating:   "Built with senior-level craft & attention to detail",
     features:      ["Quick turnaround", "Professional design", "Bilingual service (Spanish & English)", "Built for U.S. businesses"],
+    guarantee:     "Pay nothing until you see and love your finished website",
   },
   services: {
     eyebrow:     "SERVICES",
@@ -200,6 +204,7 @@ const en: Translations = {
     sidebarTagline:     "",
     sidebarSub:         "",
     transparencyItems:  [],
+    guarantee:          "You don't pay a cent until your website is finished and you love it",
   },
   why: {
     eyebrow:            "Why us",
@@ -248,6 +253,7 @@ const en: Translations = {
     accent:      "",
     description: "Flexible, affordable options for different business needs. Start simple or build something more complete. Every project is quoted clearly before we begin. Get a fixed quote within 24h.",
     badge:       "Most Popular",
+    guarantee:   "Risk-free: you pay nothing until your website is complete and approved by you",
     sectionLegal: "*Starting prices are based on standard project scope. Final pricing may vary depending on pages, features, content, integrations, revisions, timeline, hosting needs, third party fees, and project complexity. Promotional hosting pricing applies to the first 36 months only. Terms and conditions apply.",
     plans: [
       {
@@ -335,7 +341,6 @@ const en: Translations = {
     contactTitle:  "Or reach us directly",
     contactMethods: [
       { icon: "✉", label: "Send an email", value: "info@uxcodestudio.com", href: "mailto:info@uxcodestudio.com", hint: "We reply within 24h" },
-      { icon: "💬", label: "WhatsApp / Text", value: "+1 562-269-5923", href: "https://wa.me/15622695923", hint: "Quick reply via WhatsApp" },
     ],
   },
   footer: {
@@ -377,6 +382,7 @@ const es: Translations = {
     statsCount:    "Proyectos personales → resultados reales",
     statsRating:   "Construido con nivel senior y atención al detalle",
     features:      ["Entrega rápida", "Diseño profesional", "Servicio bilingüe (Español & Inglés)", "Para negocios en EE.UU."],
+    guarantee:     "No pagas nada hasta ver y que te guste tu sitio web terminado",
   },
   services: {
     eyebrow:      "SERVICIOS",
@@ -420,6 +426,7 @@ const es: Translations = {
     sidebarTagline:    "",
     sidebarSub:        "",
     transparencyItems: [],
+    guarantee:         "No pagas ni un centavo hasta que tu sitio web esté terminado y te guste",
   },
   why: {
     eyebrow:            "Por qué nosotros",
@@ -468,6 +475,7 @@ const es: Translations = {
     accent:      "",
     description: "Opciones flexibles y accesibles para diferentes necesidades de negocio. Empieza simple o construye algo más completo. Cada proyecto se cotiza claramente antes de comenzar. Obtén una cotización fija en 24h.",
     badge:       "Más Popular",
+    guarantee:   "Sin riesgo: no pagas nada hasta que tu sitio web esté completo y aprobado por ti",
     sectionLegal: "*Los precios iniciales están basados en un alcance estándar de proyecto. El precio final puede variar según páginas, funciones, contenido, integraciones, revisiones, cronograma, necesidades de hosting, tarifas de terceros y complejidad del proyecto. El precio promocional de hosting aplica solo para los primeros 36 meses. Aplican términos y condiciones.",
     plans: [
       {
@@ -554,7 +562,6 @@ const es: Translations = {
     contactTitle:  "O contáctanos directamente",
     contactMethods: [
       { icon: "✉", label: "Envíanos un email", value: "info@uxcodestudio.com", href: "mailto:info@uxcodestudio.com", hint: "Respondemos en 24h" },
-      { icon: "💬", label: "WhatsApp / Texto", value: "+1 562-269-5923", href: "https://wa.me/15622695923", hint: "Respuesta rápida por WhatsApp" },
     ],
   },
   footer: {

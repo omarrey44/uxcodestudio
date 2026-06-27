@@ -160,6 +160,28 @@ className="relative isolate min-h-screen overflow-hidden pt-24 md:pt-36"
           </div>
 
           <motion.div
+            className="hero-cta mt-5 flex justify-center md:justify-start"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.0, duration: 0.7 }}
+          >
+            <div
+              className="inline-flex items-center gap-2.5 rounded-full px-5 py-2.5"
+              style={{
+                background: "rgba(0,212,255,0.08)",
+                border: "1px solid rgba(0,212,255,0.3)",
+                boxShadow: "0 0 24px -8px rgba(0,212,255,0.4), inset 0 1px 0 rgba(255,255,255,0.08)",
+              }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="#00d4ff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              <span className="text-[13px] font-semibold text-white/90 md:text-sm">{t.hero.guarantee}</span>
+            </div>
+          </motion.div>
+
+          <motion.div
             className="mt-10 rounded-2xl border border-white/10 bg-white/[0.04] px-6 py-5 backdrop-blur-sm"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}

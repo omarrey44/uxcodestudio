@@ -475,6 +475,29 @@ export default function Pricing() {
           description={t.pricing.description}
         />
 
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-20px" }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-8 flex justify-center"
+        >
+          <div
+            className="inline-flex items-center gap-2.5 rounded-full px-5 py-2.5"
+            style={{
+              background: "rgba(6,182,212,0.08)",
+              border: "1px solid rgba(6,182,212,0.35)",
+              boxShadow: "0 0 24px -8px rgba(6,182,212,0.45), inset 0 1px 0 rgba(255,255,255,0.08)",
+            }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            <span className="text-[13px] font-semibold text-white/90 md:text-sm">{t.pricing.guarantee}</span>
+          </div>
+        </motion.div>
+
         {/* Main 4 plans */}
         <div className="mt-20 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:items-start">
           {t.pricing.plans.slice(0, 4).map((p, i) => (
