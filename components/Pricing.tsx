@@ -199,11 +199,11 @@ function PricingCard({ plan, index, badge, sectionVisible, onBook }: { plan: Pla
         ref={cardRef}
         onMouseMove={onMove}
         onMouseLeave={onLeave}
-        className="relative h-full overflow-hidden rounded-3xl"
+        className="relative h-full overflow-hidden rounded-[28px]"
         style={{
-          backgroundImage: "url('/fondopricing.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          background: isCenter
+            ? "radial-gradient(ellipse 120% 60% at 50% -10%, rgba(6,182,212,0.13) 0%, transparent 55%), radial-gradient(ellipse 100% 50% at 50% 115%, rgba(99,102,241,0.10) 0%, transparent 60%), linear-gradient(180deg, #0d1226 0%, #0a0c1a 45%, #08090f 100%)"
+            : "radial-gradient(ellipse 110% 55% at 50% -10%, rgba(255,255,255,0.045) 0%, transparent 55%), linear-gradient(180deg, #0d0d14 0%, #09090f 100%)",
           transition: "box-shadow 0.35s ease, border-color 0.35s ease",
           ...(isCenter ? {
             border: "1px solid rgba(6,182,212,0.45)",
@@ -213,20 +213,11 @@ function PricingCard({ plan, index, badge, sectionVisible, onBook }: { plan: Pla
           } : {
             border: `1px solid ${hovered ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.07)"}`,
             boxShadow: hovered
-              ? "inset 0 1px 0 rgba(255,255,255,0.07), 0 0 48px -8px rgba(6,182,212,0.22)"
-              : "inset 0 1px 0 rgba(255,255,255,0.03)",
+              ? "inset 0 1px 0 rgba(255,255,255,0.07), 0 0 48px -8px rgba(6,182,212,0.22), 0 24px 48px -24px rgba(0,0,0,0.7)"
+              : "inset 0 1px 0 rgba(255,255,255,0.04), 0 16px 40px -24px rgba(0,0,0,0.6)",
           }),
         }}
       >
-        {/* Dark overlay — center card lighter, sides darker */}
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background: isCenter
-              ? "rgba(4,12,50,0.22)"
-              : "rgba(2,3,12,0.76)",
-          }}
-        />
         {/* Mouse spotlight */}
         <div
           className="pointer-events-none absolute inset-0 rounded-3xl transition-opacity duration-300"
@@ -449,8 +440,8 @@ export default function Pricing() {
       ref={sectionRef}
       className="section-separator relative py-32 md:py-44 overflow-hidden"
     >
-      {/* Dark site-palette background */}
-      <div className="pointer-events-none absolute inset-0" style={{ background: "linear-gradient(160deg, #050508 0%, #07091c 35%, #050a10 65%, #050508 100%)" }} />
+      {/* Radial blue identity — Stripe-inspired depth */}
+      <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 130% 100% at 50% -10%, #0a0f2e 0%, #07091c 40%, #050508 100%)" }} />
       <div className="pointer-events-none absolute -left-40 top-1/4 h-[380px] w-[380px] rounded-full bg-accent-blue/[0.09] blur-[60px]" />
       <div className="pointer-events-none absolute -right-32 bottom-1/3 h-[320px] w-[320px] rounded-full bg-accent-violet/[0.08] blur-[55px]" />
       <div className="pointer-events-none absolute left-1/2 top-1/2 h-[280px] w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-cyan/[0.06] blur-[50px]" />
@@ -499,7 +490,7 @@ export default function Pricing() {
         </motion.div>
 
         {/* Main 4 plans */}
-        <div className="mt-20 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:items-start">
+        <div className="mt-24 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:items-start">
           {t.pricing.plans.slice(0, 4).map((p, i) => (
             <PricingCard
               key={p.name}
@@ -513,7 +504,7 @@ export default function Pricing() {
         </div>
 
         {/* Secondary 3 plans — compact */}
-        <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-3">
+        <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
           {t.pricing.plans.slice(4).map((p, i) => (
             <CompactPricingCard key={p.name} plan={p} index={i} baseIndex={i + 4} onBook={() => setBookingService(p.name)} />
           ))}

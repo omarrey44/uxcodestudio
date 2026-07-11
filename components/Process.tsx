@@ -108,6 +108,18 @@ function MobileStepCarousel({ steps }: { steps: { n: string; tag: string; title:
 
           <p className="text-sm leading-relaxed text-white/80">{s.body}</p>
 
+          <div className="mt-4 flex flex-wrap gap-2">
+            {s.output.map((o) => (
+              <span key={o}
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.1] bg-white/[0.04] px-3 py-1 text-[11px] font-medium text-white/70">
+                <svg viewBox="0 0 10 10" fill="none" className="h-2.5 w-2.5">
+                  <path d="M2 5.2l2 2 4-4.4" stroke="#00d4ff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                {o}
+              </span>
+            ))}
+          </div>
+
         </motion.div>
       </AnimatePresence>
 
@@ -154,12 +166,18 @@ export default function Process() {
   const lineScaleY = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 });
 
   return (
-    <section id="process" className="section-deep section-separator relative py-24 md:py-32">
+    <section id="process" className="section-deep section-separator relative py-32 md:py-44">
 
+      {/* Radial-gradient identity — distinct from Services graphite */}
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute inset-0 grid-bg opacity-[0.18]" style={{ maskImage: "radial-gradient(ellipse 90% 80% at 50% 50%, black 20%, transparent 100%)" }} />
-        <div className="absolute -left-40 top-1/3 h-[340px] w-[340px] rounded-full bg-accent-violet/[0.10] blur-[60px]" />
-        <div className="absolute -right-24 bottom-1/4 h-[300px] w-[340px] rounded-full bg-accent-blue/[0.08] blur-[55px]" />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 120% 90% at 50% 0%, #0a1230 0%, #060c1e 45%, #050508 100%)" }} />
+        <div className="absolute left-1/2 top-1/3 h-[520px] w-[720px] -translate-x-1/2 -translate-y-1/2 rounded-full"
+          style={{ background: "radial-gradient(ellipse at center, rgba(79,110,247,0.10) 0%, transparent 65%)", filter: "blur(60px)" }} />
+        <div className="absolute -left-40 top-2/3 h-[340px] w-[340px] rounded-full bg-accent-violet/[0.08] blur-[60px]" />
+        <div className="absolute -right-24 bottom-1/4 h-[300px] w-[340px] rounded-full bg-accent-cyan/[0.06] blur-[55px]" />
+        {/* Subtle dot pattern instead of grid — different texture than Services */}
+        <div className="absolute inset-0 opacity-[0.03]"
+          style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.6) 1px, transparent 0)", backgroundSize: "32px 32px", maskImage: "radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 100%)" }} />
       </div>
 
       <div className="container-x">
@@ -262,12 +280,19 @@ export default function Process() {
                   variants={{ hidden: { x: 16 }, visible: { x: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
                   className={`relative flex gap-6 ${i < t.process.steps.length - 1 ? "pb-14" : "pb-0"}`}
                 >
-                  {/* Step bubble */}
-                  <div
-                    className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-accent-cyan/50 bg-[#050508] text-sm font-bold tabular-nums text-accent-cyan"
-                    style={{ boxShadow: "0 0 12px rgba(0,212,255,0.35), inset 0 1px 0 rgba(0,212,255,0.15)" }}
-                  >
-                    {s.n}
+                  {/* Step bubble — pulsing luminous node */}
+                  <div className="relative z-10 h-11 w-11 shrink-0">
+                    <motion.span
+                      className="absolute inset-0 rounded-full border border-accent-cyan/40"
+                      animate={{ scale: [1, 1.55], opacity: [0.55, 0] }}
+                      transition={{ duration: 2.4, repeat: Infinity, ease: "easeOut", delay: i * 0.4 }}
+                    />
+                    <div
+                      className="relative flex h-11 w-11 items-center justify-center rounded-full border-2 border-accent-cyan/50 bg-[#050508] text-sm font-bold tabular-nums text-accent-cyan"
+                      style={{ boxShadow: "0 0 12px rgba(0,212,255,0.35), inset 0 1px 0 rgba(0,212,255,0.15)" }}
+                    >
+                      {s.n}
+                    </div>
                   </div>
 
                   {/* B — spotlight hover wrapper */}
@@ -276,7 +301,20 @@ export default function Process() {
                       <h3 className="font-display text-[28px] font-bold tracking-tight text-accent-cyan">{s.title}</h3>
                     </div>
 
-                    <p className="text-sm leading-relaxed text-white">{s.body}</p>
+                    <p className="max-w-xl text-sm leading-relaxed text-white/85">{s.body}</p>
+
+                    {/* Deliverable chips — what you walk away with */}
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {s.output.map((o) => (
+                        <span key={o}
+                          className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.1] bg-white/[0.04] px-3 py-1 text-[11px] font-medium text-white/70 backdrop-blur-sm">
+                          <svg viewBox="0 0 10 10" fill="none" className="h-2.5 w-2.5">
+                            <path d="M2 5.2l2 2 4-4.4" stroke="#00d4ff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                          {o}
+                        </span>
+                      ))}
+                    </div>
 
                   </SpotlightStepCard>
                 </motion.div>

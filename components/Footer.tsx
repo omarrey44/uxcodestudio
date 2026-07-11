@@ -35,11 +35,17 @@ const COL_HREFS: string[][] = [
 export default function Footer() {
   const { t } = useLanguage();
   return (
-    <footer className="relative overflow-hidden border-t border-white/5">
+    <footer className="relative overflow-hidden border-t border-white/5" style={{ background: "#050505" }}>
+      {/* Luminous top line — the closing signal */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent-cyan/60 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-24"
+        style={{ background: "radial-gradient(ellipse 60% 100% at 50% 0%, rgba(0,212,255,0.05) 0%, transparent 70%)" }} />
       <div className="absolute -bottom-40 left-1/2 h-[400px] w-[800px] -translate-x-1/2 rounded-full bg-accent-blue/10 blur-3xl" />
+      {/* Technical side lines */}
+      <div className="pointer-events-none absolute left-[6%] top-16 hidden h-20 w-px bg-gradient-to-b from-white/10 to-transparent md:block" />
+      <div className="pointer-events-none absolute right-[6%] top-16 hidden h-20 w-px bg-gradient-to-b from-white/10 to-transparent md:block" />
 
-      <div className="container-x relative py-20">
+      <div className="container-x relative py-28">
         {/* Huge wordmark */}
         <motion.div
           initial={{ y: 16 }}
@@ -49,7 +55,15 @@ export default function Footer() {
           className="select-none overflow-hidden pb-12"
         >
           <div className="flex justify-center">
-            <span className="font-display text-[7.5vw] font-bold leading-none tracking-tighter text-muted-dim md:text-[100px]">
+            <span
+              className="font-display text-[7.5vw] font-bold leading-none tracking-tighter md:text-[100px]"
+              style={{
+                background: "linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.05) 90%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
               UXCODESTUDIO
             </span>
           </div>
@@ -70,7 +84,7 @@ export default function Footer() {
                   aria-label={label}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.03] text-muted-soft transition-all hover:border-accent-cyan/50 hover:text-accent-cyan"
+                  className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.03] text-muted-soft transition-all duration-300 hover:-translate-y-0.5 hover:border-accent-cyan/50 hover:text-accent-cyan hover:shadow-[0_0_20px_-4px_rgba(0,212,255,0.4)]"
                 >
                   <span className="h-4 w-4">{icon}</span>
                 </a>
