@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { createSupabaseServer } from "@/lib/supabase";
 
 export async function POST(req: NextRequest) {
   try {
+    const stripe = getStripe();
     const baseUrl = req.nextUrl.origin;
     const body = await req.json();
     const code = typeof body.code === "string" ? body.code.trim().slice(0, 64) : "";

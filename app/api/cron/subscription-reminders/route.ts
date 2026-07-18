@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { createSupabaseServer } from "@/lib/supabase";
 import { esc, money, emailShell, row } from "@/lib/email";
 
@@ -33,6 +33,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const stripe = getStripe();
   const supabase = createSupabaseServer();
   const { data: subs, error } = await supabase
     .from("quotes")

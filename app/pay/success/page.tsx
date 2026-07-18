@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
@@ -17,7 +17,7 @@ export default async function PaySuccessPage({ searchParams }: { searchParams: P
 
   if (session_id) {
     try {
-      const session = await stripe.checkout.sessions.retrieve(session_id);
+      const session = await getStripe().checkout.sessions.retrieve(session_id);
       if (session.payment_status === "paid") {
         amount = money(session.amount_total ?? 0);
         email = session.customer_details?.email ?? null;

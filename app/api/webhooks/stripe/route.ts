@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { Resend } from "resend";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { createSupabaseServer } from "@/lib/supabase";
 import { esc, money, emailShell, row } from "@/lib/email";
 
@@ -110,6 +110,7 @@ function clientSubscriptionHtml(opts: {
 }
 
 export async function POST(req: NextRequest) {
+  const stripe = getStripe();
   const signature = req.headers.get("stripe-signature");
   const rawBody = await req.text();
 
