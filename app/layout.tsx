@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Inter, Syne, Barlow } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
@@ -41,10 +42,15 @@ export const metadata: Metadata = {
     "web design Downey CA",
     "web development studio",
     "landing page design",
+    "landing pages Los Angeles",
     "affordable websites for small business",
     "bilingual web design English Spanish",
     "diseño web en español",
+    "websites",
+    "webpages",
+    "webs",
     "web app development",
+    "SaaS",
     "SaaS development",
     "mobile app development",
     "Next.js developer",
@@ -57,6 +63,11 @@ export const metadata: Metadata = {
   publisher: "UXCODESTUDIO",
   alternates: {
     canonical: BASE_URL,
+    languages: {
+      "en-US": BASE_URL,
+      "es": `${BASE_URL}/es`,
+      "x-default": BASE_URL,
+    },
   },
   robots: {
     index: true,
@@ -100,13 +111,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const headersList = await headers();
+  const pathname = headersList.get("x-pathname") ?? "/";
+  const htmlLang = pathname === "/es" || pathname.startsWith("/es/") ? "es" : "en";
+
   return (
-    <html lang="en" translate="no" className={`${inter.variable} ${syne.variable} ${barlow.variable}`}>
+    <html lang={htmlLang} translate="no" className={`${inter.variable} ${syne.variable} ${barlow.variable}`}>
       <head>
         <meta name="google" content="notranslate" />
       </head>
@@ -162,19 +177,6 @@ export default function RootLayout({
                   name: "UXCODESTUDIO",
                   publisher: { "@id": "https://uxcodestudio.com/#business" },
                   inLanguage: ["en", "es"],
-                },
-                {
-                  "@type": "FAQPage",
-                  "@id": "https://uxcodestudio.com/#faq",
-                  mainEntity: [
-                    { "@type": "Question", name: "How long does a typical project take?", acceptedAnswer: { "@type": "Answer", text: "Landing pages are ready in 3–5 business days. Business websites: 1–2 weeks. Online stores: 2–3 weeks. Larger or custom projects are quoted individually. We always confirm the exact timeline in writing before we start." } },
-                    { "@type": "Question", name: "Do you work with our existing design or brand?", acceptedAnswer: { "@type": "Answer", text: "Absolutely. We can pick up an existing system and elevate it, or build everything from scratch. We'll audit your brand in the discovery call and recommend the most efficient path." } },
-                    { "@type": "Question", name: "What tech stack do you build on?", acceptedAnswer: { "@type": "Answer", text: "We build with Next.js, React, and Tailwind CSS — modern tools that result in fast, clean, and reliable websites. For online stores, we connect Shopify or WooCommerce. We recommend the right tool for your budget and goals, not the most complex one." } },
-                    { "@type": "Question", name: "Can you improve or redesign an existing website?", acceptedAnswer: { "@type": "Answer", text: "Yes. If you already have a website or online system but it feels outdated, slow, or unprofessional, we can help. We review what you have, identify what needs to change, and deliver a cleaner, more effective result — whether that means a full redesign or targeted improvements." } },
-                    { "@type": "Question", name: "Do you offer ongoing retainers?", acceptedAnswer: { "@type": "Answer", text: "Yes. After launch, most clients move to a monthly partnership for iteration and new features. Contact us for details." } },
-                    { "@type": "Question", name: "Do I need to provide content?", acceptedAnswer: { "@type": "Answer", text: "We can work with whatever you have. If you already have text, photos, or a logo, we will use them. If you do not have content yet, we will guide you on what we need and help structure it during the project." } },
-                    { "@type": "Question", name: "How do payments work?", acceptedAnswer: { "@type": "Answer", text: "50% upfront to confirm your start date, 50% on delivery. Every project includes a fixed quote before we begin — no surprises. We invoice in USD." } },
-                  ],
                 },
               ],
             }),

@@ -1,15 +1,25 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/i18n";
 
 export default function Navbar() {
+  const pathname = usePathname();
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const { lang, setLang, t } = useLanguage();
+  const { lang, t } = useLanguage();
+
+  // Language must change the URL (not just client state) so the served
+  // content, hreflang, and indexed language always stay in sync.
+  const goToLang = (l: "en" | "es") => {
+    if (l === lang) return;
+    router.push(l === "es" ? "/es" : "/");
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -27,7 +37,7 @@ export default function Navbar() {
   const LangToggle = ({ className = "", dark = false }: { className?: string; dark?: boolean }) => (
     <div className={cn("flex items-center gap-1", className)}>
       <button
-        onClick={() => setLang("en")}
+        onClick={() => goToLang("en")}
         className={cn(
           "text-[11px] font-semibold transition-all px-1.5 py-0.5 rounded",
           dark
@@ -39,7 +49,7 @@ export default function Navbar() {
       </button>
       <span className={cn("text-[11px]", dark ? "text-[#111111]/30" : "text-muted-dim")}>|</span>
       <button
-        onClick={() => setLang("es")}
+        onClick={() => goToLang("es")}
         className={cn(
           "text-[11px] font-semibold transition-all px-1.5 py-0.5 rounded",
           dark
@@ -51,6 +61,8 @@ export default function Navbar() {
       </button>
     </div>
   );
+
+  if (pathname?.startsWith("/pay") || pathname?.startsWith("/admin")) return null;
 
   return (
     <>
