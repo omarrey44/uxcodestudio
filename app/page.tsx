@@ -12,7 +12,7 @@ const Footer    = dynamic(() => import("@/components/Footer"));
 
 export default function HomePage() {
   return (
-    <main className="relative overflow-hidden">
+    <main className="studio-site relative">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -24,8 +24,8 @@ export default function HomePage() {
       <Services />
       <Process />
       <Pricing />
-      <FinalCTA />
       <FAQ />
+      <FinalCTA />
       <Footer />
     </main>
   );

@@ -1,525 +1,57 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef, useState, useCallback } from "react";
-import React from "react";
-import { SectionHeader } from "./Services";
+import { useState } from "react";
+import { ArrowUpRight, Check, Plus, Minus, ShieldCheck, Asterisk } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import { BookingModal } from "./BookingModal";
-import { Monitor, Globe, ShoppingCart, CalendarCheck, PencilLine, Server, MessageSquare } from "lucide-react";
+import { Reveal, SectionLabel, Spotlight } from "./studio/StudioUI";
 
-/* ── Per-plan icon (index-aligned with pricing.plans) ──────────────────────── */
-const PLAN_ICONS = [
-  <Monitor       key="0" className="h-6 w-6" strokeWidth={1.6} />,
-  <Globe         key="1" className="h-6 w-6" strokeWidth={1.6} />,
-  <ShoppingCart  key="2" className="h-6 w-6" strokeWidth={1.6} />,
-  <CalendarCheck key="3" className="h-6 w-6" strokeWidth={1.6} />,
-  <PencilLine    key="4" className="h-6 w-6" strokeWidth={1.6} />,
-  <Server        key="5" className="h-6 w-6" strokeWidth={1.6} />,
-  <MessageSquare key="6" className="h-6 w-6" strokeWidth={1.6} />,
-];
+// Pricing titles differ from service titles in both languages.
+const SERVICE_ORDER = [1, 0, 2, 4, 5, 3, 6];
 
-/* ── Ambient aurora background ─────────────────────────────────────────────── */
-
-/* ── Border beam — single beam tracing card perimeter ──────────────────────── */
-function BorderBeam() {
-  const SEG = 200;
-  const SPEED = 3.8;
-  const GAP   = 3;
-  const PERIOD = SPEED + GAP;
-
-  const beam = (
-    color: string,
-    from: string,
-    to: string,
-    isVertical: boolean,
-    delay: number
-  ) => (
-    <motion.div
-      key={delay}
-      className="absolute rounded-full"
-      style={{
-        background: `linear-gradient(${isVertical ? "180deg" : "90deg"}, transparent, ${color}, transparent)`,
-        ...(isVertical
-          ? { width: "1px", height: SEG, [delay < PERIOD * 2 ? "right" : "left"]: 0 }
-          : { height: "1px", width: SEG, [delay < PERIOD ? "top" : "bottom"]: 0 }),
-      }}
-      animate={isVertical ? { y: [from, to] } : { x: [from, to] }}
-      transition={{ duration: SPEED, repeat: Infinity, ease: "linear", delay, repeatDelay: GAP }}
-    />
-  );
-
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl">
-      {/* Top → right */}
-      {beam("rgba(6,182,212,0.7)", `-${SEG}px`, `calc(100% + ${SEG}px)`, false, 0)}
-      {/* Right ↓ bottom */}
-      {beam("rgba(99,102,241,0.6)", `-${SEG}px`, `calc(100% + ${SEG}px)`, true, PERIOD * 0.85)}
-      {/* Bottom ← left */}
-      {beam("rgba(6,182,212,0.6)", `${SEG}px`, `calc(-100% - ${SEG}px)`, false, PERIOD * 1.7)}
-      {/* Left ↑ top */}
-      {beam("rgba(99,102,241,0.7)", `${SEG}px`, `calc(-100% - ${SEG}px)`, true, PERIOD * 2.55)}
-    </div>
-  );
-}
-
-/* ── Premium CTA button ─────────────────────────────────────────────────────── */
-function PremiumCTA({ children, onClick, highlight }: { children: React.ReactNode; onClick: () => void; highlight: boolean }) {
-  const [hovered, setHovered] = useState(false);
-  const [shineX, setShineX] = useState(50);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const r = e.currentTarget.getBoundingClientRect();
-    setShineX(((e.clientX - r.left) / r.width) * 100);
-  };
-
-  if (highlight) {
-    return (
-      <motion.button
-        type="button"
-        onClick={onClick}
-        whileTap={{ scale: 0.975 }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        onMouseMove={handleMouseMove}
-        className="relative block w-full overflow-hidden rounded-xl text-center text-sm font-semibold text-white"
-        style={{
-          padding: "14px 24px",
-          background: "linear-gradient(135deg, #06b6d4 0%, #6366f1 100%)",
-          boxShadow: hovered
-            ? "0 0 40px -6px rgba(6,182,212,0.55), 0 0 80px -20px rgba(99,102,241,0.4), inset 0 1px 0 rgba(255,255,255,0.22)"
-            : "0 0 24px -8px rgba(6,182,212,0.35), inset 0 1px 0 rgba(255,255,255,0.15)",
-          transition: "box-shadow 0.4s ease",
-        }}
-      >
-        {/* Inner shine sweep on hover */}
-        <motion.div
-          className="pointer-events-none absolute inset-0"
-          initial={{ x: "-100%", opacity: 0 }}
-          animate={hovered ? { x: "100%", opacity: 1 } : { x: "-100%", opacity: 0 }}
-          transition={{ duration: 0.55, ease: "easeOut" }}
-          style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)" }}
-        />
-        {/* Mouse-tracked inner glow */}
-        <div
-          className="pointer-events-none absolute inset-0 transition-opacity duration-300"
-          style={{
-            opacity: hovered ? 1 : 0,
-            background: `radial-gradient(300px circle at ${shineX}% 50%, rgba(255,255,255,0.12), transparent 70%)`,
-          }}
-        />
-        <span className="relative z-10 inline-flex items-center gap-2">
-          {children}
-          <motion.span animate={hovered ? { x: 4 } : { x: 0 }} transition={{ duration: 0.22 }}>→</motion.span>
-        </span>
-      </motion.button>
-    );
-  }
-
-  return (
-    <motion.button
-      type="button"
-      onClick={onClick}
-      whileTap={{ scale: 0.975 }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="relative block w-full overflow-hidden rounded-xl text-center text-sm font-medium transition-all duration-400"
-      style={{
-        padding: "14px 24px",
-        background: hovered ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)",
-        border: `1px solid ${hovered ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.07)"}`,
-        color: "#ffffff",
-        boxShadow: hovered ? "inset 0 1px 0 rgba(255,255,255,0.08)" : "none",
-        transition: "all 0.3s ease",
-      }}
-    >
-      <span className="inline-flex items-center gap-2">
-        {children}
-        <motion.span animate={hovered ? { x: 3 } : { x: 0 }} transition={{ duration: 0.22 }}>→</motion.span>
-      </span>
-    </motion.button>
-  );
-}
-
-/* ── Single pricing card ────────────────────────────────────────────────────── */
-type Plan = {
-  name: string;
-  price: string;
-  cadence?: string;
-  description: string;
-  features: string[];
-  cta: string;
-  highlight: boolean;
-  legalNote?: string;
-};
-
-function PricingCard({ plan, index, badge, sectionVisible, onBook }: { plan: Plan; index: number; badge: string; sectionVisible: boolean; onBook: () => void }) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [spot, setSpot] = useState({ x: 0, y: 0, on: false });
-  const [hovered, setHovered] = useState(false);
-
-  const onMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    const r = cardRef.current?.getBoundingClientRect();
-    if (!r) return;
-    setSpot({ x: e.clientX - r.left, y: e.clientY - r.top, on: true });
-    setHovered(true);
-  }, []);
-
-  const onLeave = useCallback(() => { setSpot(s => ({ ...s, on: false })); setHovered(false); }, []);
-
-  const isCenter = plan.highlight;
-
-  return (
-    <motion.div
-      initial={{ y: 36 }}
-      whileInView={{ y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      whileHover={{ y: isCenter ? -8 : -5, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }}
-      animate={isCenter && sectionVisible ? { y: [0, -6, 0] } : {}}
-      transition={isCenter
-        ? { duration: 0.9, delay: index * 0.13, ease: [0.22, 1, 0.36, 1], y: { duration: 4.5, repeat: Infinity, ease: "easeInOut", repeatType: "loop" } }
-        : { duration: 0.9, delay: index * 0.13, ease: [0.22, 1, 0.36, 1] }
-      }
-      className={`relative ${isCenter ? "lg:scale-[1.04] lg:-my-3 z-10" : "z-0"}`}
-    >
-      {/* Breathing ambient glow — featured only */}
-      {isCenter && (
-        <motion.div
-          className="pointer-events-none absolute -inset-6 -z-10 rounded-[2.5rem]"
-          animate={{ scale: [1, 1.04, 1] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          style={{
-            background: "radial-gradient(ellipse at 50% 60%, rgba(6,182,212,0.22) 0%, rgba(99,102,241,0.15) 45%, transparent 72%)",
-            filter: "blur(18px)",
-          }}
-        />
-      )}
-
-      <div
-        ref={cardRef}
-        onMouseMove={onMove}
-        onMouseLeave={onLeave}
-        className="relative h-full overflow-hidden rounded-[28px]"
-        style={{
-          background: isCenter
-            ? "radial-gradient(ellipse 120% 60% at 50% -10%, rgba(6,182,212,0.13) 0%, transparent 55%), radial-gradient(ellipse 100% 50% at 50% 115%, rgba(99,102,241,0.10) 0%, transparent 60%), linear-gradient(180deg, #0d1226 0%, #0a0c1a 45%, #08090f 100%)"
-            : "radial-gradient(ellipse 110% 55% at 50% -10%, rgba(255,255,255,0.045) 0%, transparent 55%), linear-gradient(180deg, #0d0d14 0%, #09090f 100%)",
-          transition: "box-shadow 0.35s ease, border-color 0.35s ease",
-          ...(isCenter ? {
-            border: "1px solid rgba(6,182,212,0.45)",
-            boxShadow: hovered
-              ? "0 0 0 1px rgba(6,182,212,0.35), 0 0 80px -6px rgba(6,182,212,0.45), 0 40px 80px -24px rgba(99,102,241,0.35), inset 0 1px 0 rgba(255,255,255,0.14)"
-              : "0 0 0 1px rgba(6,182,212,0.25), 0 0 60px -10px rgba(6,182,212,0.30), 0 40px 80px -24px rgba(99,102,241,0.25), inset 0 1px 0 rgba(255,255,255,0.14)",
-          } : {
-            border: `1px solid ${hovered ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.07)"}`,
-            boxShadow: hovered
-              ? "inset 0 1px 0 rgba(255,255,255,0.07), 0 0 48px -8px rgba(6,182,212,0.22), 0 24px 48px -24px rgba(0,0,0,0.7)"
-              : "inset 0 1px 0 rgba(255,255,255,0.04), 0 16px 40px -24px rgba(0,0,0,0.6)",
-          }),
-        }}
-      >
-        {/* Mouse spotlight */}
-        <div
-          className="pointer-events-none absolute inset-0 rounded-3xl transition-opacity duration-300"
-          style={{
-            opacity: spot.on ? 1 : 0,
-            background: spot.on
-              ? `radial-gradient(380px circle at ${spot.x}px ${spot.y}px, ${isCenter ? "rgba(6,182,212,0.07)" : "rgba(255,255,255,0.035)"}, transparent 60%)`
-              : "none",
-          }}
-        />
-
-        {/* Border beam — featured only */}
-        {isCenter && sectionVisible && <BorderBeam />}
-
-        {/* Top edge highlight */}
-        <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-px"
-          style={{
-            background: isCenter
-              ? "linear-gradient(90deg, transparent 5%, rgba(6,182,212,0.5) 40%, rgba(99,102,241,0.4) 60%, transparent 95%)"
-              : "linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent)",
-          }}
-        />
-
-        <div className="relative z-10 flex h-full flex-col p-6">
-          {/* Icon + badge */}
-          <div className="mb-4 flex items-start justify-between">
-            <div
-              className="flex h-12 w-12 items-center justify-center rounded-xl"
-              style={{
-                background: isCenter ? "rgba(6,182,212,0.14)" : "rgba(255,255,255,0.05)",
-                border: isCenter ? "1px solid rgba(6,182,212,0.30)" : "1px solid rgba(255,255,255,0.08)",
-                color: isCenter ? "#22d3ee" : "#7dd3fc",
-              }}
-            >
-              {PLAN_ICONS[index]}
-            </div>
-            {isCenter && (
-              <motion.span
-                initial={{ opacity: 0, scale: 0.75 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.6, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[9px] font-semibold uppercase tracking-widest"
-                style={{
-                  background: "linear-gradient(135deg, rgba(6,182,212,0.15), rgba(99,102,241,0.15))",
-                  border: "1px solid rgba(6,182,212,0.28)",
-                  color: "#7dd3fc",
-                }}
-              >
-                <motion.span
-                  className="h-1.5 w-1.5 rounded-full bg-cyan-400"
-                  animate={{ opacity: [1, 0.3, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                />
-                {badge}
-              </motion.span>
-            )}
-          </div>
-
-          {/* Name */}
-          <h3 className="font-display text-xl font-bold tracking-tight" style={{ color: isCenter ? "#22d3ee" : "#7dd3fc" }}>
-            {plan.name}
-          </h3>
-
-          {/* Description */}
-          <p className="mt-2.5 text-[13px] leading-relaxed text-white">{plan.description}</p>
-
-          {/* Divider */}
-          <div
-            className="my-5 h-px flex-none"
-            style={{
-              background: isCenter
-                ? "linear-gradient(90deg, transparent, rgba(6,182,212,0.18), rgba(99,102,241,0.14), transparent)"
-                : "linear-gradient(90deg, transparent, rgba(255,255,255,0.055), transparent)",
-            }}
-          />
-
-          {/* Price */}
-          <div className="mb-5">
-            {(() => {
-              const m = plan.price.match(/^(Starting at|Desde)\s+(.+)$/);
-              const label = m ? m[1] : null;
-              const amount = m ? m[2] : plan.price;
-              return (
-                <>
-                  {label && <div className="mb-0.5 text-xs text-white/50">{label}</div>}
-                  <div className="flex items-baseline gap-2 whitespace-nowrap">
-                    <span className="font-display text-[2.4rem] font-bold leading-none tracking-tight text-white">
-                      {amount}
-                    </span>
-                    {plan.price !== "Custom" && (
-                      <span className="text-[10px] font-medium uppercase tracking-widest text-white/60">USD</span>
-                    )}
-                  </div>
-                </>
-              );
-            })()}
-            {plan.cadence && (
-              <div className="mt-1.5 text-xs text-white/60">{plan.cadence}</div>
-            )}
-          </div>
-
-          {/* Features */}
-          <ul className="flex-1 space-y-2.5">
-            {plan.features.map((f, fi) => (
-              <motion.li
-                key={f}
-                initial={{ opacity: 0, x: -6 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.25 + fi * 0.045 + index * 0.1 }}
-                className="flex items-start gap-2.5 text-[13px] text-white"
-              >
-                <span
-                  className="mt-0.5 flex-none grid h-4 w-4 place-items-center rounded-full"
-                  style={{
-                    background: isCenter ? "rgba(6,182,212,0.12)" : "rgba(255,255,255,0.04)",
-                    border: isCenter ? "1px solid rgba(6,182,212,0.28)" : "1px solid rgba(255,255,255,0.07)",
-                  }}
-                >
-                  <svg width="7" height="7" viewBox="0 0 7 7" fill="none">
-                    <path
-                      d="M1 3.5l1.6 1.6L6 1.5"
-                      stroke={isCenter ? "#22d3ee" : "rgba(255,255,255,0.35)"}
-                      strokeWidth="1.1"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-                {f}
-              </motion.li>
-            ))}
-          </ul>
-
-          {/* CTA */}
-          <div className="mt-6 flex-none">
-            <PremiumCTA onClick={onBook} highlight={isCenter}>
-              {plan.cta}
-            </PremiumCTA>
-            {plan.legalNote && (
-              <p className="mt-2.5 text-[9px] leading-relaxed text-white/30 text-center">{plan.legalNote}</p>
-            )}
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-/* ── Compact pricing card (secondary plans) ───────────────────────────────── */
-function CompactPricingCard({ plan, index, baseIndex, onBook }: { plan: Plan; index: number; baseIndex: number; onBook: () => void }) {
-  const m = plan.price.match(/^(Starting at|Desde)\s+(.+)$/);
-  const label = m ? m[1] : null;
-  const amount = m ? m[2] : plan.price;
-
-  return (
-    <motion.div
-      role="button"
-      tabIndex={0}
-      onClick={onBook}
-      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onBook(); }}
-      initial={{ y: 24, opacity: 0 }}
-      whileInView={{ y: 0, opacity: 1 }}
-      viewport={{ once: true, margin: "-40px" }}
-      whileHover={{ y: -4 }}
-      transition={{ duration: 0.6, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative flex cursor-pointer items-start gap-4 overflow-hidden rounded-xl p-5"
-      style={{
-        border: "1px solid rgba(255,255,255,0.07)",
-        background: "rgba(255,255,255,0.018)",
-        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)",
-      }}
-    >
-      {/* Icon */}
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl [&>svg]:h-5 [&>svg]:w-5"
-        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "#7dd3fc" }}>
-        {PLAN_ICONS[baseIndex]}
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 min-w-0">
-        {/* Name on top */}
-        <h3 className="font-display text-base font-bold tracking-tight leading-tight" style={{ color: "#7dd3fc" }}>{plan.name}</h3>
-
-        {/* Price + description + arrow */}
-        <div className="mt-2.5 flex items-start gap-4">
-          <div className="shrink-0">
-            {label && <div className="text-[10px] text-white/50">{label}</div>}
-            {plan.price !== "Custom" && (
-              <div className="flex items-baseline gap-1">
-                <span className="font-display text-2xl font-bold leading-none tracking-tight text-white">{amount}</span>
-                <span className="text-[9px] font-medium uppercase tracking-widest text-white/60">USD</span>
-              </div>
-            )}
-          </div>
-
-          <p className="flex-1 text-[11px] leading-relaxed text-white">{plan.description}</p>
-
-          <span className="mt-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm transition-colors duration-300 group-hover:bg-accent-cyan/15"
-            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "#fff" }}>
-            →
-          </span>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-/* ── Pricing section ────────────────────────────────────────────────────────── */
 export default function Pricing() {
-  const { t } = useLanguage();
-  const sectionRef = useRef<HTMLElement>(null);
-  const sectionVisible = useInView(sectionRef, { margin: "200px" });
-  const [bookingService, setBookingService] = useState<string | null>(null);
-
-  return (
-    <section
-      id="pricing"
-      ref={sectionRef}
-      className="section-separator relative py-32 md:py-44 overflow-hidden"
-    >
-      {/* Radial blue identity — Stripe-inspired depth */}
-      <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 130% 100% at 50% -10%, #0a0f2e 0%, #07091c 40%, #050508 100%)" }} />
-      <div className="pointer-events-none absolute -left-40 top-1/4 h-[380px] w-[380px] rounded-full bg-accent-blue/[0.09] blur-[60px]" />
-      <div className="pointer-events-none absolute -right-32 bottom-1/3 h-[320px] w-[320px] rounded-full bg-accent-violet/[0.08] blur-[55px]" />
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[280px] w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-cyan/[0.06] blur-[50px]" />
-
-      {/* Top/bottom edge fades */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 -z-0"
-        style={{ background: "linear-gradient(to bottom, #05060f 0%, transparent 100%)" }} />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 -z-0"
-        style={{ background: "linear-gradient(to top, #05060f 0%, transparent 100%)" }} />
-      {/* Subtle dot grid */}
-      <div className="pointer-events-none absolute inset-0 -z-0 opacity-[0.025]"
-        style={{
-          backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.5) 1px, transparent 0)",
-          backgroundSize: "36px 36px",
-        }} />
-
-      <div className="container-x relative z-10">
-        <SectionHeader
-          eyebrow={t.pricing.eyebrow}
-          title={t.pricing.title}
-          accent={t.pricing.accent}
-          description={t.pricing.description}
-        />
-
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-20px" }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-8 flex justify-center"
-        >
-          <div
-            className="inline-flex items-center gap-2.5 rounded-full px-5 py-2.5"
-            style={{
-              background: "rgba(6,182,212,0.08)",
-              border: "1px solid rgba(6,182,212,0.35)",
-              boxShadow: "0 0 24px -8px rgba(6,182,212,0.45), inset 0 1px 0 rgba(255,255,255,0.08)",
-            }}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-            </svg>
-            <span className="text-[13px] font-semibold text-white/90 md:text-sm">{t.pricing.guarantee}</span>
-          </div>
-        </motion.div>
-
-        {/* Main 4 plans */}
-        <div className="mt-24 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:items-start">
-          {t.pricing.plans.slice(0, 4).map((p, i) => (
-            <PricingCard
-              key={p.name}
-              plan={p}
-              index={i}
-              badge={t.pricing.badge}
-              sectionVisible={sectionVisible}
-              onBook={() => setBookingService(p.name)}
-            />
-          ))}
-        </div>
-
-        {/* Secondary 3 plans — compact */}
-        <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
-          {t.pricing.plans.slice(4).map((p, i) => (
-            <CompactPricingCard key={p.name} plan={p} index={i} baseIndex={i + 4} onBook={() => setBookingService(p.name)} />
-          ))}
-        </div>
-
-        {/* Section legal disclaimer */}
-        <p className="mt-10 text-center text-[10px] leading-relaxed text-white/25 max-w-3xl mx-auto">
-          {t.pricing.sectionLegal}
-        </p>
-      </div>
-      <BookingModal
-        open={bookingService !== null}
-        onClose={() => setBookingService(null)}
-        initialService={bookingService ?? ""}
-      />
-    </section>
-  );
+  const { t, lang } = useLanguage();
+  const es = lang === "es";
+  const [booking, setBooking] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState(false);
+  const bookPlan = (index: number) => setBooking(t.services.items[SERVICE_ORDER[index]].title);
+  return <section id="pricing" className="studio-pricing">
+    <div className="studio-pricing-glow" aria-hidden="true" />
+    <div className="studio-shell">
+      <Reveal className="studio-section-heading">
+        <div><SectionLabel number="03" kind="pricing">{es ? "Inversión" : "Investment"}</SectionLabel>
+          <h2 className="studio-heading">{es ? <>Una gran presencia.<br /><em>Un comienzo claro.</em></> : <>A remarkable presence.<br /><em>A clear starting point.</em></>}</h2></div>
+        <p>{es ? "Opciones para tu siguiente paso. Un alcance definido y una cotización antes de comenzar." : "Options for your next chapter. A defined scope and a clear quote before we start."}</p>
+      </Reveal>
+      <div className="studio-pricing-grid">{t.pricing.plans.slice(0, 3).map((plan, i) => {
+        const amount = plan.price.replace(/^(Starting at|Desde)\s+/, "");
+        return <Reveal key={plan.name} delay={i * 0.09}>
+          <Spotlight className={"studio-price-card" + (plan.highlight ? " is-featured" : "")}>
+            <div className="studio-price-top"><span>0{i + 1} / {i === 0 ? "THE START" : i === 1 ? "THE NEXT LEVEL" : "THE OPEN STORE"}</span>{plan.highlight && <span className="studio-popular"><Asterisk size={12} />{t.pricing.badge}</span>}</div>
+            <h3>{plan.name}</h3>
+            <p className="studio-plan-description">{plan.description}</p>
+            <div className="studio-plan-amount"><span>{es ? "DESDE" : "FROM"}</span><strong>{amount}</strong><small>USD</small></div>
+            <button type="button" className={"studio-button " + (plan.highlight ? "studio-button-cyan" : "studio-button-outline")} onClick={() => bookPlan(i)}>{es ? "Elegir este plan" : "Choose this plan"}<ArrowUpRight size={18} /></button>
+            <div className="studio-plan-divider" />
+            <p className="studio-eyebrow">{es ? "EL PUNTO DE PARTIDA" : "YOUR STARTING POINT"}</p>
+            <ul>{plan.features.map((feature) => <li key={feature}><Check size={15} />{feature}</li>)}</ul>
+            {plan.legalNote && <p className="studio-plan-note">{plan.legalNote}</p>}
+          </Spotlight>
+        </Reveal>;
+      })}</div>
+      <Reveal>
+        <button className="studio-more-pricing" type="button" aria-expanded={expanded} aria-controls="other-pricing" onClick={() => setExpanded(!expanded)}>
+          <span>{es ? "¿Buscas algo diferente?" : "Looking for something else?"}<small>{es ? "Reservas, actualizaciones, hosting y proyectos a medida." : "Booking, updates, hosting, and custom projects."}</small></span>
+          <span>{es ? "Ver opciones" : "Explore options"}{expanded ? <Minus size={19} /> : <Plus size={19} />}</span>
+        </button>
+        <div id="other-pricing" hidden={!expanded} className="studio-other-plans">{t.pricing.plans.slice(3).map((plan, i) => <article key={plan.name}>
+          <div><h3>{plan.name}</h3><p>{plan.description}</p><ul>{plan.features.map((feature) => <li key={feature}><Check size={12} />{feature}</li>)}</ul></div>
+          <div className="studio-other-plan-price"><strong>{plan.price}</strong>{plan.cadence && <small>{plan.cadence}</small>}<button className="studio-text-link" type="button" onClick={() => bookPlan(i + 3)}>{plan.cta}<ArrowUpRight size={16} /></button></div>
+        </article>)}</div>
+        <p className="studio-pricing-legal">{t.pricing.sectionLegal}</p>
+        <div className="studio-price-promise"><ShieldCheck size={19} /><span>{es ? "Diseño a medida. Comunicación directa. Sin sorpresas en el alcance." : "Tailored design. Direct communication. No surprises in the scope."}</span></div>
+      </Reveal>
+    </div>
+    <BookingModal open={booking !== null} onClose={() => setBooking(null)} initialService={booking ?? ""} />
+  </section>;
 }

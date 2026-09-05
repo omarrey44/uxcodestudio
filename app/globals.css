@@ -188,23 +188,11 @@ html.lenis body {
     z-index: 0;
   }
 
-  /* Skip GPU paint on far off-screen sections.
-     `auto N` = browser caches actual size after first render → no layout shift */
-  #process,
-  #pricing,
-  #faq,
-  #contact {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 1200px;
-  }
-
   .section-separator {
     position: relative;
   }
   /* Per-section hue identity */
-  #process    { background-color: #060c1e; }
   #work       { background-color: #050d14; }
-  #pricing    { background-color: #09071a; }
 
   .section-separator::after {
     content: "";

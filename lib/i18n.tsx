@@ -28,6 +28,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   // and indexed language in sync. A stale localStorage value must never override it.
   useEffect(() => {
     setLang(urlLang);
+    document.documentElement.lang = urlLang;
   }, [urlLang]);
 
   const handleSet = (l: Lang) => {

@@ -1,291 +1,77 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import OrbitCompanion from "./three/OrbitCompanion";
-import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { ArrowDown, ArrowUpRight, Asterisk, Check } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import MagneticButton from "./MagneticButton";
 import { useLanguage } from "@/lib/i18n";
-
-function HeroShaderBg() {
-  return (
-    <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden" }}>
-      <div style={{
-        position: "absolute", top: "-20%", left: "-10%",
-        width: "70%", height: "70%", borderRadius: "50%",
-        background: "radial-gradient(ellipse at center, rgba(0,180,255,0.18) 0%, transparent 70%)",
-        filter: "blur(36px)",
-        animation: "aurora-a 18s ease-in-out infinite alternate",
-      }} />
-      <div style={{
-        position: "absolute", top: "10%", right: "-15%",
-        width: "60%", height: "60%", borderRadius: "50%",
-        background: "radial-gradient(ellipse at center, rgba(80,60,220,0.14) 0%, transparent 70%)",
-        filter: "blur(44px)",
-        animation: "aurora-b 22s ease-in-out infinite alternate",
-      }} />
-      <div style={{
-        position: "absolute", bottom: "-10%", left: "30%",
-        width: "50%", height: "50%", borderRadius: "50%",
-        background: "radial-gradient(ellipse at center, rgba(0,210,200,0.10) 0%, transparent 70%)",
-        filter: "blur(50px)",
-        animation: "aurora-c 26s ease-in-out infinite alternate",
-      }} />
-    </div>
-  );
-}
+import { useMotionPreference } from "@/lib/useMotionPreference";
+import OrbitCompanion from "./three/OrbitCompanion";
+import { SectionLabel } from "./studio/SectionLabel";
 
 export default function Hero() {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const headlineRef = useRef<HTMLHeadingElement>(null);
-  const [isDesktop, setIsDesktop] = useState(false);
-
+  const { lang } = useLanguage();
+  const es = lang === "es";
+  const root = useRef<HTMLElement>(null);
+  const reduced = useMotionPreference();
   useEffect(() => {
-    setIsDesktop(window.innerWidth >= 768);
-  }, []);
-
-  const { t } = useLanguage();
-
-  useEffect(() => {
-    // SSR-safe — runs only on client
-    const alreadyShown = (() => {
-      try { return sessionStorage.getItem("loader-shown") === "1"; }
-      catch { return false; }
-    })();
-
-    function initGsap() {
-      gsap.registerPlugin(ScrollTrigger);
-      const ctx = gsap.context(() => {
-        const split = (headlineRef.current?.querySelectorAll(".word") ??
-          []) as NodeListOf<HTMLElement>;
-        gsap.from(split, {
-          yPercent: 110,
-          opacity: 0,
-          rotate: 3,
-          duration: 1.1,
-          ease: "expo.out",
-          stagger: 0.08,
-          delay: 0.2,
-        });
-
-        gsap.from(".hero-sub", {
-          y: 24,
-          opacity: 0,
-          duration: 1,
-          delay: 0.7,
-          ease: "power3.out",
-        });
-
-        gsap.from(".hero-cta", {
-          y: 18,
-          opacity: 0,
-          duration: 0.9,
-          delay: 0.9,
-          ease: "power3.out",
-          stagger: 0.1,
-        });
-
-        gsap.from(".hero-scene", {
-          opacity: 0,
-          duration: 1.4,
-          delay: 0.4,
-          ease: "expo.out",
-        });
-
-      }, rootRef);
-      return () => ctx.revert();
-    }
-
-    if (alreadyShown) {
-      return initGsap();
-    }
-
-    let cleanup: (() => void) | undefined;
-    const handler = () => { cleanup = initGsap(); };
-    window.addEventListener("loader:done", handler, { once: true });
-
-    return () => {
-      window.removeEventListener("loader:done", handler);
-      cleanup?.();
+    if (reduced) return;
+    gsap.registerPlugin(ScrollTrigger);
+    let context: gsap.Context | undefined;
+    const animate = () => {
+      context?.revert();
+      context = gsap.context(() => {
+        const timeline = gsap.timeline({ defaults: { ease: "power3.out" } });
+        timeline.from(".studio-hero-line > span", { yPercent: 108, rotate: 2, duration: 1.1, stagger: 0.12 })
+          .from(".studio-hero-copy > :not(h1)", { opacity: 0, y: 20, duration: 0.8, stagger: 0.08 }, 0.2)
+          .from(".studio-hero-orbit", { opacity: 0, y: 28, duration: 1.2 }, 0.3);
+        gsap.to(".hero-ellipse", { y: 130, rotate: 12, ease: "none", scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: 1 } });
+      }, root);
     };
-  }, []); // empty deps — initGsap is declared inside and must NOT be added to deps
+    let loaded = false;
+    try { loaded = sessionStorage.getItem("loader-shown") === "1"; } catch { loaded = true; }
+    if (loaded) animate();
+    else window.addEventListener("loader:done", animate, { once: true });
+    return () => { context?.revert(); window.removeEventListener("loader:done", animate); };
+  }, [reduced, lang]);
 
-  return (
-    <section
-      id="top"
-      ref={rootRef}
-className="relative isolate min-h-screen overflow-hidden pt-24 md:pt-36"
-    >
-      {/* Backgrounds */}
-      <div className="absolute inset-0 -z-10">
-        <Image src="/Hero1.png" alt="" fill priority className="object-cover object-center" />
-        <div className="absolute inset-0" style={{ background: "rgba(5,5,8,0.30)" }} />
-        {isDesktop && <HeroShaderBg />}
-      </div>
+  const principles = es
+    ? ["Diseño con intención", "Desarrollo a medida", "Ideas que despegan"]
+    : ["Design with intention", "Built around you", "Ideas that take off"];
 
-      <div ref={contentRef} className="container-x relative grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-8">
-        {/* LEFT */}
-        <div className="lg:col-span-6">
-          <h1
-            ref={headlineRef}
-            className="hero-headline font-hero font-black uppercase text-center md:text-left"
-            style={{ fontSize: "clamp(2.2rem, 5.6vw, 6rem)", lineHeight: "0.97", letterSpacing: "-0.01em" }}
-          >
-            <span className="block [clip-path:inset(0_-9999px)]">
-              <span className="word inline-block" style={{ color: "#ffffff" }}>{t.hero.headlinePart1}</span>
-            </span>
-            <span className="block [clip-path:inset(0_-9999px)]">
-              <span className="word block text-center md:text-left">
-                <RotatingWord words={t.hero.rotating} />
-              </span>
-            </span>
-          </h1>
-
-          <p className="hero-sub mt-8 max-w-xl text-sm text-white md:text-base leading-relaxed" style={{ textAlign: "justify", hyphens: "auto" }}>
-            {t.hero.descShort} {t.hero.desc}
-          </p>
-
-          <div className="hero-cta mt-10 flex justify-center md:justify-start">
-            <MagneticButton href="#contact" variant="filled" className="px-14 py-4 text-base">
-              {t.hero.cta1} <span aria-hidden>→</span>
-            </MagneticButton>
-          </div>
-
-          <motion.div
-            className="hero-cta mt-5 flex justify-center md:justify-start"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.0, duration: 0.7 }}
-          >
-            <div
-              className="inline-flex items-center gap-2.5 rounded-full px-5 py-2.5"
-              style={{
-                background: "rgba(0,212,255,0.08)",
-                border: "1px solid rgba(0,212,255,0.3)",
-                boxShadow: "0 0 24px -8px rgba(0,212,255,0.4), inset 0 1px 0 rgba(255,255,255,0.08)",
-              }}
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="#00d4ff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              </svg>
-              <span className="text-[13px] font-semibold text-white/90 md:text-sm">{t.hero.guarantee}</span>
-            </div>
-          </motion.div>
-
-          <motion.div
-            className="mt-10 rounded-2xl border border-white/10 bg-white/[0.04] px-6 py-5 backdrop-blur-sm"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.7 }}
-          >
-            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-              {t.hero.features.map((feat) => (
-                <div key={feat} className="flex items-center gap-2.5">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full" style={{ background: "rgba(0,212,255,0.15)" }}>
-                    <svg viewBox="0 0 10 10" fill="none" className="h-3 w-3"><path d="M2 5l2 2 4-4" stroke="#00d4ff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                  </span>
-                  <span className="text-sm font-medium text-white/85">{feat}</span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+  return <section id="top" ref={root} className="studio-hero">
+    <div className="studio-hero-atmosphere" aria-hidden="true">
+      <div className="hero-ellipse" /><div className="hero-horizon" />
+      {Array.from({ length: 28 }, (_, i) => <i key={i} className="hero-star" style={{ left: ((i * 37 + 7) % 100) + "%", top: ((i * 23 + 9) % 94) + "%", animationDelay: (i % 6) + "s", opacity: 0.2 + (i % 4) * 0.15 }} />)}
+    </div>
+    <div className="studio-shell studio-hero-grid">
+      <div className="studio-hero-copy">
+        <SectionLabel number="LA" kind="studio" compact>{es ? "Estudio digital" : "Digital studio"}</SectionLabel>
+        <h1>
+          <span className="studio-hero-line"><span>{es ? "Tu marca." : "Your brand."}</span></span>
+          <span className="studio-hero-line"><span>{es ? "A otro" : "On another"}</span></span>
+          <span className="studio-hero-line hero-line-accent"><span>{es ? "nivel." : "level."}<Asterisk aria-hidden="true" /></span></span>
+        </h1>
+        <p className="studio-hero-description">{es
+          ? "Sitios web y experiencias digitales con diseño excepcional. Hechos para llevar tu negocio más lejos."
+          : "Beautiful websites and digital experiences. Thoughtfully built to take your business further."}</p>
+        <div className="studio-hero-actions">
+          <a href="#contact" className="studio-button studio-button-light">{es ? "Hablemos de tu proyecto" : "Let's build something"}<ArrowUpRight size={19} /></a>
+          <a href="#services" className="studio-text-link">{es ? "Explorar servicios" : "Explore services"}<ArrowDown size={15} /></a>
         </div>
-
-        {/* Interactive 3D companion */}
-        <div className="hero-scene relative pb-20 lg:col-span-6 lg:pb-0">
-          <OrbitCompanion />
-        </div>
+        <p className="studio-hero-note"><Check size={13} />{es ? "A tu medida. En español y en inglés." : "Made for you. In English & Spanish."}</p>
       </div>
-
-      {/* Scroll indicator — desktop mouse */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.4 }}
-        className="absolute inset-x-0 bottom-8 mx-auto hidden md:flex w-fit flex-col items-center gap-1.5"
-      >
-        <svg width="24" height="38" viewBox="0 0 24 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <filter id="wheel-glow" x="-80%" y="-80%" width="260%" height="260%">
-              <feGaussianBlur stdDeviation="2.5" result="blur" />
-              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-            </filter>
-          </defs>
-          <rect x="1" y="1" width="22" height="36" rx="11"
-            stroke="rgba(0,212,255,0.35)" strokeWidth="1.5" />
-          <rect x="1" y="1" width="22" height="18" rx="11"
-            fill="rgba(0,212,255,0.04)" />
-          <motion.rect
-            x="10.5" y="7" width="3" height="7" rx="1.5"
-            fill="#00d4ff"
-            filter="url(#wheel-glow)"
-            animate={{ y: [0, 10, 0], opacity: [1, 0.2, 1] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: [0.4, 0, 0.6, 1] }}
-          />
-        </svg>
-      </motion.div>
-
-      {/* Scroll indicator — mobile swipe */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.4 }}
-        className="absolute inset-x-0 bottom-8 mx-auto flex md:hidden w-fit flex-col items-center gap-2"
-      >
-        {/* Finger icon */}
-        <svg width="20" height="28" viewBox="0 0 20 28" fill="none">
-          <rect x="7" y="0" width="6" height="14" rx="3" stroke="rgba(0,212,255,0.45)" strokeWidth="1.5" />
-          <rect x="7" y="0" width="6" height="7" rx="3" fill="rgba(0,212,255,0.08)" />
-          <motion.rect
-            x="9" y="2" width="2" height="5" rx="1"
-            fill="#00d4ff"
-            animate={{ y: [0, 6, 0], opacity: [1, 0.3, 1] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: [0.4, 0, 0.6, 1] }}
-          />
-          <path d="M4 13c0 3.5 1.5 8 6 8s6-4.5 6-8" stroke="rgba(0,212,255,0.25)" strokeWidth="1.2" strokeLinecap="round" />
-        </svg>
-      </motion.div>
-    </section>
-  );
-}
-
-
-function RotatingWord({ words }: { words: string[] }) {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    setIndex(0);
-  }, [words]);
-
-  useEffect(() => {
-    const id = setInterval(() => setIndex((i) => (i + 1) % words.length), 2600);
-    return () => clearInterval(id);
-  }, [words]);
-
-  return (
-    <span className="relative block h-[1.05em] [clip-path:inset(0_-9999px)]">
-      <AnimatePresence mode="popLayout">
-        <motion.span
-          key={words[index]}
-          className="absolute inset-x-0 text-center md:text-left whitespace-nowrap"
-          initial={{ y: "110%", opacity: 0 }}
-          animate={{ y: "0%", opacity: 1 }}
-          exit={{ y: "-110%", opacity: 0 }}
-          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          style={{
-            background: "linear-gradient(90deg, #818cf8 0%, #22d3ee 45%, #60a5fa 100%)",
-            WebkitBackgroundClip: "text",
-            backgroundClip: "text",
-            color: "transparent",
-          }}
-        >
-          {words[index]}
-        </motion.span>
-      </AnimatePresence>
-    </span>
-  );
+      <div className="hero-scene studio-hero-orbit"><OrbitCompanion /></div>
+    </div>
+    <div className="studio-shell studio-hero-bottom">
+      <span className="studio-coordinate">INDEPENDENT MINDS.<br /><b>EXTRAORDINARY POSSIBILITIES.</b></span>
+      <a href="#services" className="studio-scroll-link"><span>{es ? "DESLIZA PARA DESCUBRIR" : "SCROLL TO DISCOVER"}</span><ArrowDown size={17} /></a>
+      <span className="studio-coordinate studio-coordinate-right">34°03′ N / 118°15′ W<br /><b>CREATING EVERYWHERE.</b></span>
+    </div>
+    <div className="studio-marquee" aria-label={principles.join(" · ")}>
+      <div className="studio-marquee-track" aria-hidden="true">
+        {[0, 1, 2, 3].map((copy) => <div key={copy}>{principles.map((text) => <span key={text}>{text}<Asterisk size={22} /></span>)}</div>)}
+      </div>
+    </div>
+  </section>;
 }

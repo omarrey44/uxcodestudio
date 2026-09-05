@@ -91,7 +91,7 @@ export const metadata: Metadata = {
 
 export default function HomePageEs() {
   return (
-    <main className="relative overflow-hidden">
+    <main className="studio-site relative">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -103,8 +103,8 @@ export default function HomePageEs() {
       <Services />
       <Process />
       <Pricing />
-      <FinalCTA />
       <FAQ />
+      <FinalCTA />
       <Footer />
     </main>
   );

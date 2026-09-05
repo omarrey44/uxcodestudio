@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useMotionPreference } from "@/lib/useMotionPreference";
 
 const COUNT = 80;
 
@@ -30,6 +31,7 @@ function buildStars(): Star[] {
 }
 
 export default function WarpStars() {
+  const reduced = useMotionPreference();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const progressRef = useRef(0);
   const prevProgressRef = useRef(0);
@@ -38,6 +40,7 @@ export default function WarpStars() {
   const rafActiveRef = useRef(false);
 
   useEffect(() => {
+    if (reduced) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -124,9 +127,11 @@ export default function WarpStars() {
     return () => {
       window.removeEventListener("resize", init);
       cancelAnimationFrame(rafRef.current);
+      rafActiveRef.current = false;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       st.kill();
     };
-  }, []);
+  }, [reduced]);
 
   return (
     <canvas

@@ -1,147 +1,18 @@
 "use client";
 
-import { motion } from "framer-motion";
-import Image from "next/image";
+import { ArrowUpRight, ArrowUp, Asterisk } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 
-const SOCIALS = [
-  {
-    label: "LinkedIn",
-    href: "#",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-      </svg>
-    ),
-  },
-  {
-    label: "Instagram",
-    href: "#",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
-      </svg>
-    ),
-  },
-];
-
-// Column order: Studio, Services, Resources — same in EN and ES
-const COL_HREFS: string[][] = [
-  ["#top", "#process", "#contact"],                                                                        // Studio
-  ["#services", "#services", "#services", "#services", "#services", "#services", "#services"],             // Services
-  ["#pricing", "#faq", "#"],                                                                               // Resources
-];
-
 export default function Footer() {
-  const { t } = useLanguage();
-  return (
-    <footer className="relative overflow-hidden border-t border-white/5" style={{ background: "#050505" }}>
-      {/* Luminous top line — the closing signal */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent-cyan/60 to-transparent" />
-      <div className="absolute inset-x-0 top-0 h-24"
-        style={{ background: "radial-gradient(ellipse 60% 100% at 50% 0%, rgba(0,212,255,0.05) 0%, transparent 70%)" }} />
-      <div className="absolute -bottom-40 left-1/2 h-[400px] w-[800px] -translate-x-1/2 rounded-full bg-accent-blue/10 blur-3xl" />
-      {/* Technical side lines */}
-      <div className="pointer-events-none absolute left-[6%] top-16 hidden h-20 w-px bg-gradient-to-b from-white/10 to-transparent md:block" />
-      <div className="pointer-events-none absolute right-[6%] top-16 hidden h-20 w-px bg-gradient-to-b from-white/10 to-transparent md:block" />
-
-      <div className="container-x relative py-28">
-        {/* Huge wordmark */}
-        <motion.div
-          initial={{ y: 16 }}
-          whileInView={{ y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1 }}
-          className="select-none overflow-hidden pb-12"
-        >
-          <div className="flex justify-center">
-            <span
-              className="font-display text-[7.5vw] font-bold leading-none tracking-tighter md:text-[100px]"
-              style={{
-                background: "linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.05) 90%)",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              UXCODESTUDIO
-            </span>
-          </div>
-        </motion.div>
-
-        <div className="grid grid-cols-2 gap-10 border-t border-white/5 pt-14 md:grid-cols-5">
-          <div className="col-span-2">
-            <div className="flex items-center">
-              <Image src="/logo.png" width={160} height={48} alt="UXCODESTUDIO" />
-            </div>
-            <a href="mailto:info@uxcodestudio.com" className="mt-4 block text-sm text-muted-soft hover:text-white transition-colors">info@uxcodestudio.com</a>
-            <p className="mt-1 max-w-xs text-sm text-muted-soft">{t.footer.description}</p>
-            <div className="mt-6 flex gap-3">
-              {SOCIALS.map(({ label, href, icon }) => (
-                <a
-                  key={label}
-                  href={href}
-                  aria-label={label}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.03] text-muted-soft transition-all duration-300 hover:-translate-y-0.5 hover:border-accent-cyan/50 hover:text-accent-cyan hover:shadow-[0_0_20px_-4px_rgba(0,212,255,0.4)]"
-                >
-                  <span className="h-4 w-4">{icon}</span>
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {t.footer.columns.map((c, ci) => (
-            <div key={c.title}>
-              <div className="mb-4 text-[11px] uppercase tracking-[0.3em] text-muted-dim">{c.title}</div>
-              <ul className="space-y-2.5 text-sm">
-                {c.links.map((l, li) => (
-                  <li key={l}>
-                    <a href={COL_HREFS[ci]?.[li] ?? "#"} className="text-muted transition-colors hover:text-white">{l}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        {/* Tech stack strip */}
-        <div className="mt-14 border-t border-white/5 pt-10">
-          <p className="mb-6 text-center text-[11px] uppercase tracking-[0.25em] text-muted-dim">Built with</p>
-          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
-            {[
-              { name: "Next.js",    file: "nextjs"      },
-              { name: "React",      file: "react"       },
-              { name: "TypeScript", file: "typescript"  },
-              { name: "Tailwind",   file: "tailwind"    },
-              { name: "Vercel",     file: "vercel"      },
-              { name: "Framer",     file: "framer"      },
-            ].map(({ name, file }) => (
-              <div key={name} className="flex items-center gap-2.5 opacity-40 transition-opacity duration-300 hover:opacity-90">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={`/tech/${file}.svg`} alt={name} className="h-7 w-7 shrink-0" />
-                <span className="text-[15px] font-semibold tracking-tight text-white">{name}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 text-xs text-muted-dim md:flex-row">
-          <div>© {new Date().getFullYear()} UXCODESTUDIO. {t.footer.copyright}</div>
-          <div className="flex items-center gap-6">
-            <a href="#" className="hover:text-white">{t.footer.privacy}</a>
-            <a href="#" className="hover:text-white">{t.footer.terms}</a>
-            <span className="inline-flex items-center gap-2">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400/70" />
-                <span className="relative h-2 w-2 rounded-full bg-emerald-400" />
-              </span>
-              {t.footer.status}
-            </span>
-          </div>
-        </div>
+  const { t, lang } = useLanguage();
+  const es = lang === "es";
+  return <footer className="studio-footer">
+    <div className="studio-shell">
+      <div className="studio-footer-top"><div><p className="studio-eyebrow">INDEPENDENT STUDIO. UNLIMITED IDEAS.</p><p>{es ? "Diseñado con intención. Construido con pasión." : "Designed with intention. Built with passion."}</p></div>
+        <a href="#top" className="studio-back-top" aria-label={es ? "Volver al inicio" : "Back to top"}><ArrowUp size={22} /></a>
       </div>
-    </footer>
-  );
+      <a href="#top" className="studio-footer-wordmark" aria-label="UXCODESTUDIO"><span>uxcode</span><em>studio</em><Asterisk aria-hidden="true" /></a>
+      <div className="studio-footer-bottom"><span>© {new Date().getFullYear()} UXCODESTUDIO.</span><span>{t.footer.description}</span><nav aria-label={es ? "Enlaces del pie de página" : "Footer navigation"}><a href="#services">{es ? "Servicios" : "Services"}</a><a href="#pricing">{es ? "Precios" : "Pricing"}</a><a href="#faq">FAQ</a><a href="mailto:info@uxcodestudio.com">Email<ArrowUpRight size={12} /></a></nav><span className="studio-footer-language">EN / ES</span></div>
+    </div>
+  </footer>;
 }

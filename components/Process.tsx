@@ -1,329 +1,64 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { motion, useScroll, useSpring, useMotionValue, useTransform, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { ArrowDownRight, ArrowUpRight, Check, Circle, MousePointer2, PenTool, Rocket, Code2, MessageCircle, Layers, Asterisk } from "lucide-react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLanguage } from "@/lib/i18n";
+import { useMotionPreference } from "@/lib/useMotionPreference";
+import { Reveal, SectionLabel } from "./studio/StudioUI";
 
-const STEP_ICONS = [
-  <svg key="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>,
-  <svg key="define" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M5 9l4-4 4 4"/><path d="M9 5v14"/><path d="M19 15l-4 4-4-4"/><path d="M15 19V5"/></svg>,
-  <svg key="design" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><circle cx="11" cy="11" r="2"/></svg>,
-  <svg key="build" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>,
-  <svg key="rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>,
-];
-
-const PILL_ICONS = [
-  <svg key="clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>,
-  <svg key="users" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
-  <svg key="zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>,
-];
-
-function SpotlightStepCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const spotlightOpacity = useMotionValue(0);
-  const spotlightBg = useTransform(
-    [mouseX, mouseY],
-    ([x, y]: number[]) => `radial-gradient(160px circle at ${x}px ${y}px, rgba(139,92,246,0.18), transparent 70%)`
-  );
-  return (
-    <div ref={ref} className={`relative ${className}`}
-      onMouseMove={(e) => {
-        const rect = ref.current?.getBoundingClientRect();
-        if (!rect) return;
-        mouseX.set(e.clientX - rect.left);
-        mouseY.set(e.clientY - rect.top);
-      }}
-      onMouseEnter={() => spotlightOpacity.set(1)}
-      onMouseLeave={() => spotlightOpacity.set(0)}
-    >
-      <motion.div className="pointer-events-none absolute -inset-2 rounded-2xl"
-        style={{ background: spotlightBg, opacity: spotlightOpacity }} />
-      {children}
-    </div>
-  );
-}
-
-function MobileStepCarousel({ steps }: { steps: { n: string; tag: string; title: string; body: string; output: string[] }[] }) {
-  const [active, setActive] = useState(0);
-  const dragX = useMotionValue(0);
-
-  function handleDragEnd(_: unknown, info: { offset: { x: number } }) {
-    if (info.offset.x < -40 && active < steps.length - 1) setActive(active + 1);
-    if (info.offset.x > 40 && active > 0) setActive(active - 1);
-  }
-
-  const s = steps[active];
-
-  return (
-    <div className="relative">
-      {/* Step counter */}
-      <div className="mb-4 flex items-center justify-between">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-cyan/60">
-          {active + 1} / {steps.length}
-        </span>
-        <div className="flex gap-1.5">
-          {steps.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setActive(i)}
-              className="h-1.5 rounded-full transition-all duration-300"
-              style={{
-                width: i === active ? "24px" : "6px",
-                background: i === active ? "rgba(0,212,255,0.9)" : "rgba(255,255,255,0.2)",
-              }}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Drag card */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={active}
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0.15}
-          onDragEnd={handleDragEnd}
-          style={{ x: dragX }}
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -40 }}
-          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="cursor-grab active:cursor-grabbing select-none rounded-2xl border border-white/[0.1] bg-white/[0.04] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm"
-        >
-          {/* Header */}
-          <div className="mb-4 flex items-center gap-3">
-            <div
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-accent-cyan/50 bg-[#050508] text-sm font-bold tabular-nums text-accent-cyan"
-              style={{ boxShadow: "0 0 12px rgba(0,212,255,0.35)" }}
-            >
-              {s.n}
-            </div>
-            <div className="flex items-center gap-2">
-              <h3 className="font-display text-[26px] font-bold tracking-tight text-accent-cyan">{s.title}</h3>
-            </div>
-          </div>
-
-          <p className="text-sm leading-relaxed text-white/80">{s.body}</p>
-
-          <div className="mt-4 flex flex-wrap gap-2">
-            {s.output.map((o) => (
-              <span key={o}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.1] bg-white/[0.04] px-3 py-1 text-[11px] font-medium text-white/70">
-                <svg viewBox="0 0 10 10" fill="none" className="h-2.5 w-2.5">
-                  <path d="M2 5.2l2 2 4-4.4" stroke="#00d4ff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                {o}
-              </span>
-            ))}
-          </div>
-
-        </motion.div>
-      </AnimatePresence>
-
-      {/* Swipe hint — only on first view */}
-      {active === 0 && (
-        <motion.p
-          className="mt-3 text-center text-[11px] text-white/30"
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}
-        >
-          ← desliza para ver pasos →
-        </motion.p>
-      )}
-
-      {/* Prev / Next buttons */}
-      <div className="mt-4 flex justify-between gap-3">
-        <button
-          onClick={() => setActive((a) => Math.max(0, a - 1))}
-          disabled={active === 0}
-          className="flex-1 rounded-xl border border-white/10 py-2.5 text-sm text-white/50 transition-colors disabled:opacity-30 hover:border-white/20 hover:text-white"
-        >
-          ← Anterior
-        </button>
-        <button
-          onClick={() => setActive((a) => Math.min(steps.length - 1, a + 1))}
-          disabled={active === steps.length - 1}
-          className="flex-1 rounded-xl border border-accent-cyan/30 bg-accent-cyan/10 py-2.5 text-sm text-accent-cyan transition-colors disabled:opacity-30 hover:bg-accent-cyan/20"
-        >
-          Siguiente →
-        </button>
-      </div>
-    </div>
-  );
-}
+const ICONS = [MessageCircle, Layers, PenTool, Code2, Rocket];
+const SHORT = {
+  es: ["Nos cuentas tu idea. Nosotros escuchamos, preguntamos y trazamos el camino.", "Definimos lo importante: alcance, estructura y una cotización clara.", "Tu marca toma forma. Diseñamos, compartimos y afinamos contigo.", "Convertimos el diseño en una experiencia rápida, adaptable y funcional.", "Revisamos cada detalle y ponemos tu proyecto en manos del mundo."],
+  en: ["You share your idea. We listen, ask questions, and find the way forward.", "We define the essentials: scope, structure, and a clear quote.", "Your brand takes shape. We design, share, and refine it with you.", "We turn the design into a fast, responsive, functional experience.", "We check every detail and introduce your project to the world."]
+};
 
 export default function Process() {
-  const { t } = useLanguage();
-  const stepsRef = useRef<HTMLDivElement>(null);
+  const { t, lang } = useLanguage();
+  const es = lang === "es";
+  const root = useRef<HTMLElement>(null);
+  const reduced = useMotionPreference();
+  const [active, setActive] = useState(0);
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    const media = gsap.matchMedia();
+    const context = gsap.context(() => {
+      const cards = gsap.utils.toArray<HTMLElement>(".studio-process-card");
+      cards.forEach((card, i) => {
+        ScrollTrigger.create({ trigger: card, start: "top 55%", end: "bottom 25%", onEnter: () => setActive(i), onEnterBack: () => setActive(i) });
+      });
+      if (!reduced) media.add("(min-width: 1024px)", () => {
+        cards.slice(0, -1).forEach((card, i) => {
+          gsap.fromTo(card, { scale: 1, filter: "brightness(1)" }, { scale: 0.94, filter: "brightness(0.92)", transformOrigin: "center top", ease: "none", scrollTrigger: { trigger: cards[i + 1], start: "top 65%", end: "top 165px", scrub: true, invalidateOnRefresh: true } });
+        });
+      });
+    }, root);
+    return () => { media.revert(); context.revert(); };
+  }, [reduced, lang]);
 
-  const { scrollYProgress } = useScroll({
-    target: stepsRef,
-    offset: ["start 0.85", "end 0.3"],
-  });
-
-  const lineScaleY = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 });
-
-  return (
-    <section id="process" className="section-deep section-separator relative py-32 md:py-44">
-
-      {/* Radial-gradient identity — distinct from Services graphite */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 120% 90% at 50% 0%, #0a1230 0%, #060c1e 45%, #050508 100%)" }} />
-        <div className="absolute left-1/2 top-1/3 h-[520px] w-[720px] -translate-x-1/2 -translate-y-1/2 rounded-full"
-          style={{ background: "radial-gradient(ellipse at center, rgba(79,110,247,0.10) 0%, transparent 65%)", filter: "blur(60px)" }} />
-        <div className="absolute -left-40 top-2/3 h-[340px] w-[340px] rounded-full bg-accent-violet/[0.08] blur-[60px]" />
-        <div className="absolute -right-24 bottom-1/4 h-[300px] w-[340px] rounded-full bg-accent-cyan/[0.06] blur-[55px]" />
-        {/* Subtle dot pattern instead of grid — different texture than Services */}
-        <div className="absolute inset-0 opacity-[0.03]"
-          style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.6) 1px, transparent 0)", backgroundSize: "32px 32px", maskImage: "radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 100%)" }} />
-      </div>
-
-      <div className="container-x">
-        {/* Eyebrow — full width above grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-20px" }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-20 flex items-center justify-center gap-5"
-        >
-          <span className="h-px w-10 shrink-0 sm:w-16" style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.45))" }} />
-          <span
-            className="shrink font-black uppercase tracking-[0.1em] min-w-0 text-center"
-            style={{ fontSize: "clamp(1.6rem, 5.5vw, 4.2rem)", color: "#ffffff" }}
-          >
-            {t.process.eyebrow}
-          </span>
-          <span className="h-px w-10 shrink-0 sm:w-16" style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.45), transparent)" }} />
-        </motion.div>
-
-        <div className="grid grid-cols-1 gap-20 lg:grid-cols-[1fr_2.2fr] lg:gap-16">
-
-          {/* LEFT */}
-          <motion.div
-            className="flex flex-col justify-between"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-60px" }}
-            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }}
-          >
-            <div>
-
-              <motion.h2
-                variants={{ hidden: { clipPath: "inset(100% 0 0% 0)" }, visible: { clipPath: "inset(0% 0 0% 0)", transition: { duration: 1.0, ease: [0.22, 1, 0.36, 1] } } }}
-                className="font-display font-bold tracking-tighter text-white text-h2"
-              >
-                {t.process.headlinePart1}{" "}
-                <em className="display-em">{t.process.headlineEmphasis}</em>{" "}
-                {t.process.headlinePart2}
-                <br />
-                <span className="text-gradient-accent">{t.process.headlineAccent}</span>
-              </motion.h2>
-
-              <motion.p
-                variants={{ hidden: { y: 12 }, visible: { y: 0, transition: { duration: 0.7 } } }}
-                className="mt-5 text-sm leading-relaxed text-white"
-              >
-                {t.process.sub}
-              </motion.p>
-
-              <motion.div
-                variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7 } } }}
-                className="mt-7 inline-flex items-center gap-2.5 rounded-full px-5 py-2.5"
-                style={{
-                  background: "rgba(139,92,246,0.08)",
-                  border: "1px solid rgba(139,92,246,0.35)",
-                  boxShadow: "0 0 24px -8px rgba(139,92,246,0.45), inset 0 1px 0 rgba(255,255,255,0.08)",
-                }}
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                </svg>
-                <span className="text-[13px] font-semibold text-white/90 md:text-sm">{t.process.guarantee}</span>
-              </motion.div>
-
-            </div>
-          </motion.div>
-
-          {/* RIGHT — mobile carousel */}
-          <div className="block lg:hidden">
-            <MobileStepCarousel steps={t.process.steps} />
-          </div>
-
-          {/* RIGHT — desktop scroll-fill timeline */}
-          <div ref={stepsRef} className="relative hidden lg:block">
-            {/* Background rail */}
-            <div className="absolute left-[21px] top-6 bottom-6 w-[2px] rounded-full bg-white/[0.06]" />
-            {/* Animated fill */}
-            <motion.div
-              className="absolute left-[21px] top-6 bottom-6 w-[2px] rounded-full origin-top bg-gradient-to-b from-accent-cyan via-accent-blue to-accent-violet"
-              style={{ scaleY: lineScaleY, boxShadow: "0 0 8px rgba(0,212,255,0.6), 0 0 20px rgba(0,144,255,0.3)" }}
-            >
-              {/* A — traveling glow dot at fill tip */}
-              <div className="absolute bottom-0 left-1/2 h-3 w-3 translate-y-1/2 -translate-x-1/2 rounded-full bg-accent-cyan"
-                style={{ boxShadow: "0 0 8px 3px rgba(0,212,255,0.9), 0 0 20px 6px rgba(0,212,255,0.45)" }} />
-            </motion.div>
-
-            <motion.div
-              className="space-y-0"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-40px" }}
-              variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
-            >
-              {t.process.steps.map((s, i) => (
-                <motion.div
-                  key={s.n}
-                  variants={{ hidden: { x: 16 }, visible: { x: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
-                  className={`relative flex gap-6 ${i < t.process.steps.length - 1 ? "pb-14" : "pb-0"}`}
-                >
-                  {/* Step bubble — pulsing luminous node */}
-                  <div className="relative z-10 h-11 w-11 shrink-0">
-                    <motion.span
-                      className="absolute inset-0 rounded-full border border-accent-cyan/40"
-                      animate={{ scale: [1, 1.55], opacity: [0.55, 0] }}
-                      transition={{ duration: 2.4, repeat: Infinity, ease: "easeOut", delay: i * 0.4 }}
-                    />
-                    <div
-                      className="relative flex h-11 w-11 items-center justify-center rounded-full border-2 border-accent-cyan/50 bg-[#050508] text-sm font-bold tabular-nums text-accent-cyan"
-                      style={{ boxShadow: "0 0 12px rgba(0,212,255,0.35), inset 0 1px 0 rgba(0,212,255,0.15)" }}
-                    >
-                      {s.n}
-                    </div>
-                  </div>
-
-                  {/* B — spotlight hover wrapper */}
-                  <SpotlightStepCard className="flex-1 pt-1">
-                    <div className="mb-3 flex items-center gap-3">
-                      <h3 className="font-display text-[28px] font-bold tracking-tight text-accent-cyan">{s.title}</h3>
-                    </div>
-
-                    <p className="max-w-xl text-sm leading-relaxed text-white/85">{s.body}</p>
-
-                    {/* Deliverable chips — what you walk away with */}
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {s.output.map((o) => (
-                        <span key={o}
-                          className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.1] bg-white/[0.04] px-3 py-1 text-[11px] font-medium text-white/70 backdrop-blur-sm">
-                          <svg viewBox="0 0 10 10" fill="none" className="h-2.5 w-2.5">
-                            <path d="M2 5.2l2 2 4-4.4" stroke="#00d4ff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                          {o}
-                        </span>
-                      ))}
-                    </div>
-
-                  </SpotlightStepCard>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-
+  return <section id="process" ref={root} className="studio-process">
+    <div className="studio-shell">
+      <SectionLabel number="02" kind="process">{es ? "El proceso" : "The process"}</SectionLabel>
+      <div className="studio-process-grid">
+        <div className="studio-process-intro">
+          <h2 className="studio-heading">{es ? <>Del primer hola<br />al gran<br /><em>lanzamiento.</em></> : <>From the first hello<br />to the big<br /><em>launch.</em></>}</h2>
+          <p>{es ? "Un proceso cercano, claro y sin vueltas. Tú traes la visión. Nosotros la hacemos realidad." : "A close collaboration. A clear process. You bring the vision. We bring it to life."}</p>
+          <div className="studio-process-counter" aria-hidden="true"><span>0{active + 1}</span><i>/ 0{t.process.steps.length}</i><ArrowDownRight size={43} strokeWidth={1} /></div>
+          <div className="studio-process-progress" aria-hidden="true">{t.process.steps.map((_, i) => <span key={i} className={i <= active ? "is-active" : ""} />)}</div>
+          <a href="#contact" className="studio-text-link">{es ? "Empecemos con un hola" : "It starts with a hello"}<ArrowUpRight size={17} /></a>
         </div>
+        <div className="studio-process-stack">{t.process.steps.map((step, i) => {
+          const Icon = ICONS[i] || Circle;
+          return <article key={step.n} className={"studio-process-card process-tone-" + i} style={{ top: 125 + i * 16 }}>
+            <div className="studio-step-top"><span>STEP / 0{i + 1}</span><Icon size={25} strokeWidth={1.3} /></div>
+            <div className="studio-step-content"><span className="studio-step-number">0{i + 1}</span><div><h3>{step.title}</h3><p>{SHORT[lang][i] || step.body}</p></div></div>
+            <div className="studio-step-outputs">{step.output.map((output) => <span key={output}><Check size={12} />{output}</span>)}</div>
+            {i === 2 && <span className="studio-designer-cursor" aria-hidden="true"><MousePointer2 size={17} fill="currentColor" />UXCODESTUDIO</span>}
+          </article>;
+        })}</div>
       </div>
-    </section>
-  );
+      <Reveal className="studio-process-note"><Asterisk className="studio-note-star" strokeWidth={1.2} aria-hidden="true" /><p>{es ? <>Buenas ideas. Buena comunicación.<br /><strong>Un resultado que se siente tuyo.</strong></> : <>Good ideas. Great communication.<br /><strong>A result that feels like you.</strong></>}</p></Reveal>
+    </div>
+  </section>;
 }

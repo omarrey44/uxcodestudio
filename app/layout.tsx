@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { Inter, Syne, Barlow } from "next/font/google";
 import "./globals.css";
+import "./studio.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import { LanguageProvider } from "@/lib/i18n";
 import Navbar from "@/components/Navbar";
