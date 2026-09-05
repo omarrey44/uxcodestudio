@@ -1,16 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import dynamic from "next/dynamic";
+import OrbitCompanion from "./three/OrbitCompanion";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import MagneticButton from "./MagneticButton";
 import { useLanguage } from "@/lib/i18n";
-
-const HeroScene = dynamic(() => import("./three/HeroScene"), { ssr: false });
-
 
 function HeroShaderBg() {
   return (
@@ -44,8 +41,6 @@ export default function Hero() {
   const rootRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
-  const [eyeColor] = useState("#ffffff");
-  const [uxOn, setUxOn] = useState(true);
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
@@ -200,17 +195,9 @@ className="relative isolate min-h-screen overflow-hidden pt-24 md:pt-36"
           </motion.div>
         </div>
 
-        {/* RIGHT — 3D + Holographic UI */}
-        <div className="hero-scene relative lg:col-span-6">
-          <div className="relative h-[480px] sm:h-auto sm:aspect-[4/5] w-full">
-            <div className="absolute inset-0 h-full w-full">
-              <HeroScene eyeColor={eyeColor} uxOn={uxOn} />
-            </div>
-
-
-            {/* Holographic floating cards */}
-            <FloatingDashboard eyeColor={eyeColor} uxOn={uxOn} setUxOn={setUxOn} />
-          </div>
+        {/* Interactive 3D companion */}
+        <div className="hero-scene relative pb-20 lg:col-span-6 lg:pb-0">
+          <OrbitCompanion />
         </div>
       </div>
 
@@ -300,126 +287,5 @@ function RotatingWord({ words }: { words: string[] }) {
         </motion.span>
       </AnimatePresence>
     </span>
-  );
-}
-
-const CODE_LINES = [
-  { text: "// UX-01 · ROBOT BOOT SEQUENCE",       color: "#546e7a" },
-  { text: "await robot.powerOn({",                color: "#c792ea" },
-  { text: '  unit:    "UX-01",',                  color: "#f78c6c" },
-  { text: '  mode:    "cinematic",',              color: "#c3e88d" },
-  { text: "  sensors: true,",                     color: "#f78c6c" },
-  { text: "  visor:   ACTIVE,",                   color: "#82aaff" },
-  { text: "});",                                  color: "#c792ea" },
-  { text: "▸ UX-01 robot online",                color: "#00d8ff" },
-];
-
-function TypedCode() {
-  const full = CODE_LINES.map((l) => l.text).join("\n");
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    if (count >= full.length) {
-      const id = setTimeout(() => setCount(0), 2600);
-      return () => clearTimeout(id);
-    }
-    const id = setTimeout(() => setCount((c) => c + 1), 30);
-    return () => clearTimeout(id);
-  }, [count, full.length]);
-
-  const typed = full.slice(0, count);
-  const lines = typed.split("\n");
-
-  return (
-    <pre className="font-mono text-[11px] leading-[1.75]">
-      {lines.map((lineText, li) => {
-        const isLast = li === lines.length - 1;
-        return (
-          <div key={li}>
-            <span style={{ color: CODE_LINES[li]?.color ?? "#fff" }}>{lineText}</span>
-            {isLast && <span className="animate-pulse" style={{ color: "#00d4ff" }}>▌</span>}
-          </div>
-        );
-      })}
-    </pre>
-  );
-}
-
-function FloatingDashboard({ eyeColor, uxOn, setUxOn }: {
-  eyeColor: string;
-  uxOn: boolean;
-  setUxOn: (v: boolean | ((p: boolean) => boolean)) => void;
-}) {
-  return (
-    <motion.div
-      className="absolute inset-x-0 hidden sm:block"
-      style={{ top: "-4.5rem" }}
-      initial={{ opacity: 0, y: -12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 1.1, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-    >
-      <div className="rounded-2xl glass-strong p-4 neon-border">
-        <div className="mb-3 flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
-          <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/80" />
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
-          {/* Visor toggle — centered in header */}
-          <div className="flex flex-1 items-center justify-center gap-2">
-            <span className="font-mono text-[10px]" style={{ color: uxOn ? eyeColor : "#546e7a" }}>
-              {uxOn ? "ONLINE" : "OFFLINE"}
-            </span>
-            <button
-              aria-label={uxOn ? "Power off robot" : "Power on robot"}
-              onClick={() => setUxOn((v) => !v)}
-              style={{
-                display: "flex", alignItems: "center",
-                width: 32, height: 18, borderRadius: 9, padding: 2,
-                border: "none", cursor: "pointer",
-                transition: "background 0.3s, box-shadow 0.3s",
-                background: uxOn ? eyeColor : "rgba(40,44,60,0.9)",
-                boxShadow: uxOn ? `0 0 8px ${eyeColor}88` : "0 0 0 1px rgba(255,255,255,0.1)",
-              }}
-            >
-              <div style={{
-                width: 14, height: 14, borderRadius: "50%",
-                background: "#fff",
-                transform: uxOn ? "translateX(14px)" : "translateX(0)",
-                transition: "transform 0.3s cubic-bezier(.4,0,.2,1)",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.4)",
-              }} />
-            </button>
-          </div>
-          <span className="text-[10px] tracking-widest text-muted-dim">App.tsx</span>
-        </div>
-        <AnimatePresence mode="wait">
-          {uxOn && (
-            <motion.div
-              key="code-on"
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <TypedCode />
-            </motion.div>
-          )}
-          {!uxOn && (
-            <motion.div
-              key="code-off"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-            >
-              <pre className="font-mono text-[11px] leading-[1.75]">
-                <div><span style={{ color: "#546e7a" }}>// UX-01 · POWERED OFF</span></div>
-                <div><span style={{ color: "#c792ea" }}>robot</span><span style={{ color: "#546e7a" }}>.shutdown()</span></div>
-                <div><span style={{ color: "#ef5350" }}>▸ system offline</span><span className="animate-pulse" style={{ color: "#ef5350" }}>▌</span></div>
-              </pre>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </motion.div>
   );
 }

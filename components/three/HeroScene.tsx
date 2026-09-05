@@ -1,218 +1,203 @@
 "use client";
 
-import { Suspense, useRef, useMemo, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import {
-  useGLTF,
-  useAnimations,
-  Environment,
-  Lightformer,
-  Float,
-  Html,
-} from "@react-three/drei";
+import { ContactShadows, Environment, Lightformer, useGLTF } from "@react-three/drei";
+import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import * as THREE from "three";
 
-const MODEL_URL = "/orbit_robot.glb";
-
-function Loader() {
-  return (
-    <Html center>
-      <div style={{ color: "#00d8ff", font: "500 13px 'SF Mono', monospace", letterSpacing: ".12em", opacity: 0.8 }}>
-        ORBIT INITIALIZING…
-      </div>
-    </Html>
-  );
-}
-
-type OrbitRobotProps = {
-  position?: [number, number, number];
-  scale?: number | [number, number, number];
-  ledColor?: string;
-  uxOn?: boolean;
+const MODEL_URL = "/models/orbit-v2.glb";
+export function clearOrbitModel() { useGLTF.clear(MODEL_URL); }
+type Gaze = { x: number; y: number; lastMove: number };
+export type HeroSceneProps = {
+  eyeColor: string;
+  uxOn: boolean;
+  greeting: number;
+  greetingActive: boolean;
+  reducedMotion: boolean;
+  onReady: () => void;
+  onError: () => void;
 };
 
-function OrbitRobot({ ledColor = "#ffffff", uxOn = false, ...props }: OrbitRobotProps) {
-  const group = useRef<THREE.Group>(null);
-  const eyeLight = useRef<THREE.PointLight>(null);
-  const { scene, animations } = useGLTF(MODEL_URL);
-  const { actions } = useAnimations(animations, group);
-  const { pointer } = useThree();
-  const ledMats = useRef<THREE.MeshStandardMaterial[]>([]);
-
-  const model = useMemo(() => scene.clone(true), [scene]);
-
-  useEffect(() => {
-    if (!actions) return;
-    Object.values(actions).forEach((a) => {
-      if (a) a.reset().setLoop(THREE.LoopRepeat, Infinity).play();
+function OrbitRobot({ eyeColor, uxOn, greeting, greetingActive, reducedMotion, onReady, gaze }: Omit<HeroSceneProps, "onError"> & { gaze: RefObject<Gaze> }) {
+  const { scene } = useGLTF(MODEL_URL);
+  const elapsed = useRef(0);
+  const greetingStarted = useRef(-100);
+  const lastGreeting = useRef(greeting);
+  const power = useRef(uxOn ? 1 : 0);
+  const accent = useMemo(() => new THREE.Color(eyeColor), [eyeColor]);
+  const model = useMemo(() => {
+    const clone = scene.clone(true);
+    const materials = new Map<THREE.Material, THREE.MeshStandardMaterial>();
+    clone.traverse((object) => {
+      if (!(object instanceof THREE.Mesh)) return;
+      const original = object.material as THREE.MeshStandardMaterial;
+      let material = materials.get(original);
+      if (!material) {
+        material = original.clone();
+        material.envMapIntensity = material.name === "Visor_Glass" ? 0.25 : 0.85;
+        if (material.name.endsWith("_LED")) material.toneMapped = false;
+        materials.set(original, material);
+      }
+      object.material = material;
     });
-  }, [actions]);
+    const node = (name: string) => {
+      const object = clone.getObjectByName(name);
+      if (!object) throw new Error(`ORBIT model is missing ${name}`);
+      return object;
+    };
+    const head = node("Head"), body = node("Body");
+    const eyes = [node("Eye_L"), node("Eye_R")];
+    const happyEyes = [node("Happy_L"), node("Happy_R")];
+    happyEyes.forEach((eye) => { eye.visible = false; });
+    return {
+      scene: clone, head, body, eyes, happyEyes,
+      smile: node("Smile"), arm: node("Arm_R"),
+      headY: head.position.y, bodyY: body.position.y,
+      eyePositions: eyes.map((eye) => eye.position.clone()),
+      materials: Array.from(materials.values()),
+    };
+  }, [scene]);
 
   useEffect(() => {
-    ledMats.current = [];
-    model.traverse((o: THREE.Object3D) => {
-      if (!(o as THREE.Mesh).isMesh) return;
-      const mesh = o as THREE.Mesh;
-      const m = mesh.material as THREE.MeshStandardMaterial & {
-        clearcoat?: number;
-      };
-      if (!m) return;
+    onReady();
+    return () => model.materials.forEach((material) => material.dispose());
+  }, [model, onReady]);
 
-      const name = (m.name ?? "").toLowerCase();
-
-      // GlossyBlack — dark titanium
-      if (name.includes("glossy") || name.includes("gloss")) {
-        m.color           = new THREE.Color(0x10121e);
-        m.metalness       = 0.85;
-        m.roughness       = 0.28;
-        m.envMapIntensity = 0.40;
-        m.needsUpdate     = true;
-      }
-
-      // VisorBlack — match GlossyBlack style, darker to read as visor
-      if (name.includes("visor")) {
-        m.color           = new THREE.Color(0x020305);
-        m.metalness       = 0.85;
-        m.roughness       = 0.28;
-        m.envMapIntensity = 0.40;
-        m.needsUpdate     = true;
-      }
-
-      // CyanLED — glowing eyes/rings
-      if (name.includes("cyan") || name.includes("led") || name.includes("eye")) {
-        m.emissive          = new THREE.Color(0x00d8ff);
-        m.emissiveIntensity = 10.0;
-        m.toneMapped        = false;
-        m.metalness         = 0.0;
-        m.roughness         = 0.0;
-        m.envMapIntensity   = 0.0;
-        m.needsUpdate       = true;
-        ledMats.current.push(m);
-      }
-
-      // Catch-all: any near-white non-LED material → force dark
-      if (!name.includes("cyan") && !name.includes("led") && !name.includes("eye")) {
-        const col = m.color as THREE.Color | undefined;
-        if (col && col.r > 0.7 && col.g > 0.7 && col.b > 0.7) {
-          m.color = new THREE.Color(0x05050f);
-          m.needsUpdate = true;
-        }
-      }
-    });
-  }, [model]);
-
-  useEffect(() => {
-    const col = new THREE.Color(ledColor);
-    ledMats.current.forEach((m) => {
-      m.emissive = col;
-      m.needsUpdate = true;
-    });
-  }, [ledColor]);
-
-  // Kill glow when robot turns off
-  useEffect(() => {
-    if (!uxOn) {
-      ledMats.current.forEach((m) => { m.emissiveIntensity = 0.0; });
+  useFrame((_, rawDelta) => {
+    const delta = reducedMotion ? 1 : Math.min(rawDelta, 0.05);
+    elapsed.current += delta;
+    const time = elapsed.current;
+    if (lastGreeting.current !== greeting) {
+      lastGreeting.current = greeting;
+      greetingStarted.current = time;
     }
-  }, [uxOn]);
+    const greetingAge = time - greetingStarted.current;
+    const sayingHello = uxOn && greetingActive;
+    const expression = sayingHello ? Math.sin(Math.PI * Math.min(greetingAge, 2.4) / 2.4) : 0;
+    const awake = THREE.MathUtils.damp(power.current, uxOn ? 1 : 0, 5, delta);
+    power.current = awake;
+    const following = uxOn && !reducedMotion && performance.now() - gaze.current.lastMove < 5000;
+    const x = following ? gaze.current.x : 0;
+    const y = following ? gaze.current.y : 0;
+    const float = reducedMotion ? 0 : Math.sin(time * 1.65) * 0.036 * awake;
+    const idleTurn = reducedMotion || following ? 0 : Math.sin(time * 0.55) * 0.07;
+    const nod = reducedMotion ? 0 : Math.sin(greetingAge * 8) * expression * 0.10;
+    model.head.rotation.y = THREE.MathUtils.damp(model.head.rotation.y, (x * 0.48 + idleTurn) * awake, 5, delta);
+    model.head.rotation.x = THREE.MathUtils.damp(model.head.rotation.x, -y * 0.24 * awake + (1-awake) * 0.15 + nod, 5, delta);
+    model.head.rotation.z = THREE.MathUtils.damp(model.head.rotation.z, -x * 0.055 * awake + (reducedMotion ? 0 : expression * 0.08), 4, delta);
+    model.body.rotation.y = THREE.MathUtils.damp(model.body.rotation.y, x * 0.085 * awake, 3, delta);
+    model.head.position.y = model.headY + float;
+    model.body.position.y = model.bodyY + float;
+    model.arm.rotation.z = reducedMotion ? 0 : expression * (0.8 + Math.sin(greetingAge * 13) * 0.22);
 
-  const elapsedRef = useRef(0);
-  useFrame((_, delta) => {
-    if (!group.current) return;
-    elapsedRef.current += delta;
-
-    if (uxOn) {
-      group.current.rotation.y = THREE.MathUtils.damp(
-        group.current.rotation.y, pointer.x * 0.32, 4, delta
-      );
-      group.current.rotation.x = THREE.MathUtils.damp(
-        group.current.rotation.x, -pointer.y * 0.18, 4, delta
-      );
-      // Breathing LED pulse: slow sin wave 12–18 + occasional hard blink
-      const blinkCycle = elapsedRef.current % 5.0;
-      const blink = blinkCycle > 4.82 ? 0.0 : 1.0;
-      const pulse = 15 + Math.sin(elapsedRef.current * 1.8) * 3; // 12–18
-      const intensity = pulse * blink;
-      ledMats.current.forEach((m) => { m.emissiveIntensity = intensity; });
-      if (eyeLight.current) eyeLight.current.intensity = intensity * 0.6;
-    } else {
-      group.current.rotation.y = THREE.MathUtils.damp(group.current.rotation.y, 0, 3, delta);
-      group.current.rotation.x = THREE.MathUtils.damp(group.current.rotation.x, 0, 3, delta);
-      if (eyeLight.current) eyeLight.current.intensity = 0;
-    }
+    // The eyes lead the heavier head, with independent pivots for natural blinks.
+    const phase = time % 5.3;
+    const blink = !reducedMotion && phase > 5.08 ? 1 - Math.sin((phase - 5.08) / 0.22 * Math.PI) * 0.94 : 1;
+    model.eyes.forEach((eye, index) => {
+      eye.visible = !sayingHello;
+      eye.scale.y = THREE.MathUtils.damp(eye.scale.y, uxOn ? blink : 0.09, 24, delta);
+      eye.position.x = THREE.MathUtils.damp(eye.position.x, model.eyePositions[index].x + x * 0.07 * awake, 12, delta);
+      eye.position.y = THREE.MathUtils.damp(eye.position.y, model.eyePositions[index].y + y * 0.045 * awake, 12, delta);
+    });
+    model.happyEyes.forEach((eye) => { eye.visible = sayingHello; });
+    model.smile.scale.y = THREE.MathUtils.damp(model.smile.scale.y, uxOn ? 1 + expression * 0.3 : 0.15, 8, delta);
+    model.materials.forEach((material) => {
+      if (!material.name.endsWith("_LED")) return;
+      material.emissive.lerp(accent, 1 - Math.exp(-7 * delta));
+      material.color.copy(material.emissive).multiplyScalar(0.35);
+      const pulse = reducedMotion ? 0 : Math.sin(time * 2) * 0.12;
+      material.emissiveIntensity = material.name === "Eye_LED" ? 0.12 + awake * (2.7 + expression * 0.7) : 0.04 + awake * (1.4 + pulse);
+    });
   });
-
-  return (
-    <group ref={group} {...props}>
-      <primitive object={model} />
-      {/* Eye glow light — white, no shadows, positioned at face level */}
-      <pointLight ref={eyeLight} color="#ffffff" intensity={0} distance={2.2} decay={2} position={[0, 0.82, 0.38]} />
-    </group>
-  );
+  return <primitive object={model.scene} dispose={null} />;
 }
 
-useGLTF.preload(MODEL_URL);
-
-export default function HeroScene({ eyeColor = "#00d4ff", uxOn = false }: { eyeColor?: string; uxOn?: boolean }) {
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const [frameloop, setFrameloop] = useState<"always" | "never">("always");
-
+function ContextEvents({ onError }: { onError: () => void }) {
+  const { gl } = useThree();
   useEffect(() => {
-    const el = wrapRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => setFrameloop(e.isIntersecting ? "always" : "never"),
-      { rootMargin: "0px" }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
+    const canvas = gl.domElement;
+    const lost = (event: Event) => { event.preventDefault(); onError(); };
+    canvas.addEventListener("webglcontextlost", lost);
+    return () => canvas.removeEventListener("webglcontextlost", lost);
+  }, [gl, onError]);
+  return null;
+}
+
+export default function HeroScene(props: HeroSceneProps) {
+  const wrap = useRef<HTMLDivElement>(null);
+  const gaze = useRef<Gaze>({ x: 0, y: 0, lastMove: -Infinity });
+  const [visible, setVisible] = useState(true);
+  useEffect(() => {
+    const element = wrap.current;
+    if (!element) return;
+    let intersecting = true;
+    const update = () => setVisible(intersecting && !document.hidden);
+    const observer = new IntersectionObserver(([entry]) => { intersecting = entry.isIntersecting; update(); });
+    observer.observe(element);
+    document.addEventListener("visibilitychange", update);
+    return () => { observer.disconnect(); document.removeEventListener("visibilitychange", update); };
   }, []);
 
+  useEffect(() => {
+    const element = wrap.current;
+    if (!element || !visible || props.reducedMotion || !props.uxOn) return;
+    let bounds = element.getBoundingClientRect();
+    const measure = () => { bounds = element.getBoundingClientRect(); };
+    const resize = new ResizeObserver(measure);
+    resize.observe(element);
+    const move = (event: PointerEvent) => {
+      if (event.pointerType === "touch" && !element.closest("[data-orbit-stage]")?.contains(event.target as Node)) return;
+      gaze.current = {
+        x: THREE.MathUtils.clamp((event.clientX - bounds.left - bounds.width * 0.5) / (window.innerWidth * 0.48), -1, 1),
+        y: THREE.MathUtils.clamp(-(event.clientY - bounds.top - bounds.height * 0.36) / (window.innerHeight * 0.45), -1, 1),
+        lastMove: performance.now(),
+      };
+    };
+    const reset = () => { gaze.current.lastMove = -Infinity; };
+    window.addEventListener("pointermove", move, { passive: true });
+    window.addEventListener("pointerdown", move, { passive: true });
+    window.addEventListener("scroll", measure, { passive: true });
+    window.addEventListener("resize", measure);
+    window.addEventListener("blur", reset);
+    document.addEventListener("pointerleave", reset);
+    return () => {
+      resize.disconnect();
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerdown", move);
+      window.removeEventListener("scroll", measure);
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("blur", reset);
+      document.removeEventListener("pointerleave", reset);
+    };
+  }, [visible, props.reducedMotion, props.uxOn]);
+
   return (
-    <div ref={wrapRef} style={{ width: "100%", height: "100%" }}>
-      <Canvas
-        frameloop={frameloop}
-        dpr={[1, 1.5]}
-        camera={{ position: [0, 0.10, 3.0], fov: 52, near: 0.1, far: 50 }}
-        gl={{ antialias: true, powerPreference: "high-performance", alpha: true }}
-      >
-        <ambientLight intensity={0.22} />
-
-        {/* Key light — define forma del casco */}
-        <spotLight
-          position={[2.5, 5.0, 4.0]}
-          angle={0.50}
-          penumbra={1}
-          intensity={90}
-          color="#c8dce8"
-        />
-
-        {/* Fill light frontal suave — evita que el cuerpo sea puro negro */}
-        <pointLight position={[0, 1.5, 4.5]} intensity={30} color="#7ab8d8" />
-
-        {/* Rim lights cyan — silueta lateral del robot */}
-        <pointLight position={[-4.0, 1.0, 1.5]} intensity={22} color="#00c8ff" />
-        <pointLight position={[ 4.0, 1.0, 1.5]} intensity={22} color="#00c8ff" />
-
-        {/* Base LED glow — ilumina plataforma hacia arriba */}
-        <pointLight position={[0, -2.0, 1.8]} intensity={35} color="#00aaff" />
-
-        <Suspense fallback={<Loader />}>
-          <Float speed={0.9} rotationIntensity={0.04} floatIntensity={0.30}>
-            <OrbitRobot position={[0, -0.95, 0]} scale={1.75} ledColor={eyeColor} uxOn={uxOn} />
-          </Float>
-
-          <Environment resolution={256}>
-            <color attach="background" args={["#03050a"]} />
-            <Lightformer intensity={2.0} color="#b0c8d8" position={[0, 5, 1]} scale={[8, 2, 1]} />
-            <Lightformer intensity={2.2} color="#00d8ff" position={[-6, 0.5, 2]} rotation={[0, Math.PI / 2, 0]} scale={[3, 6, 1]} />
-            <Lightformer intensity={2.2} color="#0090ff" position={[6, 0.5, 2]} rotation={[0, -Math.PI / 2, 0]} scale={[3, 6, 1]} />
-            <Lightformer intensity={1.6} color="#00c8ff" position={[0, -4, 1.5]} rotation={[Math.PI / 2, 0, 0]} scale={[5, 3, 1]} />
+    <div ref={wrap} style={{ width: "100%", height: "100%" }} aria-hidden="true">
+      <Canvas frameloop={visible ? (props.reducedMotion ? "demand" : "always") : "never"} dpr={[1, 1.5]}
+        camera={{ position: [0, 0.04, 6], fov: 36, near: 0.1, far: 30 }}
+        gl={{ antialias: true, alpha: true, premultipliedAlpha: false, powerPreference: "high-performance" }}
+        fallback={null}
+        onCreated={({ gl }) => { gl.setClearColor(0x000000, 0); gl.toneMappingExposure = 1.1; }}>
+        <ContextEvents onError={props.onError} />
+        <ambientLight intensity={0.65} />
+        <directionalLight position={[-3, 5, 4]} intensity={2.5} color="#e4f2ff" />
+        <directionalLight position={[3, 1, 2]} intensity={1} color="#75ceff" />
+        <pointLight position={[2, 2, -2]} intensity={15} color="#918aff" />
+        <pointLight position={[0, -1, 2]} intensity={2} color={props.eyeColor} />
+        <Suspense fallback={null}>
+          <OrbitRobot {...props} gaze={gaze} />
+          <Environment resolution={128} frames={1}>
+            <color attach="background" args={["#253544"]} />
+            <Lightformer intensity={3} position={[-3, 4, 3]} scale={[4, 5, 1]} target={[0, 0, 0]} />
+            <Lightformer intensity={1.5} color="#c4eaff" position={[4, 1, 2]} scale={[2, 4, 1]} target={[0, 0, 0]} />
+            <Lightformer intensity={2} color="#727bff" position={[1, 3, -4]} scale={[3, 3, 1]} target={[0, 0, 0]} />
           </Environment>
-
+          <ContactShadows position={[0, -1.69, 0]} opacity={0.35} scale={5} blur={2.8} far={3} resolution={256} frames={1} />
+          <EffectComposer multisampling={4}>
+            <Bloom luminanceThreshold={1.3} luminanceSmoothing={0.4} intensity={0.4} mipmapBlur />
+          </EffectComposer>
         </Suspense>
-
-
       </Canvas>
     </div>
   );
