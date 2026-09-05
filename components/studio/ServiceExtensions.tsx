@@ -4,6 +4,7 @@ import { ArrowUpRight, ArrowRight, Check, ShieldCheck, Globe2, CalendarDays, Clo
 import { useLanguage } from "@/lib/i18n";
 import { Reveal, Spotlight } from "./StudioUI";
 import styles from "./ServiceExtensions.module.css";
+import ServiceCardHeading from "./ServiceCardHeading";
 
 const SERVICES = [
   {
@@ -75,7 +76,7 @@ export default function ServiceExtensions({ onSelect }: { onSelect: (index: numb
       return <Reveal key={service.kind} delay={(i % 2) * 0.08}>
         <Spotlight className={`${styles.card} ${styles[service.kind]}`}>
           <button type="button" className={styles.button} aria-haspopup="dialog" aria-labelledby={`service-${service.kind}-title`} onClick={() => onSelect(index)}>
-            <span className={styles.meta}><span>0{index + 1} / {service.label}</span><span className="studio-round-arrow"><ArrowUpRight size={21} /></span></span>
+            <span className={styles.meta}><ServiceCardHeading index={index} /><span className="studio-round-arrow"><ArrowUpRight size={21} /></span></span>
             <div className={styles.copy}><h3 id={`service-${service.kind}-title`}>{title}</h3><p>{copy.description}</p></div>
             <ServiceArtwork kind={service.kind} es={es} />
             <ul className={styles.features}>{copy.features.map(feature => <li key={feature}><Check size={13} /><span>{feature}</span></li>)}</ul>

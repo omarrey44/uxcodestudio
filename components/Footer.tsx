@@ -2,12 +2,14 @@
 
 import { ArrowUpRight, ArrowUp, Asterisk } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
+import FooterTechnology from "./studio/FooterTechnology";
 
 export default function Footer() {
   const { t, lang } = useLanguage();
   const es = lang === "es";
-  return <footer className="studio-footer">
+  return <footer id="footer" className="studio-footer">
     <div className="studio-shell">
+      <FooterTechnology />
       <div className="studio-footer-top"><div><p className="studio-eyebrow">INDEPENDENT STUDIO. UNLIMITED IDEAS.</p><p>{es ? "Diseñado con intención. Construido con pasión." : "Designed with intention. Built with passion."}</p></div>
         <a href="#top" className="studio-back-top" aria-label={es ? "Volver al inicio" : "Back to top"}><ArrowUp size={22} /></a>
       </div>

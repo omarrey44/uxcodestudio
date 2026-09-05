@@ -6,7 +6,7 @@
 .apps { --card-accent: #abd5c0; background: #1c2927; }
 .button { display: flex; flex-direction: column; width: 100%; min-height: 615px; height: 100%; color: var(--studio-white); text-align: left; overflow: hidden; }
 .button:focus-visible { outline-offset: -5px; }
-.meta { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; padding: 25px 30px 0; color: var(--card-accent); font: 9px/1.6 monospace; letter-spacing: .06em; }
+.meta { display: flex; align-items: center; justify-content: space-between; gap: 20px; width: 100%; padding: 27px 30px 15px; }
 .copy { padding: 10px 30px 0; }
 .copy h3 { font: 500 clamp(26px, 2.3vw, 33px)/1.15 var(--font-syne), sans-serif; letter-spacing: -.045em; }
 .copy p { max-width: 510px; margin-top: 15px; color: #b2bac0; font-size: 13px; line-height: 1.8; }
@@ -99,7 +99,7 @@
 }
 @media (max-width: 1023px) {
   .button { min-height: 660px; }
-  .meta { padding: 21px 23px 0; font-size: 8px; }
+  .meta { padding: 24px 23px 14px; gap: 14px; }
   .copy { padding-inline: 23px; }
   .copy h3 { font-size: 27px; min-height: 62px; }
   .copy p { font-size: 12px; }
@@ -116,7 +116,7 @@
 @media (max-width: 639px) {
   .grid { grid-template-columns: 1fr; gap: 17px; margin-top: 17px; }
   .button { min-height: 600px; }
-  .meta { padding-inline: 20px; font-size: 7px; }
+  .meta { padding-inline: 20px; gap: 12px; }
   .copy { padding-inline: 20px; }
   .copy h3 { min-height: 0; font-size: 27px; }
   .copy p { font-size: 13px; line-height: 1.8; }
@@ -129,7 +129,6 @@
 @media (max-width: 359px) {
   .copy h3 { font-size: 25px; }
   .meta { gap: 8px; }
-  .meta > span:first-child { max-width: 180px; }
   .afterSite { left: 20%; width: 218px; }
   .calendar { width: 244px; left: calc(50% - 127px); }
   .features { gap: 8px; }

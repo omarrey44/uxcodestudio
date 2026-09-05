@@ -1,0 +1,29 @@
+.heading { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0; padding-block: 6px 9px; color: var(--eyebrow-accent); }
+.emblem { position: relative; display: grid; place-items: center; flex: 0 0 47px; width: 47px; height: 47px; border: 1px solid #c7dbe033; border-radius: 12px; background: #d2e4ef08; }
+.emblem > svg { transition: transform .4s cubic-bezier(.2,.8,.2,1); }
+.number { position: absolute; top: -8px; right: -6px; display: grid; place-items: center; min-width: 23px; height: 18px; padding-inline: 4px; border: 1px solid #c7dbe033; border-radius: 4px; background: #202a30; color: var(--eyebrow-accent); font: 500 10px/1 monospace; letter-spacing: .02em; }
+.text { position: relative; display: block; width: fit-content; padding-block: 6px 10px; font: 600 clamp(20px, 1.7vw, 25px)/1.18 var(--font-syne), sans-serif; letter-spacing: -.035em; text-transform: uppercase; text-wrap: balance; }
+.text::after { content: ''; position: absolute; height: 1px; bottom: 0; inset-inline: 0; background: linear-gradient(90deg, var(--eyebrow-accent), transparent); opacity: .45; transform: scaleX(.65); transform-origin: left; transition: transform .4s, opacity .4s; }
+:global(button:hover) .text::after, :global(button:focus-visible) .text::after { transform: scaleX(1); opacity: .8; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  :global(button:hover) .emblem > svg { transform: translateY(-2px) rotate(-7deg); }
+}
+@media (max-width: 1023px) {
+  .heading { gap: 12px; }
+  .emblem { flex-basis: 39px; width: 39px; height: 43px; border-radius: 10px; }
+  .emblem > svg { width: 22px; height: 22px; }
+  .text { font-size: 20px; }
+}
+@media (max-width: 639px) {
+  .heading { gap: 12px; }
+  .text { font-size: 20px; }
+}
+@media (max-width: 359px) {
+  .heading { gap: 10px; }
+  .emblem { flex-basis: 34px; width: 34px; height: 39px; }
+  .emblem > svg { width: 20px; height: 20px; }
+  .text { font-size: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .emblem > svg, .text::after { transition: none; }
+}

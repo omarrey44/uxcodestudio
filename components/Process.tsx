@@ -51,8 +51,12 @@ export default function Process() {
         <div className="studio-process-stack">{t.process.steps.map((step, i) => {
           const Icon = ICONS[i] || Circle;
           return <article key={step.n} className={"studio-process-card process-tone-" + i} style={{ top: 125 + i * 16 }}>
-            <div className="studio-step-top"><span>STEP / 0{i + 1}</span><Icon size={25} strokeWidth={1.3} /></div>
-            <div className="studio-step-content"><span className="studio-step-number">0{i + 1}</span><div><h3>{step.title}</h3><p>{SHORT[lang][i] || step.body}</p></div></div>
+            <div className="studio-step-top">
+              <div className="studio-step-kicker"><span>{es ? "PASO" : "STEP"}</span><span className="studio-step-number">0{i + 1}</span></div>
+              <span className="studio-step-track" aria-hidden="true">{t.process.steps.map((_, n) => <i key={n} className={n <= i ? "is-filled" : ""} />)}</span>
+              <span className="studio-step-icon" aria-hidden="true"><Icon size={29} strokeWidth={1.4} /></span>
+            </div>
+            <div className="studio-step-content"><div><h3>{step.title}</h3><p>{SHORT[lang][i] || step.body}</p></div></div>
             <div className="studio-step-outputs">{step.output.map((output) => <span key={output}><Check size={12} />{output}</span>)}</div>
             {i === 2 && <span className="studio-designer-cursor" aria-hidden="true"><MousePointer2 size={17} fill="currentColor" />UXCODESTUDIO</span>}
           </article>;

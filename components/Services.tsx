@@ -8,6 +8,7 @@ import { BookingModal } from "./BookingModal";
 import { Reveal, SectionLabel, Spotlight, StudioModal } from "./studio/StudioUI";
 import ServiceVisual from "./studio/ServiceVisual";
 import ServiceExtensions from "./studio/ServiceExtensions";
+import ServiceCardHeading from "./studio/ServiceCardHeading";
 
 const KINDS = ["website", "landing", "store"] as const;
 
@@ -30,7 +31,7 @@ export default function Services() {
         {t.services.items.slice(0, 3).map((service, i) => <Reveal key={service.title} className={"studio-service-slot service-slot-" + i} delay={i * 0.08}>
           <Spotlight className={"studio-service-card service-card-" + i}>
             <button type="button" onClick={() => setActive(i)} className="studio-service-button" aria-haspopup="dialog">
-              <div className="studio-service-meta"><span>0{i + 1} / {i === 0 ? "WEB EXPERIENCE" : i === 1 ? "ONE PAGE. BIG IMPACT." : "DIGITAL COMMERCE"}</span><span className="studio-round-arrow"><ArrowUpRight size={21} /></span></div>
+              <div className="studio-service-meta"><ServiceCardHeading index={i} /><span className="studio-round-arrow"><ArrowUpRight size={21} /></span></div>
               <div className="studio-service-copy"><h3>{service.title}</h3><p>{i === 0 ? (es ? "Una presencia a la altura de tu negocio." : "A digital presence worthy of your business.") : i === 1 ? (es ? "Un mensaje claro. Un siguiente paso." : "One clear message. One next step.") : (es ? "Una tienda tan especial como lo que vendes." : "A store as special as what you sell.")}</p></div>
               <ServiceVisual kind={KINDS[i]} es={es} />
               <div className="studio-service-footer"><span>{i === 0 ? "UI/UX · DEVELOPMENT · SEO" : i === 1 ? "DESIGN · STRATEGY" : "E-COMMERCE · CHECKOUT"}</span><span>{es ? "Descubrir" : "Discover"}<ArrowRight size={14} /></span></div>
