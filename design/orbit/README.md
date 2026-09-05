@@ -23,10 +23,23 @@ Los modelos anteriores en `public/` se conservan.
 - Pausa el renderizado fuera de pantalla y al ocultar la pestaña.
 - Con movimiento reducido, elimina la animación continua y renderiza bajo demanda.
 
+### Personalidad y secretos
+
+- Espera con levitación, mirada curiosa, parpadeo doble y un pequeño estiramiento cada 23 segundos de animación, si no está siguiendo al visitante.
+- **Órbita**: vuelo de 6,4 segundos sobre una base inmóvil, con inclinación, brazos abiertos y partículas. Ajusta el desplazamiento al ancho del escenario; pulsar de nuevo lo detiene.
+- **Sorpréndeme** alterna baile y guiño. El panel del pecho acompaña los gestos y aparecen frases breves en español o inglés.
+- Mantener pulsado 700 ms descubre los **ojos de corazón**. Alternativa de teclado: enfocar al robot y pulsar **H**.
+- Tres toques en menos de 900 ms descubren un **giro de 360°**. También funciona pulsando Enter tres veces con el robot enfocado.
+- Escribir **ORBIT** con el robot enfocado descubre el **vuelo entre estrellas**. El atajo no intercepta los campos ni la navegación del resto del sitio.
+- **Secretos** abre pistas y permite repetir los gestos descubiertos. La lista se recuerda en localStorage cuando está disponible.
+- Escape cancela el gesto y cierra las pistas. Reposo cancela gestos y temporizadores. Deslizar más de 12 px cancela la pulsación prolongada y conserva el scroll vertical.
+- Con movimiento reducido se conservan las expresiones y los mensajes, sin vuelos, giros, partículas ni bucles de movimiento.
+
 ## Editar el modelo
 
 Abrir `orbit-v2.blend` directamente en Blender. Mantener los nombres y pivotes
-`Head`, `Body`, `Eye_L`, `Eye_R`, `Happy_L`, `Happy_R`, `Smile` y `Arm_R`:
+`ORBIT_Root`, `Head`, `Body`, `Eye_L`, `Eye_R`, `Happy_L`, `Happy_R`, `Smile`,
+`Arm_L`, `Arm_R` y `Chest_Equalizer_0` a `Chest_Equalizer_4`:
 el componente web los utiliza para las expresiones. `Dock` es independiente.
 
 Las expresiones `Happy_*` están ocultas inicialmente en Blender, pero se incluyen
@@ -54,6 +67,8 @@ edición manual con otro nombre antes de ejecutarla.
 - `components/three/HeroScene.tsx`: materiales, iluminación, seguimiento y animación.
 - `components/three/OrbitCompanion.tsx`: controles, idioma y recuperación de errores.
 - `components/three/OrbitCompanion.module.css`: presentación adaptable.
+- `components/three/orbitBehavior.ts`: coreografías y duraciones, independientes del renderizado.
+- `components/three/useOrbitPersonality.ts`: gestos, secretos, cancelación y memoria opcional.
 - `components/Hero.tsx`: ubicación dentro de la portada.
 
 No se añadieron dependencias. La exportación usa la
@@ -71,3 +86,18 @@ No se añadieron dependencias. La exportación usa la
 - GLB: 1,23 MB, 54.988 triángulos, 7 materiales, sin recursos externos.
 
 Capturas: `before.png`, `final-desktop.png` y `final-mobile.png`.
+
+Pruebas de las coreografías (Node 24):
+
+```powershell
+node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test scripts/tests/orbit-behavior.test.mjs
+```
+
+Comprueban límites del vuelo, regreso al reposo, giro completo y ausencia de movimiento
+en modo reducido. Capturas de la personalidad: `personality-flight.png`,
+`personality-love.png`, `personality-mobile.png` y `personality-mobile-en.png`.
+
+La actualización de personalidad se revisó a 1440, 768, 375 y 320 px, en ambos
+idiomas: secretos por teclado, pulsación prolongada real, cancelación al arrastrar,
+reposo, recuperación del 3D y devolución del foco al cerrar las pistas. En modo
+reducido se verificaron también los ojos de corazón con renderizado bajo demanda.
