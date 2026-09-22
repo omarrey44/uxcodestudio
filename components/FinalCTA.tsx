@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { ArrowUpRight, Mail, CalendarDays, Check, LoaderCircle, Asterisk } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
+import { cueOrbit, ORBIT_PREFILL } from "@/lib/orbitCue";
 import { BookingModal } from "./BookingModal";
 import { Reveal, SectionLabel } from "./studio/StudioUI";
 
@@ -12,6 +13,16 @@ export default function FinalCTA() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [booking, setBooking] = useState(false);
+  // ORBIT's chat hands the visitor's questions over as a message draft.
+  useEffect(() => {
+    const prefill = (event: Event) => {
+      const message = String((event as CustomEvent<string>).detail ?? "").slice(0, 5000);
+      setForm((current) => ({ ...current, message }));
+      setStatus("idle");
+    };
+    window.addEventListener(ORBIT_PREFILL, prefill);
+    return () => window.removeEventListener(ORBIT_PREFILL, prefill);
+  }, []);
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     if (status === "sending") return;
@@ -21,7 +32,11 @@ export default function FinalCTA() {
       if (!response.ok) throw new Error("Contact request failed");
       setStatus("sent");
       setForm({ name: "", email: "", message: "" });
-    } catch { setStatus("error"); }
+      cueOrbit({ kind: "dance", line: { es: "¡Mensaje enviado! Esto va a estar genial.", en: "Message sent! This is going to be great." } });
+    } catch {
+      setStatus("error");
+      cueOrbit({ kind: "sad", line: { es: "No se pudo enviar… prueba otra vez o escríbenos.", en: "It didn't go through… try again or email us." } });
+    }
   };
   return <section id="contact" className="studio-contact">
     <div className="studio-contact-orbit" aria-hidden="true"><span /><span /></div>

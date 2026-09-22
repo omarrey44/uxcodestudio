@@ -28,6 +28,7 @@ test("reduced motion keeps every transform still while preserving expressions", 
   assert.equal(orbitPose("love", 1, true).love, true);
   assert.equal(orbitPose("hello", 1, true).happy, true);
   assert.equal(orbitPose("wink", 1, true).wink, true);
+  assert.equal(orbitPose("sad", 1, true).sad, true);
 });
 
 test("the secret spin completes one forward revolution without a reverse landing", () => {
@@ -45,7 +46,7 @@ test("the secret spin completes one forward revolution without a reverse landing
 test("expired, cancelled and idle performances do not retain expressions or effects", () => {
   for (const action of [null, ...Object.keys(ACTION_DURATION)]) {
     const pose = orbitPose(action, 100, false);
-    for (const key of ["happy", "wink", "love"]) assert.equal(pose[key], false);
+    for (const key of ["happy", "wink", "love", "sad"]) assert.equal(pose[key], false);
     for (const key of ["energy", "flight", "stars"]) assert.equal(pose[key], 0);
   }
 });

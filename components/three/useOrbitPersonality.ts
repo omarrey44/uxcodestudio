@@ -1,9 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent } from "react";
-import { ACTION_DURATION, SECRET_IDS, type OrbitAction, type OrbitPerformance, type OrbitSecret } from "./orbitBehavior";
+import { ACTION_DURATION, SECRET_IDS, type OrbitAction, type OrbitLine, type OrbitPerformance, type OrbitSecret } from "./orbitBehavior";
 
 const MEMORY_KEY = "uxcode-orbit-secrets-v1";
+// Each tap shows a different side of ORBIT; the controls stay minimal.
+const TAP_CYCLE: OrbitAction[] = ["hello", "orbit", "dance", "wink"];
 
 export function useOrbitPersonality(enabled: boolean) {
   const [performance, setPerformance] = useState<OrbitPerformance | null>(null);
@@ -46,10 +48,10 @@ export function useOrbitPersonality(enabled: boolean) {
     return () => window.removeEventListener("blur", blur);
   }, [cancelHold]);
 
-  const play = useCallback((kind: OrbitAction) => {
+  const play = useCallback((kind: OrbitAction, line?: OrbitLine) => {
     if (!enabled) return;
     if (timer.current) clearTimeout(timer.current);
-    setPerformance({ kind, id: ++serial.current, startedAt: window.performance.now() });
+    setPerformance({ kind, id: ++serial.current, startedAt: window.performance.now(), line });
     timer.current = setTimeout(() => setPerformance(null), ACTION_DURATION[kind] * 1000);
     if (SECRET_IDS.includes(kind as OrbitSecret)) {
       setDiscoveries((current) => current.includes(kind as OrbitSecret) ? current : [...current, kind as OrbitSecret]);
@@ -66,7 +68,6 @@ export function useOrbitPersonality(enabled: boolean) {
   };
   return {
     performance, discoveries, play, stop,
-    surprise: () => { play(surpriseIndex.current++ % 2 === 0 ? "dance" : "wink"); },
     gestures: {
       onPointerDown: (event: PointerEvent<HTMLButtonElement>) => {
         if (!enabled || !event.isPrimary || event.button !== 0) return;
@@ -96,7 +97,7 @@ export function useOrbitPersonality(enabled: boolean) {
         const now = window.performance.now();
         taps.current = [...taps.current.filter((at) => now - at < 900), now];
         if (taps.current.length >= 3) { taps.current = []; play("spin"); }
-        else play("hello");
+        else play(TAP_CYCLE[surpriseIndex.current++ % TAP_CYCLE.length]);
       },
       onBlur: () => { cancelPointer(); sequence.current = { text: "", at: 0 }; taps.current = []; },
       onKeyDown: (event: KeyboardEvent<HTMLButtonElement>) => {

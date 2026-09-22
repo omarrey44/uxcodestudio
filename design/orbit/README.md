@@ -10,24 +10,50 @@ articulaciones de titanio, iluminación configurable y base de levitación.
 - `../../public/models/orbit-v2.glb`: modelo web, sin texturas ni dependencias externas.
 - `../../public/models/orbit-poster.png`: respaldo optimizado mientras carga el 3D o si WebGL no está disponible.
 
-Los modelos anteriores en `public/` se conservan.
+Los modelos anteriores (`orbit_robot*.glb`, `ORBIT_final.glb`) se eliminaron de `public/`.
 
 ## Interacciones
 
 - La mirada sigue el cursor en toda la ventana; los ojos anticipan el giro de cabeza.
 - Al dejar de mover el cursor, vuelve suavemente a una pose de espera.
-- Clic, toque o el botón **Saludar**: ojos sonrientes, inclinación y saludo con el brazo.
+- Cada toque muestra un gesto distinto: saludo, órbita, baile y guiño.
 - Tres colores: cian, violeta y ámbar; se aplican a ojos, luces y ambiente del panel.
-- Reposo: ojos entrecerrados, cabeza relajada y luces atenuadas.
+- Controles mínimos: colores, **Pregúntale a ORBIT** y **?** (pistas y secretos).
+- **Se duerme** tras 30 s sin actividad (ojos cerrados, luces bajas, "Zzz") y despierta sobresaltado con cualquier movimiento.
+- **Tímido**: si el cursor se acerca a su cara, se echa hacia atrás y entrecierra los ojos.
+- **Señala** con el brazo cualquier `.studio-button` (o `[data-orbit-point]`) bajo el cursor.
+- En móvil, la mirada sigue la **inclinación del teléfono** (en iOS se pide permiso al primer toque).
 - Botones accesibles con teclado, indicadores de selección y textos en español e inglés.
 - Pausa el renderizado fuera de pantalla y al ocultar la pestaña.
 - Con movimiento reducido, elimina la animación continua y renderiza bajo demanda.
 
+### Compañero flotante
+
+Cuando el hero sale de pantalla, un ORBIT pequeño vuela a la esquina inferior derecha
+(`OrbitDock.tsx`, portal al `body`). Comparte estado con el del hero; sólo uno renderiza a la vez.
+
+- Saluda una vez en cada sección (servicios, proceso, precios, FAQ, contacto).
+- Reacciona al pasar el cursor por tarjetas de servicio y por el plan destacado (máx. una vez cada 8 s).
+- Formulario de contacto: baila al enviar, cara triste si falla (`cueOrbit` en `lib/orbitCue.ts`).
+- Tocarlo abre el chat.
+
+### Chat con IA
+
+`OrbitChat.tsx` → `POST /api/orbit` (AI SDK + Vercel AI Gateway, `anthropic/claude-haiku-4.5`).
+El contexto se construye con `lib/i18nData.ts` y `lib/serviceDetails.ts`, así que los precios y
+servicios del chat siempre coinciden con la página. Mientras responde, la boca y el ecualizador
+del pecho se mueven. **Enviar esto al equipo** copia las preguntas al formulario de contacto.
+
+- Requiere `AI_GATEWAY_API_KEY` en local; en Vercel funciona con OIDC al activar AI Gateway.
+- Sin clave o con error, ORBIT responde con un mensaje de respaldo y el email de contacto.
+- Límites: 10 turnos, 600 caracteres por mensaje, 300 tokens de salida y 20 mensajes por IP
+  cada 10 min (por instancia). Para un límite global, añadir una regla de rate limit en Vercel Firewall.
+
 ### Personalidad y secretos
 
 - Espera con levitación, mirada curiosa, parpadeo doble y un pequeño estiramiento cada 23 segundos de animación, si no está siguiendo al visitante.
-- **Órbita**: vuelo de 6,4 segundos sobre una base inmóvil, con inclinación, brazos abiertos y partículas. Ajusta el desplazamiento al ancho del escenario; pulsar de nuevo lo detiene.
-- **Sorpréndeme** alterna baile y guiño. El panel del pecho acompaña los gestos y aparecen frases breves en español o inglés.
+- **Órbita**: vuelo de 6,4 segundos sobre una base inmóvil, con inclinación, brazos abiertos y partículas. Ajusta el desplazamiento al ancho del escenario.
+- El panel del pecho acompaña los gestos y aparecen frases breves en español o inglés.
 - Mantener pulsado 700 ms descubre los **ojos de corazón**. Alternativa de teclado: enfocar al robot y pulsar **H**.
 - Tres toques en menos de 900 ms descubren un **giro de 360°**. También funciona pulsando Enter tres veces con el robot enfocado.
 - Escribir **ORBIT** con el robot enfocado descubre el **vuelo entre estrellas**. El atajo no intercepta los campos ni la navegación del resto del sitio.
@@ -50,6 +76,15 @@ Para exportar a mano, seleccionar sólo el modelo (sin cámara ni luces), export
 GLB con **Y Up**, aplicar modificadores, desactivar animaciones y conservar la
 jerarquía. Incluir las expresiones ocultas. Guardar en `public/models/orbit-v2.glb`.
 
+Después, comprimir con meshopt (1,23 MB → 339 KB; drei lo decodifica sin configuración):
+
+```powershell
+npx @gltf-transform/cli meshopt public/models/orbit-v2.glb public/models/orbit-v2.glb --level medium
+```
+
+La cuantización añade escala a los nodos hoja (`Chest_Equalizer_*`); `HeroScene` anima
+relativo a esa escala base.
+
 ## Regenerar desde el script
 
 Desde la raíz del proyecto, en PowerShell:
@@ -57,6 +92,7 @@ Desde la raíz del proyecto, en PowerShell:
 ```powershell
 & 'C:\Program Files\Blender Foundation\Blender 5.1\blender.exe' --background --factory-startup --python-exit-code 1 --python scripts/blender/build_orbit.py
 node scripts/blender/optimize_orbit_poster.mjs
+npx @gltf-transform/cli meshopt public/models/orbit-v2.glb public/models/orbit-v2.glb --level medium
 ```
 
 La regeneración sobrescribe el modelo generado y el `.blend`: guardar cualquier
@@ -69,9 +105,12 @@ edición manual con otro nombre antes de ejecutarla.
 - `components/three/OrbitCompanion.module.css`: presentación adaptable.
 - `components/three/orbitBehavior.ts`: coreografías y duraciones, independientes del renderizado.
 - `components/three/useOrbitPersonality.ts`: gestos, secretos, cancelación y memoria opcional.
+- `components/three/OrbitDock.tsx`: compañero flotante al hacer scroll.
+- `components/three/OrbitChat.tsx` y `app/api/orbit/route.ts`: chat con IA.
+- `lib/orbitCue.ts`: eventos para que otras secciones hagan reaccionar a ORBIT.
 - `components/Hero.tsx`: ubicación dentro de la portada.
 
-No se añadieron dependencias. La exportación usa la
+Única dependencia añadida: `ai` (AI SDK) para el chat. La exportación usa la
 [API glTF de Blender](https://docs.blender.org/api/main/bpy.ops.export_scene.html).
 
 ## Verificación realizada
@@ -83,7 +122,7 @@ No se añadieron dependencias. La exportación usa la
 - Pausa fuera de pantalla; renderizado bajo demanda con movimiento reducido.
 - Pérdida de contexto WebGL simulada: respaldo visible y recuperación al reintentar.
 - Versiones española e inglesa; sesión limpia sin errores de JavaScript.
-- GLB: 1,23 MB, 54.988 triángulos, 7 materiales, sin recursos externos.
+- GLB: 339 KB (meshopt), 54.988 triángulos, 7 materiales, sin recursos externos.
 
 Capturas: `before.png`, `final-desktop.png` y `final-mobile.png`.
 

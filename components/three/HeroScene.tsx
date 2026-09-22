@@ -9,7 +9,8 @@ import { orbitPose, type OrbitPerformance } from "./orbitBehavior";
 
 const MODEL_URL = "/models/orbit-v2.glb";
 export function clearOrbitModel() { useGLTF.clear(MODEL_URL); }
-type Gaze = { x: number; y: number; lastMove: number };
+// near: cursor close to the face (0-1). point: cursor over a call to action.
+type Gaze = { x: number; y: number; lastMove: number; near: number; point: boolean };
 export type HeroSceneProps = {
   eyeColor: string;
   uxOn: boolean;
@@ -17,9 +18,13 @@ export type HeroSceneProps = {
   reducedMotion: boolean;
   onReady: () => void;
   onError: () => void;
+  /** "dock" is the floating mini ORBIT: no pedestal, tighter framing. */
+  variant?: "hero" | "dock";
+  talking?: boolean;
+  paused?: boolean;
 };
 
-function OrbitRobot({ eyeColor, uxOn, performance: act, reducedMotion, onReady, gaze, visible }: Omit<HeroSceneProps, "onError"> & { gaze: RefObject<Gaze>; visible: boolean }) {
+function OrbitRobot({ eyeColor, uxOn, performance: act, reducedMotion, onReady, gaze, visible, variant = "hero", talking = false }: Omit<HeroSceneProps, "onError" | "paused"> & { gaze: RefObject<Gaze>; visible: boolean }) {
   const { scene } = useGLTF(MODEL_URL);
   const halfWidth = useThree((state) => state.viewport.width / 2);
   const invalidate = useThree((state) => state.invalidate);
@@ -66,14 +71,17 @@ function OrbitRobot({ eyeColor, uxOn, performance: act, reducedMotion, onReady, 
       head.add(mesh);
       return mesh;
     });
+    node("Dock").visible = variant === "hero";
+    const equalizer = Array.from({ length: 5 }, (_, index) => node(`Chest_Equalizer_${index}`));
     return {
       scene: clone, rig: node("ORBIT_Root"), head, body, eyes, happyEyes, hearts, heartGeometry,
       smile: node("Smile"), arms: [node("Arm_L"), node("Arm_R")],
-      equalizer: Array.from({ length: 5 }, (_, index) => node(`Chest_Equalizer_${index}`)),
+      // Mesh quantization bakes a scale into leaf nodes: animate relative to it.
+      equalizer, equalizerBase: equalizer.map((bar) => bar.scale.y),
       eyePositions: eyes.map((eye) => eye.position.clone()),
       materials: Array.from(materials.values()),
     };
-  }, [scene]);
+  }, [scene, variant]);
 
   useEffect(() => {
     onReady();
@@ -85,7 +93,7 @@ function OrbitRobot({ eyeColor, uxOn, performance: act, reducedMotion, onReady, 
 
   // These props affect the model imperatively in useFrame, so demand mode needs
   // an explicit frame on each change and when returning from offscreen.
-  useEffect(() => { invalidate(); }, [act, eyeColor, uxOn, reducedMotion, visible, invalidate]);
+  useEffect(() => { invalidate(); }, [act, eyeColor, uxOn, reducedMotion, visible, talking, invalidate]);
 
   useFrame((_, rawDelta) => {
     const delta = Math.min(rawDelta, 0.05);
@@ -105,20 +113,26 @@ function OrbitRobot({ eyeColor, uxOn, performance: act, reducedMotion, onReady, 
     const stretchPhase = (time % 23 - 17) / 3;
     const stretch = idle && stretchPhase > 0 && stretchPhase < 1 ? Math.sin(stretchPhase * Math.PI) ** 2 : 0;
     const travelScale = THREE.MathUtils.clamp((halfWidth - 1.3) / 0.48, 0.15, 1);
+    // Shy: leans back when the cursor gets close to his face.
+    const shy = following && !act ? gaze.current.near : 0;
+    // Points with the arm on the side of the call to action under the cursor.
+    const pointing = following && !act && gaze.current.point ? 1 : 0;
+    const pointArm = -(1.15 + THREE.MathUtils.clamp(y, -0.6, 1) * 0.45) * pointing;
     model.rig.position.x = settle(model.rig.position.x, pose.x * travelScale, 6);
     model.rig.position.y = settle(model.rig.position.y, float + pose.y + stretch * 0.06, 8);
-    model.rig.position.z = settle(model.rig.position.z, pose.z, 6);
+    model.rig.position.z = settle(model.rig.position.z, pose.z - shy * 0.45, 6);
     const yaw = pose.yaw - model.rig.rotation.y;
     model.rig.rotation.y += reducedMotion ? -model.rig.rotation.y : Math.atan2(Math.sin(yaw), Math.cos(yaw)) * (1 - Math.exp(-9 * delta));
     model.rig.rotation.y = Math.atan2(Math.sin(model.rig.rotation.y), Math.cos(model.rig.rotation.y));
     model.rig.rotation.z = settle(model.rig.rotation.z, pose.roll * Math.max(0.5, travelScale));
     model.head.rotation.y = settle(model.head.rotation.y, x * 0.48 * awake, 5);
-    model.head.rotation.x = settle(model.head.rotation.x, -y * 0.24 * awake + (1-awake) * 0.18 + pose.headNod - stretch * 0.12, 5);
+    model.head.rotation.x = settle(model.head.rotation.x, -y * 0.24 * awake + (1-awake) * 0.18 + pose.headNod - stretch * 0.12 - shy * 0.2, 5);
     model.head.rotation.z = settle(model.head.rotation.z, -x * 0.075 * awake + pose.headTilt, 5);
     model.body.rotation.y = settle(model.body.rotation.y, x * 0.10 * awake, 3);
     model.body.rotation.z = settle(model.body.rotation.z, reducedMotion ? 0 : Math.sin(time * 0.8) * 0.018 * awake, 3);
-    model.arms[0].rotation.z = settle(model.arms[0].rotation.z, pose.leftArm - stretch * 0.8 - Math.max(float, 0) * 0.8, 12);
-    model.arms[1].rotation.z = settle(model.arms[1].rotation.z, pose.rightArm + stretch * 0.8 + Math.max(float, 0) * 0.8, 12);
+    const leftPoint = x < 0 ? pointArm : 0, rightPoint = x >= 0 ? -pointArm : 0;
+    model.arms[0].rotation.z = settle(model.arms[0].rotation.z, pose.leftArm - stretch * 0.8 - Math.max(float, 0) * 0.8 + leftPoint - shy * 0.5, 12);
+    model.arms[1].rotation.z = settle(model.arms[1].rotation.z, pose.rightArm + stretch * 0.8 + Math.max(float, 0) * 0.8 + rightPoint + shy * 0.5, 12);
 
     // The eyes lead the heavier head, with independent pivots for natural blinks.
     const phase = time % 7.7;
@@ -126,7 +140,8 @@ function OrbitRobot({ eyeColor, uxOn, performance: act, reducedMotion, onReady, 
     const blink = !reducedMotion && blinkAge >= 0 && blinkAge < 0.22 ? 1 - Math.sin(blinkAge / 0.22 * Math.PI) * 0.94 : 1;
     model.eyes.forEach((eye, index) => {
       eye.visible = !pose.happy && !pose.love;
-      eye.scale.y = settle(eye.scale.y, uxOn ? pose.wink && index === 1 ? 0.08 : blink : 0.09, 24);
+      const open = pose.wink && index === 1 ? 0.08 : pose.sad ? 0.5 * blink : blink * (1 - shy * 0.45);
+      eye.scale.y = settle(eye.scale.y, uxOn ? open : 0.09, 24);
       eye.position.x = settle(eye.position.x, model.eyePositions[index].x + x * 0.07 * awake, 12);
       eye.position.y = settle(eye.position.y, model.eyePositions[index].y + y * 0.045 * awake, 12);
     });
@@ -135,9 +150,13 @@ function OrbitRobot({ eyeColor, uxOn, performance: act, reducedMotion, onReady, 
       heart.visible = pose.love;
       heart.scale.setScalar(reducedMotion ? 1 : 0.92 + Math.sin(time * 5) * 0.08);
     });
-    model.smile.scale.y = settle(model.smile.scale.y, uxOn ? 1 + pose.energy * 0.3 : 0.15, 8);
+    // Talking: irregular chatter drives the mouth and the chest equalizer.
+    const talk = talking && uxOn ? (reducedMotion ? 0.6 : 0.35 + 0.65 * Math.abs(Math.sin(time * 17) * Math.sin(time * 5.3))) : 0;
+    const mouth = pose.sad ? -0.8 : 1 + pose.energy * 0.3 + talk * 0.7;
+    model.smile.scale.y = settle(model.smile.scale.y, uxOn ? mouth : 0.15, pose.sad ? 8 : 16);
     model.equalizer.forEach((bar, index) => {
-      bar.scale.y = reducedMotion || !uxOn ? 1 : 1 + (Math.sin(time * (act?.kind === "dance" ? 10 : 3) + index * 1.2) + 1) * (0.2 + pose.energy * 0.5);
+      const level = talk ? talk * (1.2 + Math.sin(time * 23 + index * 2.1) * 0.8) : reducedMotion || !uxOn ? 0 : (Math.sin(time * (act?.kind === "dance" ? 10 : 3) + index * 1.2) + 1) * (0.2 + pose.energy * 0.5);
+      bar.scale.y = model.equalizerBase[index] * (1 + level);
     });
     model.materials.forEach((material) => {
       if (!material.name.endsWith("_LED")) return;
@@ -189,18 +208,35 @@ function ContextEvents({ onError }: { onError: () => void }) {
 
 export default function HeroScene(props: HeroSceneProps) {
   const wrap = useRef<HTMLDivElement>(null);
-  const gaze = useRef<Gaze>({ x: 0, y: 0, lastMove: -Infinity });
-  const [visible, setVisible] = useState(true);
+  const gaze = useRef<Gaze>({ x: 0, y: 0, lastMove: -Infinity, near: 0, point: false });
+  const [onScreen, setOnScreen] = useState(true);
+  const visible = onScreen && !props.paused;
+  const dock = props.variant === "dock";
   useEffect(() => {
     const element = wrap.current;
     if (!element) return;
     let intersecting = true;
-    const update = () => setVisible(intersecting && !document.hidden);
+    const update = () => setOnScreen(intersecting && !document.hidden);
     const observer = new IntersectionObserver(([entry]) => { intersecting = entry.isIntersecting; update(); });
     observer.observe(element);
     document.addEventListener("visibilitychange", update);
     return () => { observer.disconnect(); document.removeEventListener("visibilitychange", update); };
   }, []);
+
+  // Phones have no cursor: tilting the device steers his gaze instead.
+  useEffect(() => {
+    if (!visible || props.reducedMotion || !props.uxOn || !window.matchMedia("(pointer: coarse)").matches) return;
+    const tilt = (event: DeviceOrientationEvent) => {
+      if (event.gamma === null || event.beta === null) return;
+      gaze.current = {
+        x: THREE.MathUtils.clamp(event.gamma / 25, -1, 1),
+        y: THREE.MathUtils.clamp((50 - event.beta) / 30, -1, 1),
+        lastMove: performance.now(), near: 0, point: false,
+      };
+    };
+    window.addEventListener("deviceorientation", tilt);
+    return () => window.removeEventListener("deviceorientation", tilt);
+  }, [visible, props.reducedMotion, props.uxOn]);
 
   useEffect(() => {
     const element = wrap.current;
@@ -211,10 +247,14 @@ export default function HeroScene(props: HeroSceneProps) {
     resize.observe(element);
     const move = (event: PointerEvent) => {
       if (event.pointerType === "touch" && !element.closest("[data-orbit-stage]")?.contains(event.target as Node)) return;
+      const faceX = bounds.left + bounds.width * 0.5, faceY = bounds.top + bounds.height * (dock ? 0.4 : 0.36);
+      const mouse = event.pointerType === "mouse";
       gaze.current = {
-        x: THREE.MathUtils.clamp((event.clientX - bounds.left - bounds.width * 0.5) / (window.innerWidth * 0.48), -1, 1),
-        y: THREE.MathUtils.clamp(-(event.clientY - bounds.top - bounds.height * 0.36) / (window.innerHeight * 0.45), -1, 1),
+        x: THREE.MathUtils.clamp((event.clientX - faceX) / (window.innerWidth * 0.48), -1, 1),
+        y: THREE.MathUtils.clamp(-(event.clientY - faceY) / (window.innerHeight * 0.45), -1, 1),
         lastMove: performance.now(),
+        near: mouse && !dock ? THREE.MathUtils.clamp(1 - Math.hypot(event.clientX - faceX, event.clientY - faceY) / (bounds.width * 0.3), 0, 1) : 0,
+        point: mouse && !!(event.target as Element | null)?.closest?.(".studio-button, [data-orbit-point]"),
       };
     };
     const reset = () => { gaze.current.lastMove = -Infinity; };
@@ -233,12 +273,12 @@ export default function HeroScene(props: HeroSceneProps) {
       window.removeEventListener("blur", reset);
       document.removeEventListener("pointerleave", reset);
     };
-  }, [visible, props.reducedMotion, props.uxOn]);
+  }, [visible, props.reducedMotion, props.uxOn, dock]);
 
   return (
     <div ref={wrap} style={{ width: "100%", height: "100%" }} aria-hidden="true">
       <Canvas frameloop={visible ? (props.reducedMotion ? "demand" : "always") : "never"} dpr={[1, 1.5]}
-        camera={{ position: [0, 0.04, 6], fov: 36, near: 0.1, far: 30 }}
+        camera={dock ? { position: [0, -0.22, 6.6], fov: 36, near: 0.1, far: 30 } : { position: [0, 0.04, 6], fov: 36, near: 0.1, far: 30 }}
         gl={{ antialias: true, alpha: true, premultipliedAlpha: false, powerPreference: "high-performance" }}
         fallback={null}
         onCreated={({ gl }) => { gl.setClearColor(0x000000, 0); gl.toneMappingExposure = 1.1; }}>
@@ -256,7 +296,7 @@ export default function HeroScene(props: HeroSceneProps) {
             <Lightformer intensity={1.5} color="#c4eaff" position={[4, 1, 2]} scale={[2, 4, 1]} target={[0, 0, 0]} />
             <Lightformer intensity={2} color="#727bff" position={[1, 3, -4]} scale={[3, 3, 1]} target={[0, 0, 0]} />
           </Environment>
-          <ContactShadows position={[0, -1.69, 0]} opacity={0.35} scale={5} blur={2.8} far={3} resolution={256} frames={1} />
+          {!dock && <ContactShadows position={[0, -1.69, 0]} opacity={0.35} scale={5} blur={2.8} far={3} resolution={256} frames={1} />}
           <EffectComposer multisampling={4}>
             <Bloom luminanceThreshold={1.3} luminanceSmoothing={0.4} intensity={0.4} mipmapBlur />
           </EffectComposer>

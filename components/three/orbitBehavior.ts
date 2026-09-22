@@ -1,9 +1,10 @@
 export const ACTION_DURATION = {
-  hello: 2.6, orbit: 6.4, dance: 4.8, wink: 2.2, love: 3.6, spin: 4.2, cosmic: 6,
+  hello: 2.6, orbit: 6.4, dance: 4.8, wink: 2.2, love: 3.6, spin: 4.2, cosmic: 6, sad: 3.4, startle: 1.6,
 } as const;
 
 export type OrbitAction = keyof typeof ACTION_DURATION;
-export type OrbitPerformance = { kind: OrbitAction; id: number; startedAt: number };
+export type OrbitLine = { es: string; en: string };
+export type OrbitPerformance = { kind: OrbitAction; id: number; startedAt: number; line?: OrbitLine };
 export type OrbitSecret = "love" | "spin" | "cosmic";
 export const SECRET_IDS: OrbitSecret[] = ["love", "spin", "cosmic"];
 
@@ -24,7 +25,8 @@ export function orbitPose(kind: OrbitAction | null, age: number, reduced: boolea
     happy: active && ["hello", "dance", "love", "spin", "cosmic"].includes(kind!),
     wink: active && kind === "wink",
     love: active && kind === "love",
-    energy: envelope, flight: 0, stars: 0,
+    sad: active && kind === "sad",
+    energy: kind === "sad" ? 0 : envelope, flight: 0, stars: 0,
   };
   if (kind === "hello") {
     pose.rightArm = motion * (0.95 + Math.sin(age * 13) * 0.28);
@@ -60,6 +62,18 @@ export function orbitPose(kind: OrbitAction | null, age: number, reduced: boolea
     pose.headNod = motion * 0.08;
     pose.leftArm = -motion * 0.2;
     pose.rightArm = motion * 0.2;
+  } else if (kind === "sad") {
+    pose.headNod = motion * 0.22;
+    pose.headTilt = motion * 0.1;
+    pose.y = -motion * 0.05;
+    pose.leftArm = motion * 0.18;
+    pose.rightArm = -motion * 0.18;
+  } else if (kind === "startle") {
+    // Quick hop on waking up; lands where it started.
+    pose.y = motion * 0.22 * Math.sin(progress * Math.PI);
+    pose.headNod = -motion * 0.1;
+    pose.leftArm = -motion * 0.9;
+    pose.rightArm = motion * 0.9;
   } else if (kind === "wink") {
     pose.headTilt = motion * 0.14;
     pose.rightArm = motion * 0.4;

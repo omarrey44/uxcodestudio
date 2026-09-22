@@ -1,0 +1,71 @@
+.dock {
+  --orbit-accent: #38dcff;
+  position: fixed;
+  right: max(18px, env(safe-area-inset-right));
+  bottom: max(18px, env(safe-area-inset-bottom));
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none;
+  /* Flies in from the hero (top-right) and lands in the corner. */
+  transform: translate(40px, -70vh) scale(0.3) rotate(-18deg);
+  opacity: 0;
+  transition: transform 0.9s cubic-bezier(0.34, 1.3, 0.5, 1), opacity 0.4s;
+}
+.dock[data-active="true"] { transform: none; opacity: 1; }
+.dock[data-active="true"] > * { pointer-events: auto; }
+
+.robot {
+  position: relative;
+  width: 118px;
+  height: 118px;
+  border-radius: 50%;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.robot:focus-visible { outline: 2px solid var(--orbit-accent); outline-offset: 2px; }
+.robot > div:not(.glow) { position: absolute; inset: 0; }
+.glow {
+  position: absolute;
+  inset: 12% 10% 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 60%, color-mix(in srgb, var(--orbit-accent) 26%, transparent), #07162500 68%);
+  transition: opacity 0.3s, transform 0.3s;
+}
+.robot:hover .glow { transform: scale(1.08); }
+.dock[data-asleep="true"] .glow { opacity: 0.35; }
+
+.bubble {
+  max-width: min(240px, calc(100vw - 170px));
+  margin-bottom: 70px;
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, var(--orbit-accent) 32%, transparent);
+  border-radius: 15px 15px 4px 15px;
+  background: #10202ef2;
+  color: #e7f6ff;
+  font-size: 12px;
+  line-height: 1.45;
+  box-shadow: 0 10px 28px #0004;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.2s, transform 0.3s;
+}
+.bubble[data-visible="true"] { opacity: 1; transform: none; }
+.bubble:empty { visibility: hidden; }
+
+.zzz { position: absolute; top: 4px; right: 10px; display: flex; gap: 2px; color: var(--orbit-accent); text-shadow: 0 1px 6px #000b; font: 600 13px/1 var(--font-mono, monospace); pointer-events: none; }
+.zzz i { font-style: normal; animation: dock-zzz 2.4s ease-in-out infinite; opacity: 0; }
+.zzz i:nth-child(2) { animation-delay: 0.5s; font-size: 15px; }
+.zzz i:nth-child(3) { animation-delay: 1s; font-size: 18px; }
+@keyframes dock-zzz { 0% { opacity: 0; transform: translateY(8px); } 40% { opacity: 0.9; } 100% { opacity: 0; transform: translate(6px, -14px); } }
+
+@media (max-width: 639px) {
+  .robot { width: 86px; height: 86px; }
+  .bubble { margin-bottom: 52px; font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dock, .bubble, .glow { transition: opacity 0.2s; }
+  .dock { transform: none; }
+  .zzz i { animation: none; opacity: 0.8; }
+}

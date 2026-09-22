@@ -49,18 +49,13 @@
 .swatches button > span { width: 15px; height: 15px; border-radius: 50%; background: var(--swatch); transition: box-shadow 0.2s; }
 .swatches button[aria-pressed="true"] > span { box-shadow: 0 0 0 4px #122033, 0 0 0 5px var(--swatch), 0 0 18px color-mix(in srgb, var(--swatch) 25%, transparent); }
 .divider { width: 1px; height: 19px; background: #a4cee51c; margin: 0 6px; }
-.controls .hello { gap: 8px; border-radius: 99px; padding: 0 12px; color: #e2f0fa; font-size: 12px; white-space: nowrap; }
-.hello > svg:first-child { color: var(--orbit-accent); }
-.hello > svg:last-child { color: #8eaabd; }
-.power { color: var(--orbit-accent); }
-.power[aria-pressed="false"] { color: #91a6b9; }
-.actions { display: flex; justify-content: center; align-items: center; gap: 3px; margin: 7px auto 0; width: fit-content; max-width: 100%; }
-.actions button { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 0 10px; border: 1px solid transparent; border-radius: 12px; color: #b7cfde; font-size: 11px; white-space: nowrap; transition: color .2s, background .2s, border-color .2s; }
-.actions button > svg { color: var(--orbit-accent); }
-.actions button:hover:not(:disabled), .actions button[aria-pressed="true"], .actions button[aria-expanded="true"] { color: #f0faff; border-color: #a4cee524; background: #a4cee50c; }
-.actions button:disabled, .secret button:disabled { opacity: .4; cursor: default; }
-.actions button:focus-visible, .secrets button:focus-visible { outline: 2px solid var(--orbit-accent); outline-offset: 2px; }
-.actions .secretsToggle { gap: 6px; }
+.controls .ask { gap: 8px; border-radius: 99px; padding: 0 12px; color: #e2f0fa; font-size: 12px; white-space: nowrap; }
+.ask > svg:first-child { color: var(--orbit-accent); }
+.ask > svg:last-child { color: #8eaabd; }
+.secret button:disabled { opacity: .4; cursor: default; }
+.secrets button:focus-visible { outline: 2px solid var(--orbit-accent); outline-offset: 2px; }
+.controls .secretsToggle { gap: 5px; border-radius: 99px; padding: 0 10px 0 12px; color: #e2f0fa; font-size: 14px; font-weight: 600; }
+.controls .secretsToggle[aria-expanded="true"] { background: #b7e5ff14; }
 .secretsToggle b { padding: 3px 5px; border-radius: 5px; background: #a4cee50e; color: var(--orbit-accent); font: 10px/1.4 var(--font-mono, monospace); }
 .secrets { max-width: 370px; margin: 6px auto 0; padding: 5px 14px 10px; border: 1px solid #a4cee524; border-radius: 18px; background: #0c1a24f2; }
 .secrets[hidden] { display: none; }
@@ -80,9 +75,9 @@
 @keyframes orbit-groove { to { transform: rotate(10deg); } }
 .hint { min-height: 20px; display: flex; justify-content: center; align-items: center; gap: 7px; margin: 5px 0 0; color: #8eacbf; font-size: 11px; text-align: center; }
 .hint button { display: inline-flex; gap: 7px; align-items: center; min-height: 44px; }
-.companion[data-powered="false"] .aura { opacity: 0.3; }
-.companion[data-powered="false"] .status > span { background: #879bad; box-shadow: none; }
-.companion[data-powered="false"] .orbitRing { opacity: 0.4; }
+.companion[data-asleep="true"] .aura { opacity: 0.3; }
+.companion[data-asleep="true"] .status > span { background: #879bad; box-shadow: none; }
+.companion[data-asleep="true"] .orbitRing { opacity: 0.4; }
 @media (min-width: 1024px) { .companion { padding-top: 5px; } }
 @media (max-width: 639px) {
   .header { padding: 0 6px; }
@@ -94,12 +89,16 @@
   .outerRing { top: 11%; left: -3%; width: 106%; }
   .controls { margin-top: 18px; padding: 4px; }
   .divider { margin: 0 3px; }
-  .controls .hello { padding: 0 8px; }
+  .controls .ask { padding: 0 8px; }
   .hint { font-size: 10px; }
-  .actions { gap: 0; }
-  .actions button { padding: 0 7px; gap: 5px; font-size: 10px; }
   .speech { font-size: 11px; padding: 9px 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .companion *, .companion *::before, .companion *::after { transition: none !important; animation: none !important; }
 }
+.zzz { position: absolute; top: 14%; left: 58%; z-index: 3; display: flex; gap: 3px; color: var(--orbit-accent); text-shadow: 0 1px 8px #000b; font: 600 18px/1 var(--font-mono, monospace); pointer-events: none; }
+.zzz span { animation: orbit-zzz 2.6s ease-in-out infinite; opacity: 0; }
+.zzz span:nth-child(2) { animation-delay: .55s; font-size: 22px; }
+.zzz span:nth-child(3) { animation-delay: 1.1s; font-size: 28px; }
+@keyframes orbit-zzz { 0% { opacity: 0; transform: translateY(10px); } 40% { opacity: .9; } 100% { opacity: 0; transform: translate(10px, -22px); } }
+@media (max-width: 420px) { .ask > svg:last-child { display: none; } }
