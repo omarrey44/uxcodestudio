@@ -3,9 +3,16 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { ArrowUpRight, Menu } from "lucide-react";
+import { ArrowUpRight, Asterisk, Menu } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import { StudioModal } from "./studio/StudioUI";
+
+/** The month we are booking; after the 20th it rolls to the next one. */
+function bookingMonth(lang: "en" | "es") {
+  const now = new Date();
+  const month = new Date(now.getFullYear(), now.getMonth() + (now.getDate() > 20 ? 1 : 0), 1);
+  return month.toLocaleDateString(lang === "es" ? "es-MX" : "en-US", { month: "long" });
+}
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -43,7 +50,7 @@ export default function Navbar() {
         <nav className="studio-nav-links" aria-label={es ? "Navegación principal" : "Main navigation"}>
           {t.nav.links.map((link) => <a key={link.href} href={link.href} className={active === link.href ? "is-active" : ""} aria-current={active === link.href ? "location" : undefined}>{link.label}</a>)}
         </nav>
-        <div className="studio-nav-actions"><span className="studio-nav-status"><i aria-hidden="true" />{es ? "Disponible para proyectos" : "Open for projects"}</span>{languages}
+        <div className="studio-nav-actions"><a href="#contact" className="studio-nav-status"><Asterisk size={14} aria-hidden="true" /><span>{es ? "Agenda abierta" : "Now booking"}</span><b suppressHydrationWarning>{bookingMonth(lang)}</b></a>{languages}
           <a href="#contact" className="studio-nav-cta">{es ? "Hablemos" : "Let's talk"}<ArrowUpRight size={16} /></a>
           <button type="button" className="studio-menu-toggle" aria-expanded={menuOpen} aria-label={es ? "Abrir menú" : "Open menu"} onClick={() => setMenuOpen(true)}><Menu size={23} /></button>
         </div>
