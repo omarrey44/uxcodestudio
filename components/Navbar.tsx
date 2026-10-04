@@ -43,7 +43,7 @@ export default function Navbar() {
         <nav className="studio-nav-links" aria-label={es ? "Navegación principal" : "Main navigation"}>
           {t.nav.links.map((link) => <a key={link.href} href={link.href} className={active === link.href ? "is-active" : ""} aria-current={active === link.href ? "location" : undefined}>{link.label}</a>)}
         </nav>
-        <div className="studio-nav-actions">{languages}
+        <div className="studio-nav-actions"><span className="studio-nav-status"><i aria-hidden="true" />{es ? "Disponible para proyectos" : "Open for projects"}</span>{languages}
           <a href="#contact" className="studio-nav-cta">{es ? "Hablemos" : "Let's talk"}<ArrowUpRight size={16} /></a>
           <button type="button" className="studio-menu-toggle" aria-expanded={menuOpen} aria-label={es ? "Abrir menú" : "Open menu"} onClick={() => setMenuOpen(true)}><Menu size={23} /></button>
         </div>

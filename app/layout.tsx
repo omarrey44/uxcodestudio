@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { Inter, Syne, Barlow } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "./studio.css";
 import SmoothScroll from "@/components/SmoothScroll";
@@ -8,23 +8,15 @@ import { LanguageProvider } from "@/lib/i18n";
 import Navbar from "@/components/Navbar";
 import PageLoader from "@/components/PageLoader";
 
-const inter = Inter({
+const geist = Geist({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-sans",
   display: "swap",
 });
 
-const syne = Syne({
+const geistMono = Geist_Mono({
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
-  variable: "--font-syne",
-  display: "swap",
-});
-
-const barlow = Barlow({
-  subsets: ["latin"],
-  weight: ["800", "900"],
-  variable: "--font-barlow",
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -122,7 +114,7 @@ export default async function RootLayout({
   const htmlLang = pathname === "/es" || pathname.startsWith("/es/") ? "es" : "en";
 
   return (
-    <html lang={htmlLang} translate="no" className={`${inter.variable} ${syne.variable} ${barlow.variable}`}>
+    <html lang={htmlLang} translate="no" className={`${geist.variable} ${geistMono.variable}`}>
       <head>
         <meta name="google" content="notranslate" />
       </head>

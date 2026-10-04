@@ -60,6 +60,7 @@ export default function Hero() {
           <a href="#services" className="studio-text-link">{es ? "Explorar servicios" : "Explore services"}<ArrowDown size={15} /></a>
         </div>
         <p className="studio-hero-note"><Check size={13} />{es ? "A tu medida. En español y en inglés." : "Made for you. In English & Spanish."}</p>
+        <p className="studio-hero-stack"><span>{"// stack"}</span>{["Next.js", "React", "TypeScript", "Tailwind", "Vercel"].map((name) => <span key={name}>{name}</span>)}</p>
       </div>
       <div className="hero-scene studio-hero-orbit"><OrbitCompanion /></div>
     </div>

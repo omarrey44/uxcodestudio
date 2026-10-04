@@ -5,6 +5,7 @@ import { useLanguage } from "@/lib/i18n";
 import { Reveal, Spotlight } from "./StudioUI";
 import styles from "./ServiceExtensions.module.css";
 import ServiceCardHeading from "./ServiceCardHeading";
+import { SERVICE_PHOTOS, ServicePhoto } from "./ServiceVisual";
 
 const SERVICES = [
   {
@@ -33,6 +34,8 @@ type Kind = typeof SERVICES[number]["kind"];
 
 /** Decorative service concepts, not live dashboards, calendars, or client work. */
 function ServiceArtwork({ kind, es }: { kind: Kind; es: boolean }) {
+  const photo = SERVICE_PHOTOS[kind];
+  if (photo) return <ServicePhoto src={photo} className="service-photo-wide" />;
   if (kind === "hosting") return <div className={`${styles.art} ${styles.hostingArt}`} aria-hidden="true">
     <div className={styles.hostingOrbit} />
     <div className={styles.domain}><Globe2 size={13} /><span>yourbrand.com</span><Check size={12} /></div>
@@ -74,7 +77,7 @@ export default function ServiceExtensions({ onSelect }: { onSelect: (index: numb
       const copy = service[lang];
       const title = t.services.items[index].title;
       return <Reveal key={service.kind} delay={(i % 2) * 0.08}>
-        <Spotlight className={`${styles.card} ${styles[service.kind]}`}>
+        <Spotlight className={styles.card}>
           <button type="button" className={styles.button} aria-haspopup="dialog" aria-labelledby={`service-${service.kind}-title`} onClick={() => onSelect(index)}>
             <span className={styles.meta}><ServiceCardHeading index={index} /><span className="studio-round-arrow"><ArrowUpRight size={21} /></span></span>
             <div className={styles.copy}><h3 id={`service-${service.kind}-title`}>{title}</h3><p>{copy.description}</p></div>

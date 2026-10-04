@@ -19,7 +19,7 @@
 
 .header { display: flex; align-items: center; justify-content: space-between; padding: 12px 10px 10px 18px; border-bottom: 1px solid #a4cee514; }
 .header strong { display: block; font-size: 14px; letter-spacing: 0.04em; }
-.header span { color: #8fb0c3; font: 10px/1.5 var(--font-mono, monospace); letter-spacing: 0.06em; }
+.header span { color: #8fb0c3; font: 10px/1.5 var(--font-mono), monospace; letter-spacing: 0.06em; }
 .header button, .form button { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; border-radius: 12px; color: #a9c7d8; }
 .header button:hover { background: #a4cee512; }
 

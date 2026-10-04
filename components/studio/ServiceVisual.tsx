@@ -1,9 +1,29 @@
 "use client";
 
+import Image from "next/image";
 import { ArrowUpRight, ShoppingBag, Plus, ArrowRight } from "lucide-react";
+
+// Add each service photo here as it's ready; services without one keep their CSS illustration.
+export const SERVICE_PHOTOS: Partial<Record<string, string>> = {
+  website: "/Website.png",
+  landing: "/landing.png",
+  store: "/store.png",
+  hosting: "/Hosting.png",
+  booking: "/Booking.png",
+  updates: "/updates.png",
+  apps: "/apps.png",
+};
+
+export function ServicePhoto({ src, className }: { src: string; className: string }) {
+  return <div className={`service-photo ${className}`} aria-hidden="true">
+    <Image src={src} alt="" fill sizes="(max-width: 900px) 92vw, 46vw" />
+  </div>;
+}
 
 /** Illustrative interface concepts, not client case studies. */
 export default function ServiceVisual({ kind, es }: { kind: "website" | "landing" | "store"; es: boolean }) {
+  const photo = SERVICE_PHOTOS[kind];
+  if (photo) return <ServicePhoto src={photo} className={`service-photo-${kind}`} />;
   if (kind === "website") return <div className="service-art service-art-web" aria-hidden="true">
     <div className="mock-browser">
       <div className="mock-toolbar"><span /><span /><span /><i>yourbrand.studio</i><ArrowUpRight size={10} /></div>
